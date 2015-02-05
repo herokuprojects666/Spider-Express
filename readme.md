@@ -1,1 +1,1 @@
-First commmitt. Adding all the files to date from project folder.
+First series of commits. Adding all the files to date from project folder.
