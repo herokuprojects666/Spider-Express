@@ -1,0 +1,1 @@
+mongoimport --db spider --collection users --file ./db/userdata.json --jsonArray
