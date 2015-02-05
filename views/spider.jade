@@ -1,0 +1,52 @@
+extend layout
+block page
+  - var page = 'logged in'
+  - var menu = 'spider'
+block gameboard
+  div.gameboard(id='#{user.username}')
+    div.container-fluid#setup
+      div.row#initial
+        button.btn.btn-lg.btn-info#new-game New Game
+        button.btn.btn-lg.btn-info#load-game Load Game
+      div.row#difficulty
+        button.btn.btn-lg.btn-info#easy Easy
+        button.btn.btn-lg.btn-info#medium Medium
+        button.btn.btn-lg.btn-info#hard Hard
+      div.row#cheating
+        button.btn.btn-lg.btn-danger#cheat Cheat
+    div#deck
+    img.dealer(src="/Img/spider/dealer.jpg")
+    div.container-fluid#hiding
+    div#bottomDeck
+    div#finishedStacks
+      div#column1
+        img#1(src='/Img/spider/finished.gif')
+        img#2(src='/Img/spider/finished.gif')
+        br
+        br
+      div#column2
+        img#3(src='/Img/spider/finished.gif')
+        img#4(src='/Img/spider/finished.gif')
+        br
+        br
+      div#column3
+        img#5(src='/Img/spider/finished.gif')
+        img#6(src='/Img/spider/finished.gif')
+        br 
+        br
+      div#column4
+        img#7(src='/Img/spider/finished.gif')
+        img#8(src='/Img/spider/finished.gif')
+        br
+        br
+block javascript
+  script(src="/js/jquery-ui.min.js")
+  script(src="/js/underscore.js")
+  script(src="/js/globals.js")
+  script(src="/js/animation.js")
+  script(src="/js/data.js")
+  script(src="/js/helpers.js")
+  script(src="/js/initialization.js")
+  script(src="/js/intervals.js")
+  script(src="/js/keydown.js")
+  script(src="/js/spider.js")

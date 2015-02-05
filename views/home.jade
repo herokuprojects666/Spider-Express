@@ -1,0 +1,8 @@
+extend layout
+block page
+  - var menu = 'home'
+  - var page = 'logged in'
+block gameboard
+  div.gameboard(id="#{user.username}")
+    p 
+      h1 Welcome  #{user.username} to your homepage!
