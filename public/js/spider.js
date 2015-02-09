@@ -138,12 +138,17 @@ $(document).ready(function() {
 				$(that).draggable('disable'), console.log('mousedown event disabled')
 			else 
 				$(that).draggable('enable')
-				return chainer(game.calculateOffset(), 
+				return helper.chainer(game.calculateOffset(), that,  
 					function (a) { return game.setData('update')},
 					function (a) { return game.fullOffsetList()}, 
 					function (a) { return game.extractIdentity(that)}, 
 					function (a) { return game.extractCard(a)}, 
-					function (a) { return })
+					function (a) { return game.validDroppable(a)}, 
+					function (a, b) { return game.buildValueList(a, b)},
+					function (a) { return game.calculateLeft()}, 
+					function (a) { return game.buildDragList(a)}, 
+					function (a) { return _.map(a, game.switchARoo)}, 
+					function (a) { return game.defaulted(a, 'draglist')})
 		})
 	})
 	$('#deck').on('mouseenter', 'img', function() {
@@ -161,33 +166,40 @@ $(document).ready(function() {
 					function (a) { return game.defaulted(true, 'allowEvent')})
 		})
 	})
+	$('#deck').on('drag', 'img', function() {
+		var that = this
+		var reverting = function(deferred, callback) {
+			return revertEvent(obj.draglist, obj.clicked, deferred, callback)
+		}
+		gameDeferred.done(function (game) {
+			if (!helper.truthy(game.game.allowEvent) || _.isEmpty(game.game.data)) 
+				$(that).draggable('disable')
+			else 
+				$(that).draggable('enable')
+			var deferred = new $.Deferred();
+			var revertingDeferred = new $.Deferred();
+			var deckCardDeferred = new $.Deferred();
+			var specialCase = new $.Deferred();
+			return helper.chainer(game, that, 
+				function (a, b) { return game.determineHoverElement(b)}, 
+				function (a, b) { return game.setElements(a, b)},
+				function (a) { return game.dragging(
+					function (c) { 
+						console.log('started reverting')
+						console.log(c)
+					}, 
+					function (d) {
+						console.log('didnt revert')
+					})})
+
+		})
+	})
 })
 
 // 	$(document).on('mousedown', function(e) {
 // 		// console.log(e.pageX + ' , ' + e.pageY)
 // 	})
-// 	$('#deck').on('mousedown', 'img', function() {
-// 		if (_.isEmpty(obj.data) || !truthy(obj.allowEvent) || !_.isEmpty(obj.intervals)) {
-// 			console.log('mousedown event disabled')
-// 			$(this).draggable('disable'), $(this).off('mousedown', 'img')
-// 		} else { 
-// 			$(this).draggable('enable')
-// 			var ele = $(this)
-// 			return chainer(obj, 
-// 				function(t) { return calculateOffset(t)},
-// 				function(t) { return setData(obj, 'update')},
-// 				function(t) { return fullOffsetList()},
-// 				function(t) { return extractIdentity(ele)},
-// 				function(t) { return extractCard(t)},
-// 				function(t) { return validDroppable(t)},
-// 				function(t) { return buildValueList(t)},
-// 				function(t) { return _.extend(obj, {'droppables' : t, 'initialOffset' : $(ele).offset()})},
-// 				function(t) { return calculateLeft()},
-// 				function(t) { return buildDragList(t)},
-// 				function(t) { return switchARoo(t)},
-// 				function(t) { return _.extend(obj, {'draglist' : [t]})})
-// 		}
-// 	})
+
 // 	$('#deck').on('drag', 'img', function() {
 // 		if(!truthy(obj.allowEvent) || _.isEmpty(obj.data)) {
 // 			$(this).draggable('disable')
@@ -255,42 +267,6 @@ $(document).ready(function() {
 // 		}
 // 	})
 
-// 	$('#deck').on('mouseenter', 'img', function() {
-// 		$(this).draggable()
-// 		_.extend(obj, {'allowEvent' : false}) 
-// 		if (_.isEmpty(obj.data) || !_.isEmpty(obj.intervals) ) {
-// 			$(this).draggable('disable'), $(this).off('mouseenter', 'img')
-// 		} else {
-// 			var that = $(this)
-// 			return check(obj.fullOffsetList, 
-// 				function (arg) { console.log('offset list is empty')
-// 				$(that).draggable('disable')
-// 					return chainer(setData(arg, 'update'), 
-// 						function(b) { return fullOffsetList()})
-// 				}, 
-// 				function (arg) { console.log('offset list is not empty')
-// 					return chainer(calculateLeft(_.first(switchARoo(that))), 
-// 						function(z) { return compareOffsets(_.first(switchARoo(that)), z, lastIndex, separatedList)},
-// 						function(z) { return _.isBoolean(z) ? z : booleanArray(_.last(z), _.first(switchARoo([that])))},
-// 						function(z) { return z == false ? $(that).draggable('disable') : $(that).draggable('enable')},
-// 						function(z) { return _.extend(obj, {'allowEvent' : true})})
-// 				})
-// 			// return check(obj.fullOffsetList, setData, obj, 'update', 
-// 			// 	function() { return chainer(obj, 
-// 			// 		function(t) { return calculateOffset(t)},
-// 			// 		// function(t) { return fullOffsetList(obj)},
-// 			// 		function(t) { return calculateLeft(t, _.first(switchARoo(that)))},
-// 			// 		function(t) { console.log(t)
-// 			// 			return compareOffsets(_.first(switchARoo(that)), _.last(t), separatedList)},
-// 			// 		function(t) { return _.isBoolean(t) ? t : booleanArray(_.last(t), _.first(switchARoo([that])))},
-// 			// 		function(t) { return t == false ? $(that).draggable('disable') : $(that).draggable('enable')},
-// 			// 		function(t) { return _.extend(obj, {'allowEvent' : true})},
-// 			// 		function(t) { 
-// 			// 			// console.log(obj.data), console.log(obj.movelist)
-// 			// 		})
-// 			// })		
-// 		}
-// 	})
 // 	$('#deck').on('mouseleave', 'img', function() {
 // 		$(this).removeClass('ui-draggable ui-draggable-handle')
 // 		$(this).removeClass('ui-draggable-disabled')
