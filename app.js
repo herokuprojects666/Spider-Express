@@ -39,6 +39,7 @@ app.use( function (req, res, next) {
 app.use (function (req, res, next) {
 	console.log(__dirname)
 	console.log(__dirname + '/app')
+	console.log(__dirname + '/public')
 	console.log('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')
 	return next()
 })
@@ -50,7 +51,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookies('whatever'))
 app.use(session({secret : 'abcdefghijk'}));
-app.use(express.static(__dirname + '/app'));
+app.use(express.static('/app'));
 
 app.get('/index', routes.index)
 
