@@ -40,6 +40,7 @@ app.use (function (req, res, next) {
 	console.log(__dirname)
 	console.log(__dirname + '/app')
 	console.log('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')
+	return next()
 })
 app.set('port', process.env.PORT || 4000);
 app.set('views', __dirname + '/views');
