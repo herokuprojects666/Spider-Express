@@ -37,22 +37,16 @@ app.use( function (req, res, next) {
 	req.collections = collections
 	return next()
 })
-app.use (function (req, res, next) {
-	console.log(__dirname)
-	console.log(__dirname + '/app')
-	console.log(__dirname + '/public')
-	console.log('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')
-	return next()
-})
+
 app.set('port', process.env.PORT || 4000);
-app.set('views', __dirname + '/views');
+app.set('views', process.env.PWD + '/views');
 app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookies('whatever'))
 app.use(session({secret : 'abcdefghijk'}));
-app.use(express.static(process.env.PWD + '/app'));
+app.use(express.static(process.env.PWD + '/public'));
 
 app.get('/index', routes.index)
 
