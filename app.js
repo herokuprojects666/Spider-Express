@@ -36,7 +36,7 @@ app.use( function (req, res, next) {
 	req.collections = collections
 	return next()
 })
-app.set('port', 4000);
+app.set('port', process.env.PORT || 4000);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.use(logger('dev'));
