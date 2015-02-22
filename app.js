@@ -1,6 +1,7 @@
 var express = require('express')
 	routes = require('./routes')
 	path = require('path')
+	fs = require('fs')
 	mongoclient = require('mongodb').MongoClient
 	url = 'mongodb://localhost:27017/spider'
 	uri = 'mongodb://craggoo:starcraft@ds039411.mongolab.com:39411/spider-express'
@@ -32,12 +33,15 @@ var authorized = function(req, res, next) {
 		return next();
 	}
 }
-console.log(__dirname + '/public')
-console.log(require('fs').existsSync(__dirname + '/public'))
-alert('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')
+
 app.use( function (req, res, next) {
 	if (!collections.users) return next(new error('no users found'))
 	req.collections = collections
+	return next()
+})
+app.use (function (req, res, next) {
+	console.log(__dirname + '/public')
+	console.log(require('fs').existsSync(__dirname + '/public'))
 	return next()
 })
 app.set('port', process.env.PORT || 4000);
