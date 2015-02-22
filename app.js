@@ -1,7 +1,6 @@
 var express = require('express')
 	routes = require('./routes')
 	path = require('path')
-	fs = require('fs')
 	mongoclient = require('mongodb').MongoClient
 	url = 'mongodb://localhost:27017/spider'
 	uri = 'mongodb://craggoo:starcraft@ds039411.mongolab.com:39411/spider-express'
@@ -17,7 +16,6 @@ var express = require('express')
 	logger = require('morgan')
 	errorHandler = require('errorhandler')	
 	bodyParser = require('body-parser')
-	process.env.PWD = process.cwd()
 	
 
 
@@ -33,19 +31,9 @@ var authorized = function(req, res, next) {
 		return next();
 	}
 }
-
 app.use( function (req, res, next) {
 	if (!collections.users) return next(new error('no users found'))
 	req.collections = collections
-	return next()
-})
-app.use (function (req, res, next) {
-	console.log('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')
-	console.log(__dirname)
-	console.log(process.cwd())
-	console.log(__dirname + '/public')
-	console.log(__dirname + '/app')
-	console.log(require('fs').existsSync(__dirname + '/public'))
 	return next()
 })
 app.set('port', process.env.PORT || 4000);
@@ -56,7 +44,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookies('whatever'))
 app.use(session({secret : 'abcdefghijk'}));
-app.use(express.static(__dirname + '/app'));
+app.use(express.static(__dirname + '/public'));
 
 app.get('/index', routes.index)
 
