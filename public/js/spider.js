@@ -1,25 +1,3 @@
-//animation.js contains : dealRow, deckCard, dragging, fadeOut, rebuildDeckCard, revertCard
-
-//data.js contains : addMove, buildDragList, buildValues, calculateLeft, calculateOffset, dataCheck, determination,
-//determineHoverElement, determinePosition, grabRowElements, fixBaseString, fixCss, fixOldData, fixZIndex, fullOffsetList,
-//insertDeckCard, objectList, psuedoValues, resetDataKeys, revertElementData, revertEvent, revertRow, revertZIndex, setData, 
-//setElements, setRowOffset, updateData, updateDataSet, updateElementData, updateIdentity, updateSingleOffset
-
-//helpers.js contains: anyKey, anyValue, arrayOfArray, atts, booleanArray, buildHTML, chainer, check, checkForKeys, clearIntervals,
-//convertId, convertValue, createEmptyObject, createObject, curry, existy, extractCard, extractIdentity, extractNumber, htmlGen, idList,
-//intervals, keylist, mapSelectors, qualifiers, ranger, removeElements, sortIds, styles, switchARoo, truthy, valueList, valueByIndex,
-//whichKey, whichValue, compareOffsets
-
-//intializiation.js contains: buildValueList, createDeck, dealDeck, difficulty, edgeCase, generateBoard, shuffleDeck, totalDeck, validDroppable
-
-//intervals.js contains: bottomDeck, cardLoop, dealingRow, deckLoop, fadingOut, finalLoop, reverting, revertingRow, revertRowFadeout
-
-//keydown.js contains: determineMove, keyDownAdd, keyDownEvent, removeMove, separatedList
-
-//functions which have no test atm : buildList, chainer,
-
-//replaced buildImage with buildHTML
-
 function factorization(number) {
 	return _.reduce(_.range(1, number + 1), function (memo, ele) {
 		return number % ele == 0 ? [].concat.call([], memo, ele) : memo
@@ -70,33 +48,43 @@ function naturalSort(string) {
 	return recursiveNatural(stringArr, numberArr, array, [])
 }
 
-function bottomDeck(deferred, callback) {
-	return insertDeckCard($('#bottomDeck>img'), _.range(8), {'left' : 803, 'top' : 100}, $('#bottomDeck'), deferred, callback)
+var containsSubString = function(str, substr) {
+		var str = str.split('')
+		var substring = substr.split('')
+		var findings = _.reduce(str, function (memo, ele, index, array) {
+			var temp = _.reduce(substring, function (memom, elem, ind) {
+				return array[index + ind] == elem ? [].concat.call([], memom, elem) : memom
+			}, []).join('')
+			return temp == substr ? 'true' : memo
+		}, [])
+		return _.isEmpty(findings) ? false : true
 }
 
-// function dealingRow(deferred, callback) {
-// 	return dealRow(_.range(8), deferred, callback)
-// }
-
-function fadingOut(deferred, successcb, failcb) {
-	return fadeOut(_.range(8), deferred, 1250, '#bottomDeck>img', '#deck', successcb, failcb)
-}
-
-function reverting(deferred, callback) {
-	return revertEvent(obj.draglist, obj.clicked, deferred, callback)
-}
-
-function revertingRow(deferred, callback) {
-	return revertRow(_.last(obj.movelist).rowCards, '#bottomDeck>img', {'left' : 803, 'top' : 100}, deferred, callback)
-}
-
-function revertRowFadeout(deferred, successcb, failcb) {
-	return fadeOut(ranger('#deck>img', 'last', 8), deferred, 500, '#deck>img', null, successcb, failcb)
+var reducedString = function(initial, substr, finalStr) {
+	if (_.isEmpty(initial)) 
+		return finalStr
+	else 
+		var substr = _.isArray(substr) ? substr : substr.split('')
+		var initial = _.isArray(initial) ? initial : initial.split('')
+		var truthy = _.map(initial, function (ele, index) {
+			return ele == _.first(substr) ? true : false
+		})
+		var index = _.reduce(truthy, function (memo, ele, index) {
+			return ele == true && _.isEmpty(memo) ? memo += index : memo
+		}, '')
+		var returnedString = _.some(truthy) ? [].concat.call([], finalStr, _.first(substr)) : [].concat.call([], finalStr)
+		var updatedInitial = _.some(truthy) ? [].concat.call([], _.rest(initial, index)) : []
+		return reducedString(updatedInitial, _.rest(substr), returnedString)
 }
 
 $(document).ready(function() {
-	var b = [null]
-	console.log(b)
+	$(document).on('mousedown', function(event) {
+		console.log(event.clientX), console.log(event.clientY)
+	})
+	var a = [[]]
+	var b = [[1, 2, 3]]
+	var c = [].concat.call([], a, b)
+	console.log(c)
 	var gameDeferred = new $.Deferred()
 	$('#setup button').on('mousedown', function(e) {
 		var game = new Spider
@@ -113,8 +101,9 @@ $(document).ready(function() {
 		var finalLoop = function (deferred, callback) {
 			return game.dealDeck('deckCard', 'placeholder', _.range(41, 97), deferred, callback)
 		}
-		game.initialCondition(that, 
-			function (t) { return helper.chainer(game.difficulty(t),
+		return game.initialCondition(that, 
+			function (t) { return helper.chainer(game, t, 
+				function (b) { return game.difficulty(t)},
 				function (b) { return game.createDeck(b)},
 				function (b) { return game.shuffleDeck()},
 				function (b) { return game.generateBoard(_.range(5), _.range(8))},
@@ -122,23 +111,65 @@ $(document).ready(function() {
 					function (c) { return game.intervals(cardLoop, 20, cardDeferred, 
 						function (d) { return game.intervals(finalLoop, 20, bottomdeck, 
 							function (e) { return game.setData(null, 
-								function (f) { return helper.chainer(game.saveHTML(),
+								function (f) { return helper.chainer(game, game.saveHTML(),
 									function (g) { return game.setData('update', 
 										function (h) { return helper.chainer(game.fullOffsetList(),
+											function (i) { return game.calculateOffset()},
 											function (i) { return game.updateGame()})})})})})})})})},
 			function (t) {
-				return game.loadGame(game.populateBoard)
+				return game.loadGame(
+					function (data) {
+						console.log(data)
+						return helper.chainer(game, that, $('div>.error').html(''), 
+							function (a) { return game.populateBoard(data)},
+							function (a) { return game.fullOffsetList()},
+							function (a) { return game.resetStackHTML()}
+						)}, 
+					function (data) {
+						$('div>.error').html(data.error)
+					})
+			},
+			function (t) {
+				return gameDeferred.resolve(game).promise()
 			})
-		return gameDeferred.resolve(game).promise()
+	})
+	$('#save').on('mousedown', function() {
+		gameDeferred.done(function (game) {
+			return game.offsetCheck(
+				function () { },
+				function () { return (game.saveHTML(), game.updateGame())})
+		})
+	})
+	$('#cheat').on('mousedown', function () {
+		gameDeferred.done(function (game) {
+			var bleh = new $.Deferred()
+			game.cheat("#deck>img[id*='deck']", 350)
+		})
 	})
 	$('#deck').on('mousedown', 'img', function() {
 		var that = this
+		console.log($('#stack1>img').length)
 		gameDeferred.done(function (game) {
+			console.log(JSON.stringify(game.game.data))
+			console.log(game.game.identity)
+			console.log(game.game.shuffledDeck)
+			// console.log(game.extractCard('any'))
+			// console.log(game.extractIdentity(document.elementFromPoint(305, 541)))
 			if (!helper.truthy(game.game.allowEvent) || !_.isEmpty(game.game.intervals))
 				$(that).draggable('disable'), console.log('mousedown event disabled')
 			else 
 				$(that).draggable('enable')
-				return helper.chainer(game.calculateOffset(), that,  
+				var d = $(that).attr('id')
+				var e = _.reduce(game.game.data, function (memo, ele, index) {
+					return helper.getFirstKey(ele) == d ? [].concat.call([], memo, index) : memo
+				}, []).join('')
+				console.log(e)
+				var f = _.map($('#deck>img'), function (ele, index) {
+					if ($(ele).attr('id') == d)
+						console.log(index)
+				})
+				console.log(game.game.data[e])
+				return helper.chainer(game, game.calculateOffset(), that,  
 					function (a) { return game.setData('update')},
 					function (a) { return game.fullOffsetList()}, 
 					function (a) { return game.extractIdentity(that)}, 
@@ -148,7 +179,8 @@ $(document).ready(function() {
 					function (a) { return game.calculateLeft()}, 
 					function (a) { return game.buildDragList(a)}, 
 					function (a) { return _.map(a, game.switchARoo)}, 
-					function (a) { return game.defaulted(a, 'draglist')})
+					function (a) { return game.defaulted(a, 'draglist')},
+					function (a) { return game.disableDragging('#deck>img')})
 		})
 	})
 	$('#deck').on('mouseenter', 'img', function() {
@@ -159,67 +191,93 @@ $(document).ready(function() {
 			if (!_.isEmpty(game.game.intervals)) 
 				$(that).draggable('disable')
 			else 
-				return helper.chainer(game.calculateLeft(game.switchARoo(that)), 
+				return helper.chainer(game, game.calculateLeft(game.switchARoo(that)), 
 					function (a) { return helper.compareOffsets(game.switchARoo(that), a, helper.lastIndex, game.separatedList)},
 					function (a) { return _.isBoolean(a) ? a : helper.booleanArray(_.last(a), game.switchARoo(that))},
-					function (a) { return a == false ? $(that).draggable('disable') : $(that).draggable('enable')},
+					function (a) { return a == false || $(that).attr('id') == 'any' ? $(that).draggable('disable') : $(that).draggable('enable')},
 					function (a) { return game.defaulted(true, 'allowEvent')})
 		})
 	})
 	$('#deck').on('mouseleave', 'img', function() {
+		var that = this
 		gameDeferred.done(function (game) {
-			console.log('got in here')
+			return $(that).hasClass('ui-draggable', 'ui-draggable-handle') ? $(that).removeClass('ui-draggable', 'ui-draggable-handle') :
+					$(that).hasClass('ui-draggable') ? $(that).removeClass('ui-draggable') :
+					$(that).hasClass('ui-draggable-handle') ? $(that).removeClass('ui-draggable-handle') : 
+					$(that).attr('id') == 'any' ? $(that).draggable('disable') : $(that)
 		})
 	})
 	$('#deck').on('drag', 'img', function() {
 		var that = this
-		console.log(this)
 		gameDeferred.done(function (game) {
 			var reverting = function(deferred, callback) {
-				return game.revertEvent('draglist', that, deferred, callback)
+				return game.unacceptableDraggable(that, deferred, callback)
 			}
-			if (!helper.truthy(game.game.allowEvent) || _.isEmpty(game.game.data)) 
+			var moveStack = function(deferred, successcb, failcb, args) {
+				var list = game.completedSuit().reverse()
+				var selector = game.stackLocation()
+				return game.moveCard(selector, list, deferred, successcb, args)
+			}
+			var addDeckCard = function(deferred, successcb, failcb, args) {
+				var selector = game.stackLocation()
+				console.log($(selector).offset())
+				return game.insertDeckCard(true, selector, _.range(1), null, null, deferred, successcb, args)
+			}
+			if (!helper.truthy(game.game.allowEvent) || _.isEmpty(game.game.data)) {
+				console.log('disabled') 
 				$(that).draggable('disable')
-			else 
+			} else 
 				$(that).draggable('enable')
 				var deferred = new $.Deferred();
 				var deckCardDeferred = new $.Deferred();
 				var specialCase = new $.Deferred();
-				helper.chainer(game, that, 
-					function (a, b) { return game.determineHoverElement(b)}, 
-					function (a, b) { return game.setElements(a, b)},
+				var stackDeferred = new $.Deferred();
+				var completedStackDeferred = new $.Deferred();
+				return helper.chainer(game, that, 
+					function (a) { return game.determineHoverElement(a)}, 
+					function (a, b) { return game.setElements(a, that)},
 					function (a, b) { return game.dragging(
 						function (c) { return game.intervals(reverting, 1, deferred, 
-							function () { return game.revertZIndex('draglist')
-							})
+							function () { return game.revertZIndex('draglist')})
 						}, 
-						function (c) { return helper.chainer(c, that, 
+						function (c) { return helper.chainer(game, c, that, 
 							function (d) { return game.fixCss()},
 							function (d) { return game.fixZIndex(d)},
 							function (d) { return game.determinePosition()},
 							function (d) { return game.deckCard(d, deckCardDeferred, 
-								function (e) { return helper.chainer(e, that, 
+								function (e) { return helper.chainer(game, e, that, 
 									function (f) { return game.setData('update', 
-										function (g) { return helper.chainer(game.updateDataKeys(), 
+										function (g) { return helper.chainer(game, game.updateDataKeys(), 
 											function (h) { return game.calculateLeft(game.switchARoo(that))},
 											function (h) { return game.objectList(h)},
 											function (h) { return game.buildValues(h)},
-											function (h) { return game.updateData(specialCase, 
-												function (g) { return helper.chainer(game.calculateLeft(), that, 
+											function (h) { return game.updateData(specialCase, null, 
+												function (g) { return helper.chainer(game, game.calculateLeft(), that, 
 													function (i) { return game.objectList(i)},
 													function (i) { return game.fixOldData(i)}, 
 													function (i) { return game.fixBaseString()}, 
 													function (i) { return game.calculateLeft(game.switchARoo(that))},
 													function (i) { return game.objectList(i)},
-													function (i) { return game.buildValues(i)},
-													function (i) { return game.updateData('fixed')},
-													function (i) { console.log(JSON.stringify(game.game.data))})
+													function (i) { return game.buildValues(i, true)},
+													function (i) { return game.updateData('fixed')})
 												},
-												function (g) { return helper.chainer(game.addMove(), that, 
-													function (i) { return game.defaulted([], 'clicked', 'clickedMatches', 'currentRow', 'draggedData', 'draggedEleOffsets', 'draggedEleString', 
-														'draggedElements', 'draglist', 'droppables','elementlist', 'fullBaseValue', 'hoverElements', 'hoverMatches', 'hoverString', 'hovered', 
-														'hoveredData', 'initialOffset', 'offsets', 'oldHoverCard')},
-													function (i) { return game.fullOffsetList()})
+												function (g) { return helper.chainer(game, game.addMove(), that, 
+													function (i) { return game.defaulted([], "allowEvent", "cardStackHTML", 'clicked', "clickedMatches", "currentRow", "deckHTML", "draggedData", "draggedEleOffsets", "draggedEleString", 
+																   "draggedElements", "draglist", "droppables", "elementlist", "fullBaseValue", "hoverElements", "hoverMatches", "hoverString", "hovered", "hoveredData", "initialOffset", 
+																   "intervals", "keys", "list", "offsets", "oldHoverCard", "previousRow", "ImageDimensions", "pseudoDragged", "pseudoHovered")},
+													function (i) { return game.fullOffsetList()},
+													function (i) { return game.completedSuit()},
+													function (i) { return !_.isEmpty(i) ? helper.chainer(game, that, i,
+														function (j, jj) { console.log($('#stack1>img').length)
+															return game.addCompletedStack(jj)},
+														function (j, jj) { return game.intervals(moveStack, 250, stackDeferred, 
+															function (k) { return game.intervals(addDeckCard, 250, completedStackDeferred, 
+																function (l) { console.log($('#stack1>img').length)}, null, k)}
+														, null, jj)}
+													) : helper.chainer(game, that,
+														function (j) { console.log(_.last(game.game.movelist))})
+													},
+													function (i) { console.log(game.game.movelist), console.log(JSON.stringify(game.game.data))})
 												})
 											})
 										})
@@ -228,221 +286,136 @@ $(document).ready(function() {
 							})
 						})
 					})
-		console.log(this)
 		})
-		console.log(this)
 	})
 
 	$('#bottomDeck').on('mousedown', 'img', function() {
-		console.log(gameDeferred)
 		var that = this
 		gameDeferred.done(function (game) {
-
-		})
-		gameDeferred.done(function (game) {
 			var dealingRow = function(deferred, callback) {
-				return dealRow(_.range(8), deferred, callback)
+				return game.dealRow(_.range(8), deferred, callback)
 			}
 			var fadingOut = function(deferred, successcb, failcb) {
-				return fadeOut(_.range(8), deferred, 1250, '#bottomDeck>img', '#deck', successcb, failcb)
+				return game.fadeOut(_.range(8), deferred, 1250, '#bottomDeck>img', '#deck', successcb, failcb)
 			}
-			if (_.isEmpty(game.game.data) || _.isEmpty(game.game.intervals))
+			var removeElementsDeferred = new $.Deferred()
+			var fadeOutDeferred = new $.Deferred()
+
+			if (_.isEmpty(game.game.data) || !_.isEmpty(game.game.intervals))
 				$(that).off('mousedown', 'img')
 			else
-				var removeElementsDeferred = new $.Deferred()
-				var fadeOutDeferred = new $.Deferred()
-				return helper.chainer(game.offsetCheck( 
-					function (a) { return helper.chainer(game.calculateOffset(), that, 
+				return helper.chainer(game, game.offsetCheck(
+					function (a) { console.log('fulloffsetlist is empty')},
+					function (a) { return helper.chainer(game, that, game.calculateOffset(), 
 						function (b) { return game.fullOffsetList()},
-						function (b) { return game.intervals(dealingRow, 150, removeElementsDeferred, 
-							function (c) { return game.intervals(fadingOut, 150, fadeOutDeferred, null, 
-								function (d) { console.log('hopefully finished fading out')})})} 
-						)
-
-				})) 
+						function (b, offset) { return game.intervals(dealingRow, 150, removeElementsDeferred, 
+							function (c) {return game.intervals(fadingOut, 150, fadeOutDeferred, null, 
+								function (d) { return helper.chainer(game, game.removeElements(_.range(8), '#bottomDeck>img'),
+									function (e) { return game.setData('update', 
+										function (f) { return helper.chainer(game, game.updateDataKeys(), 
+											function (g) { return _.map(offset, game.switchARoo)},
+											function (g) { return game.defaulted(g, 'previousRow')},
+											function (g) { return game.calculateOffset()},
+											function (g) { return _.map(g, game.switchARoo)},
+											function (g) { return game.defaulted(g, 'currentRow'), g},
+											function (g) { return helper.qualifiers(game, g, game.extractIdentity, game.extractCard, game.validDroppable, game.buildValueList,
+												game.pseudoValues, curried.set, curried.calculateLeft, curried.list, curried.build, curried.updateData, curried.update
+												)},
+											function (g) { return game.fullOffsetList()},
+											function (g) { return game.currentRow()},
+											function (g) { return game.addMove(g)},
+											function (g) { return game.defaulted([], "allowEvent", "cardStackHTML",'clicked', "clickedMatches", "currentRow", "deckHTML", "draggedData", "draggedEleOffsets", 
+														   "draggedEleString", "draggedElements", "draglist", "droppables", "elementlist", "fullBaseValue", "hoverElements", "hoverMatches", "hoverString", 
+														   "hovered", "hoveredData", "initialOffset", "intervals", "keys", "list", "offsets", "oldHoverCard", "previousRow", "ImageDimensions", "pseudoDragged", "pseudoHovered")},
+											function (g) { console.log(game.game.movelist)}
+										)}
+									)}
+								)}
+							)}
+						)}
+					)}
+				)) 
 		})
 
 	})
+	$(this).on('keydown', window, function (event) {
+		var that = this
+		gameDeferred.done(function (game) {
+			var revertingRow = function(deferred, callback) {
+				return game.revertRow('#bottomDeck>img', {'left' : 803, 'top' : 100}, deferred, callback)
+			}
+			var revertRowFadeout = function(deferred, successcb, failcb) {
+				return game.fadeOut(game.ranger('#deck>img', 'last', 8), deferred, 500, '#deck>img', null, successcb, failcb)
+			}
+			var bottomDeck = function(deferred, callback) {
+				return game.insertDeckCard(null, $('#bottomDeck>img'), _.range(8), {'left' : 803, 'top' : 100}, $('#bottomDeck'), deferred, callback)
+			}
+			var undo = function (deferred, callback) {
+				return game.undoMove(deferred, callback)
+			}
+			if (!_.isEmpty(game.game.intervals))
+				$(this).off('keydown', window)
+			else
+				var keydownDeferred = new $.Deferred()
+				var revertRowDeferred = new $.Deferred()
+				var fadeOutDeferred = new $.Deferred()
+				var bottomdeckDeferred = new $.Deferred()
+				return helper.chainer(game, event.which, 
+					function (a) { return game.keyDownAdd(a)},
+					function (a) { return game.checkForKeys([90, 17])},
+					function (a) { return a == true ? game.keyDownEvent('row', keydownDeferred, 
+						function (b) { console.log(b)
+							return game.determineMove('oldHoverCard', b, 
+							function (c) { return helper.chainer(game, that, c, 
+								function (d, dd) { return game.determineMove('completedStack', dd, 
+									function (e) { game.revertStack(e, function () { console.log(game.game.movelist)})} 
+									, null)},
+								function (d, dd) { return game.determineMove('oldHoverCard.deckcard', dd.oldHoverCard, 
+									function () { console.log('do i get here?')
+										return game.rebuildDeckCard()}
+									, null)}
+							)},
+							function (c) { return window.setTimeout(
+								function () {game.undoMove(
+									function (d) { game.setData('update',
+										function (e) { return helper.chainer(game, that,
+											function (f) { return game.fullOffsetList()},
+											function (f) { return game.updateDataKeys()},
+											function (f) { return game.updateData(null, 'update game data')},
+											function (f) { return game.removeMove()},
+											function (f) { console.log(game.game.movelist), console.log(JSON.stringify(game.game.data))}
+										)}
+									)}
+								)}
+							, 500)}
+						)}
+						,
+						function (c) { console.log('row found')
+							return game.intervals(revertingRow, 20, revertRowDeferred, 
+							function (d) { return game.intervals(revertRowFadeout, 5, fadeOutDeferred, null, 
+								function (e) { return game.intervals(bottomDeck, 1, bottomdeckDeferred, 
+									function (f) { return helper.chainer(game, that,
+										function (g) { return game.updateData(null, 'update game data')}, 
+										function (g) { return game.removeElements(game.ranger('#deck>img', 'last', 8), '#deck>img')},
+										function (g) { return game.setData('update', 
+											function (h) { return helper.chainer(game, that, 
+												function (i) { return game.fullOffsetList()},
+												function (i) { return game.updateDataKeys()},
+												function (i) { return game.removeMove()},
+												function (i) { console.log(game.game.movelist)}
+												)}
+											)}
+										)}
+									)}
+								)}
+							)}
+					): game }
+				)
+		})
+	})
+	$(this).on('keyup', window, function(event) {
+		gameDeferred.done(function (game) {
+			return game.defaulted([], 'keys')
+		})
+	})
 })
-
-// 	$(document).on('mousedown', function(e) {
-// 		// console.log(e.pageX + ' , ' + e.pageY)
-// 	})
-
-// 	$('#deck').on('drag', 'img', function() {
-// 		if(!truthy(obj.allowEvent) || _.isEmpty(obj.data)) {
-// 			$(this).draggable('disable')
-// 		} else {
-// 			$(this).draggable('enable')
-// 			var ele = $(this)
-// 			var deferred = new $.Deferred()
-// 			var revertingDeferred = new $.Deferred()
-// 			var deckCardDeferred = new $.Deferred()
-// 			var specialCase = new $.Deferred()
-// 			return chainer(ele, 
-// 				function(x) { return $(ele).offset() },
-// 			    function(x) { return determineHoverElement(x, obj) },
-// 			    function(x) { return setElements(x, ele.offset())},
-// 			    function(x) { return dragging(obj, 
-// 			   		 function() { console.log('starting reverting')
-// 			   			return intervals(reverting, 1, deferred, function() {
-// 			   				console.log('finished reverting')
-// 			   				revertingDeferred.resolve().done(function() {
-// 			   					return revertZIndex()
-// 			   				})
-// 			   			})
-// 			   		}, 
-// 			   		function () { return chainer(obj, 
-// 			   			function(t) { return fixCss(t)},
-// 			   			function(t) { return fixZIndex(t)},
-// 			   			function(t) { return determinePosition(obj)},
-// 			   			function(t) { return deckCard(obj, t, deckCardDeferred, 
-// 			   				function() { return chainer(obj, 
-// 			   					function(z) { return setData(z, 'update')},
-// 			   					function(z) { return resetDataKeys()},
-// 			   					function(z) { return switchARoo(arrayOfArray(obj.draglist))},
-// 			   					function(z) { return calculateLeft(_.first(z))},
-// 			   					function(z) { return objectList(z)},
-// 			   					function(z) { return buildValues(obj.draglist, z)},
-// 			   					function(z) { return updateData(obj, obj.movelist, specialCase,
-// 			   						function() { console.log('fail callback')
-// 			   							return chainer(calculateLeft(), 
-// 			   								function(b) { return objectList(b)},
-// 			   								function(b) { return fixOldData(b)},
-// 			   								function(b) { return fixBaseString(obj, obj.draglist)},
-// 			   								function(b) { return calculateLeft(_.first(switchARoo(obj.draglist)))},
-// 			   								function(b) { return objectList(b)},
-// 			   								function(b) { return buildValues(obj.draglist, b)},
-// 			   								function(b) { return updateData(obj)},
-// 			   								function(b) { return fullOffsetList()},
-// 			   								function(b) { 
-// 			   									// console.log(JSON.stringify(obj.data)), console.log(obj.movelist)
-// 			   								})
-// 			   						},
-// 			   						function() { console.log('success callback')
-// 			   							return chainer(addMove(),
-// 			   								function(a) { return _.extend(obj, {'initialOffset' : {}})},
-// 			   								function(a) { console.log(_.isEmpty(obj.initialOffset))},
-// 			   								function(a) { return fullOffsetList()},
-// 			   								function(a) { return updateGame(a)
-// 			   									// console.log(JSON.stringify(obj.data)), console.log(obj.movelist)
-// 			   								})	
-// 			   						})	   							
-// 			   					})
-// 			   				})
-// 			   			})
-// 			   		})
-// 			   })
-// 		}
-// 	})
-
-// 	$('#deck').on('mouseleave', 'img', function() {
-// 		$(this).removeClass('ui-draggable ui-draggable-handle')
-// 		$(this).removeClass('ui-draggable-disabled')
-// 		console.log('getting into mouseleave event')
-// 		_.extend(obj, {'allowEvent' : false})
-// 	})
-// 	$(this).on('keydown', window, function(event) {
-// 		if (!_.isEmpty(obj.intervals)) {
-// 			$(this).off('keydown', window)
-// 		} else {
-// 			// console.log('intervals is ' + obj.intervals)
-// 			var keydownDeferred = new $.Deferred()
-// 			var revertRowDeferred = new $.Deferred()
-// 			var fadeoutDeferred = new $.Deferred()
-// 			var bottomdeckDeferred = new $.Deferred()
-// 			return chainer(event.which, 
-// 				function(t) { return keyDownAdd(t)},
-// 				function(t) { return checkForKeys([17, 90], obj.keys)},
-// 				function(t) { return t == true ? keyDownEvent(obj.movelist, keydownDeferred, 
-// 					function (move) {
-// 						// console.log('no deck card, success callback')
-// 					},
-// 					function (move) { 
-// 						// console.log('deck card/row found')
-// 						return determineMove(move, 
-// 							function (arg) {
-// 								// console.log('last move was a row')
-// 								return intervals(revertingRow, 20, revertRowDeferred, 
-// 									function() {
-// 										// console.log('done reverting row')
-// 										return intervals(revertRowFadeout, 5, fadeoutDeferred, null, 
-// 											function() {
-// 												// console.log('done fading out')
-// 												return intervals(bottomDeck, 1, bottomdeckDeferred, 
-// 													function() { 
-// 														// console.log('finished fixing deck')
-// 														return chainer(updateData(obj, arg), 
-// 															function(b) { return removeElements(ranger($('#deck>img'), 'last', 8), $('#deck>img'))},
-// 															function(b) { return setData(obj, 'update')},
-// 															function(b) { return fullOffsetList()},
-// 															function(b) { return updateDataSet(b.identity, b)},
-// 															function(b) { return removeMove(obj.movelist)})
-// 													})
-// 											})
-// 									})
-// 							},
-// 							function (arg) {console.log('last move had a deckCard')
-// 								return rebuildDeckCard(arg, 
-// 									function (move) {
-// 										return revertCard(move.draggedElements, move.draggedEleOffsets, 
-// 											function () {
-// 												return chainer(setData(obj, 'update'),
-// 													function(m) { return fullOffsetList()},
-// 													function(m) { return updateDataSet(m.identity, m)},
-// 													function(m) { return updateData(obj, move)},
-// 													function(m) { return removeMove(obj.movelist)})
-// 											})
-// 									})
-// 							})
-// 					}) 
-// 			: obj})
-// 		}
-// 	})
-// 	$(this).on('keyup', function() {
-// 		return _.extend(obj, {'keys' : []})
-// 	})
-// 	$('#bottomDeck').on('mousedown', 'img', function() {
-// 		// console.log('default speed is ' + $.fx.speeds._default)
-// 		if (_.isEmpty(obj.data) || !_.isEmpty(obj.intervals)) {
-// 			console.log('disabled')
-// 			console.log(obj.data)
-// 			console.log(obj.intervals)
-// 			$(this).off('mousedown', 'img')
-// 		} else {
-// 			var removeElementsDeferred = new $.Deferred()
-// 			var fadeOutDeferred = new $.Deferred()
-// 				return chainer(obj, 
-// 					function(t) { return check(obj.fullOffsetList, setData, obj, 'update', 
-// 						function() { return chainer(obj, 
-// 							function(b) { return calculateOffset(b)},
-// 							function(b) { return fullOffsetList()},
-// 							function(b) { return intervals(dealingRow, 150, removeElementsDeferred, 
-// 								function() { return intervals(fadingOut, 150, fadeOutDeferred, null,
-// 									function() { return chainer(obj, 
-// 										function(c) { return removeElements(_.range(8), $('#bottomdeck>img'))},
-// 										function(c) { return setData(obj, 'update', 
-// 											function() { return chainer(obj.identity, 
-// 												function(d) { return updateDataSet(d, obj)},
-// 												function(d) { return grabRowElements(_.range(1, 9))},
-// 												function(d) { _.extend(obj, {'currentRow' : d})
-// 															  return d},
-// 												function(d) { return arrayOfArray(qualifiers(d, extractIdentity, extractCard, validDroppable, buildValueList, 
-// 		 				 					  						 pseudoValues, curried.set, curried.calculateLeft, curried.objectList, curried.build, 
-// 						 					  						 curried.updateData, curried.update))},
-// 												function(d) { return fullOffsetList()},
-// 												function(d) { return idList(obj.currentRow)},
-// 												function(d) { return addMove(d)})
-// 											}
-// 										)})
-
-// 									})
-
-// 								})
-// 							})
-
-// 						})
-// 				})
-// 		}
-// 	})
-// })
