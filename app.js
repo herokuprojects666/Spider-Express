@@ -36,6 +36,11 @@ app.use( function (req, res, next) {
 	req.collections = collections
 	return next()
 })
+app.use (function (req, res, next) {
+	console.log(__dirname)
+	console.log(__dirname + '/app')
+	console.log('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')
+})
 app.set('port', process.env.PORT || 4000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
