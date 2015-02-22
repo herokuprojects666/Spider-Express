@@ -41,7 +41,9 @@ app.use( function (req, res, next) {
 })
 app.use (function (req, res, next) {
 	console.log('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')
-	console.log(__dirname + '/public')
+	console.log(__dirname)
+	console.log(process.cwd())
+	console.log(__dirname + '/app/public')
 	console.log(require('fs').existsSync(__dirname + '/public'))
 	return next()
 })
