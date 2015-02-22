@@ -44,7 +44,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookies('whatever'))
 app.use(session({secret : 'abcdefghijk'}));
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/app'));
 
 app.get('/index', routes.index)
 
