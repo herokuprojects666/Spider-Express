@@ -16,6 +16,7 @@ var express = require('express')
 	logger = require('morgan')
 	errorHandler = require('errorhandler')	
 	bodyParser = require('body-parser')
+	process.env.PWD = process.cwd()
 	
 
 
@@ -44,7 +45,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookies('whatever'))
 app.use(session({secret : 'abcdefghijk'}));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(process.env.PWD, 'public')));
 
 app.get('/index', routes.index)
 
