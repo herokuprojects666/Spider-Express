@@ -43,19 +43,20 @@ app.use (function (req, res, next) {
 	console.log('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')
 	console.log(__dirname)
 	console.log(process.cwd())
-	console.log(__dirname + '/app/public')
+	console.log(__dirname + '/public')
+	console.log(__dirname + '/app')
 	console.log(require('fs').existsSync(__dirname + '/public'))
 	return next()
 })
 app.set('port', process.env.PORT || 4000);
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookies('whatever'))
 app.use(session({secret : 'abcdefghijk'}));
-app.use(express.static(path.join(__dirname, 'app')));
+app.use(express.static(__dirname + '/app'));
 
 app.get('/index', routes.index)
 
