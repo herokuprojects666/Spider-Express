@@ -1,7 +1,6 @@
 var express = require('express')
 	routes = require('./routes')
 	path = require('path')
-	fs = require('fs')
 	mongoclient = require('mongodb').MongoClient
 	url = 'mongodb://localhost:27017/spider'
 	uri = 'mongodb://craggoo:starcraft@ds039411.mongolab.com:39411/spider-express'
@@ -17,7 +16,6 @@ var express = require('express')
 	logger = require('morgan')
 	errorHandler = require('errorhandler')	
 	bodyParser = require('body-parser')
-	process.env.PWD = process.cwd()
 	
 
 
@@ -48,14 +46,14 @@ app.use (function (req, res, next) {
 	return next()
 })
 app.set('port', process.env.PORT || 4000);
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', 'views');
 app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookies('whatever'))
 app.use(session({secret : 'abcdefghijk'}));
-app.use(express.static(path.join(process.env.PWD, 'public')));
+app.use(express.static(__dirname));
 
 app.get('/index', routes.index)
 
