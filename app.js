@@ -46,16 +46,18 @@ app.use(cookies('whatever'))
 app.use(session({secret : 'abcdefghijk'}));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/jasmine', routes.user.jasmine)
 app.get('/index', routes.index)
-app.get('/login', routes.user.login)
-app.get('/create', routes.user.create)
+
+app.get('/jasmine', routes.game.jasmine)
+app.post('/loadgame/:user', authorized, routes.game.loadgame)
+app.get('/home/:user/spider', authorized, routes.game.spider)
+app.post('/update/:user', authorized, routes.game.update)
+
 app.post('/create', routes.user.adduser)
 app.post('/login', routes.user.authenticate)
-app.post('/update/:user', routes.user.update)
-app.post('/loadgame/:user', routes.user.loadgame)
+app.get('/create', routes.user.create)
 app.get('/home/:user', authorized, routes.user.home)
-app.get('/home/:user/spider', authorized, routes.user.spider)
+app.get('/login', routes.user.login)
 
 app.listen(app.get('port'), function() {
 	console.log('app listening on ' + app.get('port'))
