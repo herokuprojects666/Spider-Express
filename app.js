@@ -32,6 +32,8 @@ var authorized = function(req, res, next) {
 		return next();
 	}
 }
+console.log(__dirname + '/public')
+console.log(require('fs').existsSync(__dirname + '/public'))
 app.use( function (req, res, next) {
 	if (!collections.users) return next(new error('no users found'))
 	req.collections = collections
