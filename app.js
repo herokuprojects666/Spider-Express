@@ -40,6 +40,7 @@ app.use( function (req, res, next) {
 	return next()
 })
 app.use (function (req, res, next) {
+	console.log('bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb')
 	console.log(__dirname + '/public')
 	console.log(require('fs').existsSync(__dirname + '/public'))
 	return next()
