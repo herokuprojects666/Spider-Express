@@ -21,19 +21,31 @@ block gameboard
         form
           input.form-control#game(type='text', placeholder='New/Saved Game Slot')
     div.error= error
-    div#deck
-    img.dealer(src="/img/Spider/Dealer.jpg")
-    div.container-fluid#hiding
-    div#bottomDeck
-    div#finishedStacks.container-fluid
-      div.row
-       #stack1
-          img#1(src='/img/Spider/finished.gif')
-       #stack2
-          img#2(src='/img/Spider/finished.gif')
-      div.row
-      div.row
-      div.row
+    div#game-container
+      div#deck
+      img.dealer(src="/img/Spider/Dealer.jpg")
+      div#bottomDeck
+      div#finishedStacks.container-fluid
+        div.row
+         div#stack1
+            img#1(src='/img/Spider/finished.gif')
+         div#stack2
+            img#2(src='/img/Spider/finished.gif')
+        div.row
+          div#stack3
+            img#1(src='/img/Spider/finished.gif')
+          div#stack4
+            img#2(src='/img/Spider/finished.gif')
+        div.row
+          div#stack5
+            img#1(src='/img/Spider/finished.gif')
+          div#stack6
+            img#2(src='/img/Spider/finished.gif')        
+        div.row
+          div#stack7
+            img#1(src='/img/Spider/finished.gif')
+          div#stack8
+            img#2(src='/img/Spider/finished.gif')        
 block javascript
   script(src="/js/jquery-ui.min.js")
   script(src="/js/underscore.js")
