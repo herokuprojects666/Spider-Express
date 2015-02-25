@@ -1,63 +1,103 @@
-#hello {
-  	position:fixed;
-  	bottom: 100px;
+#game-container {
+	position : relative;
+	top : 0px;
+	left : 0px;
 }
 
 .dealer {
-  	position: fixed;
-  	left: 400px;
-    top: 200px;
+  	position: absolute;
+  	left: 250px;
+    top: 0px;
   	z-index:100;
 }
 
-#board {
-  	position:fixed;
-  	top: 375px;
+#stack1>img {
+	position : absolute;
+	left : 0px;
+	top : 0px;
+	overflow : hidden;
+}
+
+#stack2>img {
+	position : absolute;
+	left : 75px;
+	top : 0px;
+	overflow : hidden;
+}
+
+#stack3>img {
+	position : absolute;
+	left : 0px;
+	top : 100px;
+	overflow : hidden;
+}
+
+#stack4>img {
+	position : absolute;
+	left : 75px;
+	top : 100px;
+	overflow : hidden;
+}
+
+#stack5>img {
+	position : absolute;
+	left : 0px;
+	top : 200px;
+	overflow : hidden;
+}
+
+#stack6>img {
+	position : absolute;
+	left : 75px;
+	top : 200px;
+	overflow : hidden;
+}
+
+#stack7>img {
+	position : absolute;
+	left : 0px;
+	top : 300px;
+	overflow : hidden;
+}
+
+#stack8>img {
+	position : absolute;
+	left : 75px;
+	top : 300px;
+	overflow : hidden;
+}
+
+#deck {
+	position : absolute;
+	left : 300px;
+	top : 100px;
 }
 
 #deck>img {
-  	position: fixed;
-  	top: 350px;
-  	left: 550px;
+  	position : absolute;
   	width:71px;
   	height:96px;
   	overflow:hidden;
   }
 
-  #deck {
-    position: relative;
-  }
+#hiding {
+	position : absolute;
+	top : 350px;
+	width : 100%;
+}
 
-  .ui-draggable {
-    position: relative;
-  }
-  
+#bottomDeck {
+	position : absolute;
+	left : 300px;
+	top : 100px;
+}
 
-
- .fake {
- 	display:none;
- }
-
- #hiding {
- 	position: fixed;
- 	left: 305px;
- 	top: 540px;
- }
-
- #bottomDeck>img {
- 	position: fixed;
- 	top: 100px;
- 	left: 803px;
- 	width: 71px;
- 	height: 96px;
-  overflow: hidden;
- }
-
- #finishedStacks {
-  position: fixed;
-  top: 280px;
-  left: 0px;
- }
+#bottomDeck>img {
+	position : absolute;
+	width : 71px;
+	height : 96px;
+	overflow : hidden;
+}
 
  #difficulty>button {
   display : none;
@@ -66,4 +106,5 @@
  #cheating>button {
   display : none;
  }
+
 

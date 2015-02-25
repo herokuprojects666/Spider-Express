@@ -150,7 +150,7 @@ var helper = (function() {
 			return _.reduce(funcs, function (memo, elem) {
 				if (_.isArray(memo)) 
 					memo = [memo]
-				var arg = [].concat.call([], context, memo, elem, index)
+				var arg = [].concat.call([], context, memo, elem, ele, index)
 				return chainer.apply(context, arg)
 			}, ele)
 		})
@@ -284,6 +284,7 @@ var html = (function() {
 	}
 
 	var generateBoard = function(deck, rows, columns) {
+		console.log(arguments)
 		var board = '', 
 			beginningRow = '<div class="row">',
 			beginningCards = '',
@@ -295,18 +296,15 @@ var html = (function() {
 			initialDeck = deck.length
 
 		_.each(rows, function (ele, ind) {
-			board += '<div ' + htmlGen(atts, [{'class' : 'row'}, {'id' : 'row' + ind}]) + '>'
 			_.each(columns, function (elem, index) {
-				board += game.buildHTML('img', [{'z-index' : 1}], [{'src' : '/img/Spider/fake.gif'}, {'id' : 'placeholder' + (ind * columns.length + index + 1)}])
 				deckCard += game.buildHTML('img', [{'z-index' : 3}], [{'src' : '/img/Spider/dealer.gif'}, {'id' : 'deckCard' + (ind * columns.length + index + 1)}])
-				ind == 0 ? beginningRow += game.buildHTML('img', [{'z-index' : 1}], [{'src' : '/img/Spider/fake.gif'}, {'id' : 'clickable' + (index + 1)}]) : false
-				ind == 0 ? hidden += buildHTML('img', [{'z-index' : 2}, {'left' : 305 + (index * 75)}, {'top' : 541}], [{'src' : '/img/Spider/hidden.gif'}, {'id' : 'any' + index}]) : false
+				ind == 0 ? hidden += buildHTML('img', [{'z-index' : 2}, {'top' : 300}, {'left' : -300 + (index * 71)}], [{'src' : '/img/Spider/hidden.gif'}, {'id' : 'any' + index}]) : false
 				ind == 0 ? beginningCards += game.buildHTML('img', [{'z-index' : 3}], [{'class' : deck[( (rows.length + 1) * columns.length) + index]}, {'src' : '/img/Spider/' + deck[( (rows.length + 1) * columns.length) + index] + '.gif'}, {'id' : 'card' + (index+1)}]) : false
 			})
-			board += '</div>'
 		})
+		console.log(initialDeck)
 		_.each(_.range(initialDeck), function (ele, ind) {
-			(ind >= ( (rows.length + 1)* columns.length + 1)) && (ind <= (initialDeck - columns.length)) ? bottomDeck += buildHTML('img', [{'z-index' : 3}], [{'src' : '/img/Spider/dealer.gif'}, {'id' : 'deckCard' + ind}]) : false
+			(ind >= ( (rows.length + 1)* columns.length + 1)) && (ind <= (initialDeck - (columns.length * 2))) ? bottomDeck += buildHTML('img', [{'z-index' : 3}], [{'src' : '/img/Spider/dealer.gif'}, {'id' : 'deckCard' + ind}]) : false
 		})
 
 		$('#bottomDeck').html(bottomDeck)

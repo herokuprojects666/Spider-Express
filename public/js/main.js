@@ -6,7 +6,7 @@ function Spider() {
 				   'data' : [], 'deckHTML' : '', 'draggedData' : [], 'draggedEleOffsets' : [], 'draggedEleString' : [], 'draggedElements' : [], 'draglist' : [], 'droppables' : [], 'elementlist' : [],
 				   'fullBaseValue' : [], 'fullOffsetList' : [], 'hoverElements' : [], 'hoverMatches' : [], 'hoverString' : [], 'hovered' : [], 'hoveredData' : [], 'imageDimensions' : {'height' : 96, 'width' : 71}, 
 				   'identity' : [], 'initialOffset' : [],'intervals' : [], 'keys' : [], 'list' : [], 'movelist' : [], 'offsets' : [], 'oldHoverCard' : [], 'previousRow' : [], 'shuffledDeck' : [], 'suits' : [],
-					'stackSelectors' : ['#stack1>img', '#stack2>img', '#stack3>img', '#stack4>img', '#stack5>img', '#stack6>img', '#stack7>img', '#stack8>img']};
+					'stackSelectors' : ['#stack1>img', '#stack2>img', '#stack3>img', '#stack4>img', '#stack5>img', '#stack6>img', '#stack7>img', '#stack8>img'], 'tempOffsets' : []};
 
 	var o = {'game' : initial}
 	
@@ -20,6 +20,14 @@ function Spider() {
 		var movelist = helper.existy(row) ? [].concat.call(this.game.movelist, {'row' : true, 'rowCards' : row, 'matchedDragged' : this.game.clickedMatches, 'matchedHovered' : this.game.hoverMatches,
 													 'hoveredData' : this.game.hoveredData, 'draggedData' : this.game.draggedEleString}) : [].concat.call(this.game.movelist, object)	
 		return _.extend(this.game, {'movelist' : movelist})
+	}
+
+	o.adjustedOffset = function(parent, element) {
+		var parentOffset = $(parent).offset()
+		if (_.isEmpty(element)) 
+			return parentOffset		
+		var element = _.has(element, 'left') ? element :  $(element).position()
+		return {'left' : (element['left'] + parentOffset['left']), 'top' : (element['top'] + parentOffset['top'])}
 	}
 
 	o.addCompletedStack = function(array) {
@@ -53,14 +61,15 @@ function Spider() {
 		var val =  _.map(suits, function (ele) {
 			return value == null ? value : [value, ele].join('')
 		})
-		// console.log(val)
-		return helper.existy(_.first(val)) ? _.extend(this.game, {'droppables' : [].concat.call([], val, 'any'), 'initialOffset' : $(ele).offset()}) : [null]
+		return helper.existy(_.first(val)) ? _.extend(this.game, {'droppables' : [].concat.call([], val, 'any'), 'initialOffset' : $(ele).position()}) : [null]
 	}
 
 	o.buildValues = function(hoverData, specialCase) { // hoverdata is a list of objects, list is a list of dom elements
 		var list = (_.isEmpty(this.game.draglist) ? [this.game.clicked] : this.game.draglist)
 		var baseValue = _.values(_.first(hoverData))
 		var hoverElements = this.sortIds(this.buildList(hoverData))
+		// console.log(hoverElements)
+		// console.log(hoverData)
 		var otherElements = this.sortIds(this.buildList(list))
 		otherElements = (_.some(otherElements, _.isArray) ? helper.flatten(otherElements) : otherElements)
 		var fullList = [].concat.apply([], [hoverElements, otherElements])
@@ -88,7 +97,7 @@ function Spider() {
 
 	o.calculateOffset = function() {
 		var list = _.map($('#deck>img'), function(ele) {
-			return $(ele).offset()
+			return $(ele).position()
 		})
 		var left = _.map(list, function(ele) {
 			return ele['left']
@@ -142,9 +151,20 @@ function Spider() {
 		return checkForKeys(requiredKeys, this.game.keys)
 	}
 
+	o.clearIntervals = function(deferred, successcb, failcb) {
+		var args = _.rest(arguments, 3)
+		_.map(this.game.intervals, function(ele) {
+					window.clearInterval(ele)})	
+		_.extend(this.game, {'intervals' : []})
+		if (!helper.existy(failcb)) {
+			deferred.resolve()
+			return deferred.promise().done(successcb.apply(that, args))
+		}
+	}
+
 	o.completedSuit = function() {
 		var finalLocation = this.stackLocation()
-		console.log(finalLocation)
+		// console.log(finalLocation)
 		var data = _.reduce(this.game.data, function (memo, ele, index) {
 			var selector = _.first(that.mapSelectors([helper.getFirstKey(ele)]))
 			var offset = that.switchARoo(selector)
@@ -156,16 +176,6 @@ function Spider() {
 		var sorted = this.sortOffsets(offsets)
 		var elements = _.map(sorted, this.switchARoo)
 		return elements
-	}
-
-	o.clearIntervals = function(deferred, successcb, failcb, args) {
-		_.map(this.game.intervals, function(ele) {
-					window.clearInterval(ele)})	
-		_.extend(this.game, {'intervals' : []})
-		if (!helper.existy(failcb)) {
-			deferred.resolve()
-			return deferred.promise().done(successcb(args))
-		}
 	}
 
 	o.createDeck = function(suits) {
@@ -190,8 +200,43 @@ function Spider() {
 		return func.apply(this, finalArgs)
 	}
 
+	o.dealCard = function(speed, list, offsets, progressFunc, deferred, callback) {
+		if (_.isEmpty(this.game.list)) 
+			_.extend(this.game, {'list' : list, 'tempOffsets' : offsets})
+		var left = _.first(that.game.tempOffsets)['left']
+		var top = _.first(that.game.tempOffsets)['top']
+		var item = _.first(that.game.list)
+		var args = _.rest(arguments, 6)
+		var intervalArgs = [].concat.call([], deferred, callback, null, args)
+		$(item).animate({
+			top : top,
+			left : left
+		}, { progress : function () { helper.existy(progressFunc) ? progressFunc.apply(that, args) : false}, duration : speed})
+		
+		_.extend(this.game, {'list' : _.rest(this.game.list),'tempOffsets' : _.rest(this.game.tempOffsets)})
+		return helper.existy(progressFunc) ? this.clearIntervals(deferred, null, true) : _.isEmpty(this.game.list) ? this.clearIntervals.apply(this, intervalArgs) : list
+	}
+
+	o.dealCards = function(determiner, list, offsets, card, speed, progressFunc, deferred, args, callback) {
+		var cards = _.map(list, function (ele) {
+			return card + ele
+		})
+
+		var list = helper.existy(determiner) ? list : this.mapSelectors(cards)
+
+		var args = [].concat.call([], speed, [list], [offsets], progressFunc, deferred, callback, args)
+
+		var interval = function() {
+			return that.dealCard.apply(that, args)
+		}
+
+		return this.intervals(interval, speed * 2, deferred, callback)
+	}
+
 	o.deckCard = function(position, deferred, alwayscb) {
-		var card = document.elementFromPoint(this.game.initialOffset['left'], this.game.initialOffset['top'])
+		var passedOffset = {'left' : this.game.initialOffset['left'], 'top' : this.game.initialOffset['top'] - 20}
+		var offset = this.adjustedOffset('#deck', passedOffset)
+		var card = document.elementFromPoint(offset['left'], offset['top'])
 		var length = $("#deck>img[id*='card']")  
 		helper.extractString($(card).attr('id')) != 'deckCard' ? deferred.reject().fail(alwayscb) : $(card).fadeOut({ duration : 250, complete: function() {
 			var deck = _.reduce(that.game.shuffledDeck, function (memo, ele, ind) {
@@ -210,33 +255,30 @@ function Spider() {
 		})
 	}
 
-	o.dealDeck = function(card, placeholder, list, deferred, callback) {
-		var offset;
-		if(_.isEmpty(this.game.list)) 
-			_.extend(this.game, {'list' : list})
-		$('#' + placeholder + _.first(this.game.list)).length == 0 ? 
-		(offset = this.determination('#bottomDeck>img', 0)) : 
-		(offset = $('#' + placeholder + _.first(this.game.list)).offset())
-		$('#' + card + _.first(this.game.list)).animate({
-			left : offset['left'],
-			top : offset['top']
+	o.dealDeck = function(columns, card, parent, list, speed, deferred, callback) {
+		var dimensions = this.game.imageDimensions
+		var position = $(parent).position()
+		var left = _.map(list, function (ele) {
+			var offset = (ele - 1) % columns * dimensions['width'] - position['left']
+			return {'left' : offset}
 		})
-
-		_.extend(this.game, {'list' : _.rest(this.game.list)})
-		if(_.isEmpty(this.game.list))
-			this.clearIntervals(deferred, callback)
-	}
-
-	o.dealRow = function(list, deferred, callback) {
-		if (_.isEmpty(this.game.list)) 
-			_.extend(this.game, {'list' : list})	
-		$('#bottomDeck>img').eq(_.first(this.game.list)).animate({
-			top : 20 + (+that.game.offsets[_.first(that.game.list)]['top']),
-			left : that.game.offsets[_.first(that.game.list)]['left']
+		var top = _.map(list, function (ele) {
+			var offset = Math.floor((ele - 1) / columns) * 20 + 320
+			return {'top' : offset}
 		})
-		_.extend(this.game, {'list' : _.rest(this.game.list)})
-		if (_.isEmpty(this.game.list))
-			return this.clearIntervals(deferred, callback)
+		var offsets = _.map(list, function (ele, index) {
+			return that.mergeObjects([left[index], top[index]])
+		})
+		var list = _.map(list, function (ele) {
+			return card + ele
+		})
+		var mapped = this.mapSelectors(list)
+		
+		var interval = function() {
+			return that.dealCard(speed, mapped, offsets, null, deferred, callback)
+		}
+
+		return this.intervals(interval, speed * 2, deferred, callback)
 	}
 
 	o.defaulted = function(value) {
@@ -306,8 +348,8 @@ function Spider() {
 				_.each(list, function (ele, ind) {
 					$(ele).zIndex(100 + ind)
 					$(ele).css({
-						left : ui.offset.left,
-						top : (ui.offset.top + (ind * 20))
+						left : ui.position.left,
+						top : (ui.position.top + (ind * 20))
 					})
 				})
 			}, 
@@ -351,11 +393,12 @@ function Spider() {
 	}
 
 	o.extractCard = function(identity) {
+		console.log(identity)
 		var card = identity.split('')
 		return helper.containsSubString(identity, 'any') ? 'any' : identity.length > 2 ? _.first(card, 2).join('') : _.first(card)
 	}
 
-	o.fadeOut = function(list, deferred, duration, selector, secondSelector, successcb, failcb) {
+	o.fadeOut = function(list, deferred, duration, selector, secondSelector, args, successcb, failcb) {
 		if (_.isEmpty(this.game.list))
 			_.extend(this.game, {'list' : list})
 		$(selector).eq(_.first(this.game.list)).fadeOut({duration : duration, complete : function() {
@@ -369,7 +412,7 @@ function Spider() {
 			}
 			if (index == _.last(list)) {
 				deferred.reject()
-				deferred.promise().fail(failcb)
+				deferred.promise().fail(failcb.apply(that, args))
 			} 
 		}})
 		_.extend(this.game, {'list' : _.rest(this.game.list)})
@@ -395,7 +438,7 @@ function Spider() {
 
 	o.fixCss = function() {
 		var draglist = this.game.draglist
-		var acceptedDraggable = $(this.game.hovered).offset()
+		var acceptedDraggable = $(this.game.hovered).position()
 		_.each(draglist, function (ele, ind) {
 			$(ele).css({
 				left : acceptedDraggable['left'],
@@ -434,7 +477,7 @@ function Spider() {
 	o.fullOffsetList = function() {
 		var keys = _.map(this.game.identity, helper.getFirstKey)
 		var list = _.map(keys, function (ele) {
-			return $('#' + ele).offset()
+			return $('#' + ele).position()
 		})
 		return _.extend(this.game, {'fullOffsetList' : list})
 	}
@@ -442,13 +485,6 @@ function Spider() {
 	o.generateBoard = function(rows, columns) {
 		return html.generateBoard(this, rows, columns)
 	}
-
-	// o.grabRowElements = function(list) {
-	// 	var length = $('#deck>img').length
-	// 	return _.map(list.reverse(), function (ele) {
-	// 		return $('#deck>img').eq(length - ele)
-	// 	})
-	// }
 
 	o.idList = function(array) {
 		return _.map(array, function (ele) {
@@ -463,7 +499,6 @@ function Spider() {
 	}
 
 	o.insertDeckCard = function(determiner, selector, range, defaultOffset, parent, deferred, callback, args) {
-		console.log('called')
 		if (_.isEmpty(this.game.list)) 
 			_.extend(this.game, {'list' : range})
 		var baseSelector = $(selector).eq(0)
@@ -478,7 +513,7 @@ function Spider() {
 		return _.isEmpty(this.game.list) ? this.clearIntervals(deferred, callback, null, args) : this.game
 	}
 
-	o.intervals = function(func, speed, deferred, successcb, failcb, args) {
+	o.intervals = function(func, speed, deferred, args, successcb, failcb) {
 		var intervals = this.game.intervals
 		return _.extend(this.game, {'intervals' : intervals.concat.apply([],[intervals, window.setInterval(func, speed, deferred, successcb, failcb, args)] )})
 	}
@@ -548,18 +583,23 @@ function Spider() {
 	o.objectList = function(list) { // expects a list of offsets
 		if (!_.isArray(list)) 
 			list = _.toArray(arguments)
+		// console.log(list)
 		var idList = _.map(list, function (ele) {
 			return $(that.switchARoo(ele)).attr('id')
 		}) // gets a list of ids
+		// console.log(idList)
 		var dataList = _.reduce(this.game.data, function (memo, ele) {
 			return memo.concat(_.pick(ele, _.values(idList)))
 		}, []) // returns an array of objects that matches the array of ids
+		// console.log(dataList)
 		var objectList = _.reduce(dataList, function (memo, ele) {
 			return _.isEmpty(ele) ? memo : [].concat.call([], memo, ele)
 		}, []) // filters out empty objects
+		// console.log(objectList)
 		var hoverElements = _.reduce(objectList, function (memo, ele, ind, arr) {
 			return _.isEqual(_.values(ele), _.values(_.last(arr))) ? [].concat.call([], memo, ele) : memo
 		}, []) // returns an array of data objects that match the hover element
+		// console.log(hoverElements)
 		return _.last( hoverElements, _.values(_.last(hoverElements)).join('').split(' ').length) // returns the last n elements based on the length of the length of the data value
 	}
 
@@ -578,8 +618,7 @@ function Spider() {
 		return that.game
 	}
 
-	o.pseudoValues = function(list) {
-		var index = _.rest(arguments)
+	o.pseudoValues = function(list, ele, index) {
 		var previousRowKeys = this.buildList(this.game.previousRow)
 		var currentRowKeys = this.buildList(this.game.currentRow)
 		var list = (helper.existy(list) ? list.droppables : list)
@@ -595,11 +634,11 @@ function Spider() {
 		})
 		var previousRowData = helper.flatten(previousRowArray)
 		var currentRowData = helper.flatten(currentRowArray)
-		var previousRowMatches = this.valueByIndex(list, previousRowData, _.first(index))
-		console.log(_.first(index))
-		console.log(list)
-		console.log(previousRowData)
-		console.log(currentRowData)
+		var previousRowMatches = this.valueByIndex(list, previousRowData, index)
+		// console.log(_.first(index))
+		// console.log(list)
+		// console.log(previousRowData)
+		// console.log(currentRowData)
 		
 		if (!_.isEmpty(previousRowMatches)) {
 			console.log(previousRowMatches)
@@ -702,16 +741,8 @@ function Spider() {
 		return this.revertCard(move.elements, move.offsets, callback)
 	}
 
-	o.moveCompletedStack = function(list, callback) {
-
-		if (_.isEmpty(list))
-			return 'nothing to do'
-		// console.log(list)
-		return this.revertCard(list, $('#2').offset(), callback)
-	}
-
 	o.revertEvent = function(list, ele, deferred, cb) {
-		var base = $(ele).offset()
+		var base = $(ele).position()
 		var offset = (_.isEmpty(this.game.initialOffset) ? _.first(_.last(this.game.movelist).draggedEleOffsets) : this.game.initialOffset)
 		_.map(list, function (element, ind) {
 			$(element).css({
@@ -719,11 +750,7 @@ function Spider() {
 				top : +base['top'] + (ind * 20)
 			})
 		})
-		return _.isEqual($(ele).offset(), offset) && helper.existy(deferred) ? this.clearIntervals(deferred, cb) : this
-	}
-
-	o.unacceptableDraggable = function(ele, deferred, cb) {
-		return this.revertEvent(this.game.draglist, ele, deferred, cb)
+		return _.isEqual(base, offset) && helper.existy(deferred) ? this.clearIntervals(deferred, cb) : this
 	}
 
 	o.resetStackHTML = function() {
@@ -739,9 +766,9 @@ function Spider() {
 			},[])
 			return [].concat.call([], memo, [gameOffsets])
 		}, [])
-		console.log(offsets)
+		// console.log(offsets)
 		return _.each(offsets, function (ele, index) {
-			console.log(ele)
+			// console.log(ele)
 			return _.isEmpty(ele) ? $(selectorOffsets[index]).eq(0).remove() : false
 		})
 		// console.log(flatten)
@@ -763,7 +790,8 @@ function Spider() {
 
 	o.revertZIndex = function(prop) {
 		var list = this.game[prop]
-		var base = $(document.elementFromPoint(this.game.initialOffset['left'], (+this.game.initialOffset['top'] - 5) )).zIndex()
+		var offset = this.adjustedOffset('#deck', this.game.initialOffset)
+		var base = $(document.elementFromPoint(offset['left'], offset['top'])).zIndex()
 		// console.log(base)
 		return _.map(list, function (ele, ind){
 			return $(ele).zIndex(base + ind + 1)
@@ -774,6 +802,13 @@ function Spider() {
 		var deck = this.captureInnerHTML($('#deck>img'))
 		var cardStack = this.captureInnerHTML($('#bottomDeck>img'))
 		return _.extend(this.game, {'deckHTML' : deck, 'cardStackHTML' : cardStack})
+	}
+
+	o.selectElements = function(selector, range, determiner) {
+		var range = this.ranger(selector, determiner, range)
+		return _.map(range, function (ele) {
+			return $(selector).eq(ele)
+		})
 	}
 
 	o.separatedList = function(compareTo) {
@@ -796,11 +831,12 @@ function Spider() {
 
 	o.setElements = function(hovered, clicked) {
 		var element,
-			offset = $(clicked).offset(),
-			clicked = document.elementFromPoint(offset['left'], offset['top']),
+			clickedOffset = this.adjustedOffset('#deck', clicked),
+			hoveredOffset = this.adjustedOffset('#deck', hovered),
+			clicked = document.elementFromPoint(clickedOffset['left'], clickedOffset['top']),
 			dealer = $('.dealer').offset()
 		_.isEmpty(hovered) ? element = document.elementFromPoint(dealer['left'], dealer['top']) : 
-							 element = document.elementFromPoint(hovered['left'], hovered['top'])
+							 element = document.elementFromPoint(hoveredOffset['left'], hoveredOffset['top'])
 		return _.extend(this.game, {'clicked' : clicked, 'hovered' : element})
 	}
 
@@ -833,7 +869,10 @@ function Spider() {
 	}
 
 	o.switchARoo = function(item) { // returns offset if given a jquery element else it returns a DOM element
-		return _.has(item, 'left') ? document.elementFromPoint(item['left'], item['top']) : $(item).offset()
+		var offset;
+		if (_.has(item, 'left'))
+			offset = that.adjustedOffset('#deck', item)
+		return _.has(item, 'left') ? document.elementFromPoint(offset['left'], offset['top']) : $(item).position()
 	}
 
 	o.totalDeck = function() {
@@ -844,6 +883,10 @@ function Spider() {
 			return $(ele)
 		})
 		return [].concat.call([], deck, hiddenDeck)
+	}
+
+	o.unacceptableDraggable = function(ele, deferred, cb) {
+		return this.revertEvent(this.game.draglist, ele, deferred, cb)
 	}
 
 	o.updateGame = function() {
@@ -900,7 +943,7 @@ function Spider() {
 		} else {
 			value = value
 		}
-		console.log(list), console.log(value)
+		// console.log(list), console.log(value)
 		return _.map(obj.data, function (ele, index) {
 			return helper.anyKey(list, ele) ? obj.data[index] = helper.createObject(helper.whichKey(list, ele), helper.whichValue(value, list, ele)) : ele
 		})
@@ -937,3 +980,33 @@ function Spider() {
 
 	addToProto(Spider,o)
 }
+
+	// o.moveCompletedStack = function(list, callback) {
+
+	// 	if (_.isEmpty(list))
+	// 		return 'nothing to do'
+	// 	// console.log(list)
+	// 	return this.revertCard(list, $('#2').offset(), callback)
+	// }
+
+		// o.grabRowElements = function(list) {
+	// 	var length = $('#deck>img').length
+	// 	return _.map(list.reverse(), function (ele) {
+	// 		return $('#deck>img').eq(length - ele)
+	// 	})
+	// }
+
+		// o.dealBottomDeck = function(speed, card, list, offset, deferred, callback) {
+	// 	var offsets = _.map(list, function (ele) {
+	// 		return offset
+	// 	})
+	// 	var cards = _.map(list, function (ele) {
+	// 		return card + ele
+	// 	})
+	// 	var list = this.mapSelectors(cards)
+
+	// 	var interval = function () {
+	// 		return that.dealCard(speed, list, offsets, null, deferred, callback)
+	// 	}
+
+	// }
