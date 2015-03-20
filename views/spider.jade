@@ -21,6 +21,35 @@ block gameboard
         form
           input.form-control#game(type='text', placeholder='New/Saved Game Slot')
     div.error= error
+    div#move-count
+      div.row#temp
+        div#stats.col-lg-2
+          p.moves Move Count : 
+          p.count
+          p.current_score Score :
+          p.score
+        div#high_scores.col-lg-3
+          div.row
+            p#Top Top Scores
+          div.row#main_selector
+            ul.nav.nav-pills
+              li.active#Personal 
+                a(href='#') Personal
+              li#Global 
+                a(href='#') Global
+          div.row#sub_selector
+            ul.nav.nav-pills
+              li.active#Easy
+                a(href='#') Easy
+              li#Medium
+                a(href='#') Medium
+              li#Hard
+                a(href='#') Hard
+        div#data
+    div#slider-area
+
+      div#slidden
+    br
     div#game-container
       div#deck
       img.dealer(src="/img/Spider/Dealer.jpg")
@@ -45,10 +74,14 @@ block gameboard
           div#stack7
             img#1(src='/img/Spider/finished.gif')
           div#stack8
-            img#2(src='/img/Spider/finished.gif')        
+            img#2(src='/img/Spider/finished.gif')      
 block javascript
   script(src="/js/jquery-ui.min.js")
+  link(rel="stylesheet", href="/css/jquery-ui.min.css")
+  link(rel="stylesheet", href="/css/jquery-ui.structure.min.css")
+  link(rel="stylesheet", href="/css/jquery-ui.theme.min.css")
   script(src="/js/underscore.js")
+  script(src="/js/ajax.js")
   script(src="/js/helpers.js")
   script(src='/js/main.js')
   script(src='/js/partial.js')
