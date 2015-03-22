@@ -6,8 +6,10 @@ ul.nav.nav-pills
       a.dropdown-toggle(href='#', data-toggle="dropdown") Games
         ul.dropdown-menu
           a(href='/home/#{user.username}/spider') Spider Solitaire
+    li
+      a(href='/home/logout') Logout
   else
-    li(class=(menu == 'index')?'active':'')
+    li(class=(menu == 'index' || menu == 'create')?'active':'')
       a(href='/index') Home
     li(class=(menu == 'login')?'active':'')
       a(href='/login') Log In
