@@ -1,9 +1,16 @@
 var _ = require('underscore')
 
-exports.jasmine = function(req, res, next) {
-	res.render('SpecRunner')
+exports.highScore = function(req, res, next) {
+	req.collections.highScores.findAndModify({
+		username : req.body.username,
+		score : req.body.score,
+		difficulty: req.body.difficulty
+	}, [['username', -1]], 
+	{$set : {'score' : req.body.score}},
+	{new:true, upsert:true}, function (err, user) {
+		return res.send('score submitted')
+	})
 }
-
 
 exports.loadgame = function(req, res, next) {
 	if (req.body.slot > 10) {
@@ -15,6 +22,21 @@ exports.loadgame = function(req, res, next) {
 	}, function (err, user) {
 		if(_.isEmpty(user)) return res.send({error : 'no game found'})
 		return res.send({game : user.game})
+	})
+}
+
+exports.logout = function(req, res, next) {
+	return req.session.destroy(function (err) {
+		if (err) {
+			return next(new Error('failed to logout'))
+		}
+		return res.redirect('/index')
+	})
+}
+
+exports.scores  = function (req, res, next) {
+	req.collections.highScores.find().toArray(function (err, scores) {
+		return res.send({scores : scores})
 	})
 }
 
