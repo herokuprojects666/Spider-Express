@@ -22,7 +22,7 @@ block gameboard
           input.form-control#game(type='text', placeholder='New/Saved Game Slot')
     div.error= error
     div#move-count
-      div.row#temp
+      div.row
         div#stats.col-lg-2
           p.moves Move Count : 
           p.count
@@ -46,13 +46,11 @@ block gameboard
               li#Hard
                 a(href='#') Hard
         div#data
-    div#slider-area
-
-      div#slidden
     br
     div#game-container
+
       div#deck
-      img.dealer(src="/img/Spider/Dealer.jpg")
+
       div#bottomDeck
       div#finishedStacks.container-fluid
         div.row
@@ -74,7 +72,8 @@ block gameboard
           div#stack7
             img#1(src='/img/Spider/finished.gif')
           div#stack8
-            img#2(src='/img/Spider/finished.gif')      
+            img#2(src='/img/Spider/finished.gif')
+   
 block javascript
   script(src="/js/jquery-ui.min.js")
   link(rel="stylesheet", href="/css/jquery-ui.min.css")
