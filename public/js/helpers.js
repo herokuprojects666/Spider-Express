@@ -1,10 +1,10 @@
 var helper = (function() {
 
-	var allKeys = function(ele, index, array) { // predicate function
+	var allKeys = function(ele, index, array) {
 		return _.keys(ele)
 	};
 
-	var allValues = function(ele, index, array) { // predicate function
+	var allValues = function(ele, index, array) { 
 		return _.values(ele)
 	};
 
@@ -24,7 +24,7 @@ var helper = (function() {
 	};
 
 	var arrayCheck = function(array, successcb, failcb) {
-		var args = _.rest(arguments, 4);
+		var args = _.rest(arguments, 3);
 		return _.isEmpty(array) ? successcb.apply(null, args) : failcb.apply(null, args)
 	};
 
@@ -37,24 +37,14 @@ var helper = (function() {
 		return _.contains(booleans, true) ? true : false
 	};
 
-	var chainer = function(context, obj) {
-		var arg = _.toArray(arguments);
-		var funcs = _.reduce(arg, function (memo, ele) {
-			return _.isFunction(ele) ? [].concat.call([], memo, ele) : memo
-		}, []);
-		var params = _.reduce(arg, function (memo, ele, index) {
-			var ele = _.isArray(ele) ? [ele]: ele
-			return (!_.isFunction(ele) && index > 1 ) ? [].concat.call([], memo, ele) : memo
-		}, []);
+	var chainer = function(context, obj, params) {
+		var funcs = _.rest(arguments, 3);
 		return _.reduce(funcs, function (memo, ele) {
-			var memo = _.isArray(memo) ? [memo] : memo
-			var arg = [].concat.call([], memo, params)
+			var memo = _.isArray(memo) ? [memo] : memo;
+			var arg = [].concat.call([], memo, params);
 			return ele.apply(context, arg)
 		}, obj)
-		// return _.reduce(funcs, function (memo, ele) {
-		// 	return ele.call(context, memo, params)
-		// }, obj)
-	};
+	}
 
 	var checkForKeys = function(keyList, requiredKeys) { 
 		var array = anyValue(requiredKeys, keyList);
@@ -83,14 +73,14 @@ var helper = (function() {
 		return _.isEmpty(findings) ? false : true
 	}
 
-	var createObject = function(property, value) { // returns an object with the property and value given
+	var createObject = function(property, value) {
 		var object = new Object;
 		var prop = property;
 		object[prop] = value
 		return object
 	};
 
-	var defaultValues = function(obj, value) { // use to reset obj property values to value ; useful for defaulting properties to empty objects, arrays, and strings
+	var defaultValues = function(obj, value) { 
 		var args = helper.flatten(_.rest(arguments, 2));
 		_.each(args, function (ele) {
 			return obj.hasOwnProperty(ele) ? obj[ele] = value : obj
@@ -124,11 +114,11 @@ var helper = (function() {
 			return array
 	}
 
-	var getFirstKey = function(ele, index, array) { // predicate function
+	var getFirstKey = function(ele, index, array) { 
 		return _.first(_.keys(ele))
 	};
 
-	var getFirstValue = function(ele, index, array) { // predicate function
+	var getFirstValue = function(ele, index, array) { 
 		return _.first(_.values(ele))
 	};
 
@@ -137,45 +127,88 @@ var helper = (function() {
 		return index == (array.length - 1) ? true : false
 	};
 
-	var partial = function(func, arg) {
-		var args = _.rest(arguments, 2);
-		var arg = (existy(arg) ? arg : []);
-		var finalArgs = [].concat.apply([], [args, arg]);
-		return func.apply(null, finalArgs)
+	var nestedProperties = function (initial, properties) {
+		var string = returnSubString(initial, '.', true);
+		if (string == initial) {
+			return [].concat.call([], properties, initial)
+		} else {
+			var properties = properties || []
+			var property = returnSubString(initial, '.', true);
+			var remainder = returnSubString(initial, '.');
+			var props = [].concat.call([], properties, property);
+			return nestedProperties (remainder, props)
+		}
 	};
 
-	var qualifiers = function(context, list) {
-		var funcs = _.rest(arguments, 2);
-		return _.map(list, function (ele, index) {
-			return _.reduce(funcs, function (memo, elem) {
+	var nestedValue = function(obj, propList, value) {
+		if (propList.length == 1) {
+			obj[_.first(propList)] = value
+			return obj
+		} else {
+			var o;
+			if (obj.hasOwnProperty(_.first(propList))) {
+				o = obj[_.first(propList)]
+			}
+			return nestedValue(o, _.rest(propList), value)
+		}
+	};
+
+	var partial = function(func) {
+		var args = _.rest(arguments);
+		return function() {
+			var arg = _.toArray(arguments);
+			return func.apply(null, [].concat.call([], arg, args))
+		}		
+	}
+
+	var qualifiers = function(context, args, list) {
+		var funcs = _.rest(arguments, 3);
+		return _.map(list, function (ele, index, array) {
+			return _.reduce(funcs, function (memo, elem, ind, arr) {
 				if (_.isArray(memo)) 
 					memo = [memo]
-				var arg = [].concat.call([], context, memo, elem, ele, index)
+				var params = [].concat.call([], ele, args, index)
+				var arg = [].concat.call([], context, memo, [params], elem)
 				return chainer.apply(context, arg)
 			}, ele)
 		})
 	};
 
 	var randomizer = function(array) {
-		return _.map(array, function (ele, ind, arr) {
-			return arr[Math.floor(Math.random() * arr.length)]
-		})
+		var arr = []
+		for (var i = 0; i < array.length + i; i ++) {
+			var random = Math.abs(Math.floor(Math.random() * array.length))
+			var item = array.splice(random, 1)
+			arr.push(_.first(item))
+		}
+		return arr
 	};
 
-	var returnSubString = function(string, splitter) {
+	var randomNumber = function(length, min) {
+		var value = Math.floor(Math.random() * length);
+		if (min && value <= min) 
+			return randomNumber(length, min)
+		return value
+	};
+
+	var returnSubString = function(string, splitter, determiner) {
 		var position = _.reduce(string.split(''), function (memo, ele, index) {
-			return ele == splitter ? [].concat.call([], memo, index) : memo
+			return ele == splitter && _.isEmpty(memo) ? [].concat.call([], memo, index) : memo
 		}, []).join('')
 
+		if (position == '')
+			return string
+
 		return _.reduce(string.split(''), function (memo, ele, index) {
-			return index > +position ? memo += ele : memo
+			return existy(determiner) && (index < +position) ? memo += ele : !existy(determiner) && (index > +position) ? memo += ele : memo
 		},'')
 	}
 
 	var stringLength = function(string) {
 		var str = string
-		if(_.isArray(string))
+		if(_.isArray(string)) {
 			str = string.join(' ')
+		}
 		return str.split(' ').length
 	};
 
@@ -191,7 +224,7 @@ var helper = (function() {
 		})
 	}
 
-	var whichKey = function(list, obj) { // returns the keys in list that are present in obj
+	var whichKey = function(list, obj) {
 		var initial = _.map(list, function (ele) {
 			return _.has(obj, ele)
 		});
@@ -226,10 +259,13 @@ var helper = (function() {
 		flatten : flatten,
 		getFirstKey : getFirstKey,		
 		getFirstValue : getFirstValue,
-		lastIndex : lastIndex,		
+		lastIndex : lastIndex,	
+		nestedProperties: nestedProperties,
+		nestedValue : nestedValue,
 		partial : partial,
 		qualifiers : qualifiers,
 		randomizer : randomizer,
+		randomNumber : randomNumber,
 		returnSubString : returnSubString,
 		stringLength : stringLength,
 		truthy : truthy,
@@ -284,7 +320,6 @@ var html = (function() {
 	}
 
 	var generateBoard = function(deck, rows, columns) {
-		console.log(arguments)
 		var board = '', 
 			beginningRow = '<div class="row">',
 			beginningCards = '',
@@ -298,13 +333,12 @@ var html = (function() {
 		_.each(rows, function (ele, ind) {
 			_.each(columns, function (elem, index) {
 				deckCard += game.buildHTML('img', [{'z-index' : 3}], [{'src' : '/img/Spider/dealer.gif'}, {'id' : 'deckCard' + (ind * columns.length + index + 1)}])
-				ind == 0 ? hidden += buildHTML('img', [{'z-index' : 2}, {'top' : 300}, {'left' : -300 + (index * 71)}], [{'src' : '/img/Spider/hidden.gif'}, {'id' : 'any' + index}]) : false
+				ind == 0 ? hidden += buildHTML('img', [{'visibility' : 'hidden'}, {'left' : -300 + (index * 71)}, {'top' : 300}], [{'src' : '/img/Spider/hidden.gif'}, {'id' : 'any' + index}]) : false
 				ind == 0 ? beginningCards += game.buildHTML('img', [{'z-index' : 3}], [{'class' : deck[( (rows.length + 1) * columns.length) + index]}, {'src' : '/img/Spider/' + deck[( (rows.length + 1) * columns.length) + index] + '.gif'}, {'id' : 'card' + (index+1)}]) : false
 			})
 		})
-		console.log(initialDeck)
 		_.each(_.range(initialDeck), function (ele, ind) {
-			(ind >= ( (rows.length + 1)* columns.length + 1)) && (ind <= (initialDeck - (columns.length * 2))) ? bottomDeck += buildHTML('img', [{'z-index' : 3}], [{'src' : '/img/Spider/dealer.gif'}, {'id' : 'deckCard' + ind}]) : false
+			(ind >= ( (rows.length )* columns.length + 1)) && (ind <= (initialDeck - (columns.length * 2) )) ? (bottomDeck += buildHTML('img', [{'z-index' : 3}], [{'src' : '/img/Spider/dealer.gif'}, {'id' : 'deckCard' + ind}])) : false
 		})
 
 		$('#bottomDeck').html(bottomDeck)
@@ -319,6 +353,5 @@ var html = (function() {
 		generateBoard : generateBoard,
 		buildHTML : buildHTML
 	}
-
 })()
 

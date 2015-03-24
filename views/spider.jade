@@ -48,9 +48,7 @@ block gameboard
         div#data
     br
     div#game-container
-
       div#deck
-
       div#bottomDeck
       div#finishedStacks.container-fluid
         div.row
@@ -72,16 +70,15 @@ block gameboard
           div#stack7
             img#1(src='/img/Spider/finished.gif')
           div#stack8
-            img#2(src='/img/Spider/finished.gif')
-   
+            img#2(src='/img/Spider/finished.gif')   
 block javascript
-  script(src="/js/jquery-ui.min.js")
-  link(rel="stylesheet", href="/css/jquery-ui.min.css")
-  link(rel="stylesheet", href="/css/jquery-ui.structure.min.css")
+  script(src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js")  
+  script(type="text/javascript", src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.2/underscore-min.js")
+  link(rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css")
   link(rel="stylesheet", href="/css/jquery-ui.theme.min.css")
-  script(src="/js/underscore.js")
-  script(src="/js/ajax.js")
-  script(src="/js/helpers.js")
-  script(src='/js/main.js')
-  script(src='/js/partial.js')
-  script(src="/js/spider.js")
+  link(rel="stylesheet", href="/css/spider.css")
+  script(type="text/javascript", src="/js/ajax.js")
+  script(type="text/javascript", src="/js/helpers.js")
+  script(type="text/javascript", src='/js/main.js')
+  script(type="text/javascript", src='/js/partial.js')
+  script(type="text/javascript", src="/js/spider.js")
