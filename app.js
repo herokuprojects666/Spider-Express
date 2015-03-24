@@ -8,7 +8,9 @@ var express = require('express')
 		console.info('connected to db')
 		collections = {
 			users : db.collection('users'),
-			spider : db.collection('spider')
+			spider : db.collection('spider'),
+			highScores : db.collection('high_scores')
+
 		}
 	})
 	cookies = require('cookie-parser')
@@ -16,6 +18,7 @@ var express = require('express')
 	logger = require('morgan')
 	errorHandler = require('errorhandler')	
 	bodyParser = require('body-parser')
+	crypto = require('crypto')
 	process.env.PWD = process.cwd()
 	
 
@@ -32,6 +35,16 @@ var authorized = function(req, res, next) {
 		return next();
 	}
 }
+
+var encrypt = function (req, res, next) {
+	if (req.body && req.body.password) {
+		req.body.password = crypto.createHash('sha1').update(req.body.password).digest('hex')
+		return next()
+	} {
+		return next()
+	}
+}
+
 app.use( function (req, res, next) {
 	if (!collections.users) return next(new error('no users found'))
 	req.collections = collections
@@ -50,13 +63,15 @@ app.use(express.static(__dirname + '/public'));
 
 app.get('/index', routes.index)
 
-app.get('/jasmine', routes.game.jasmine)
 app.post('/loadgame/:user', authorized, routes.game.loadgame)
+app.get('/home/logout', routes.game.logout)
 app.get('/home/:user/spider', authorized, routes.game.spider)
 app.post('/update/:user', authorized, routes.game.update)
+app.post('/highScore/:user', authorized, routes.game.highScore)
+app.get('/api/scores', authorized, routes.game.scores)
 
-app.post('/create', routes.user.adduser)
-app.post('/login', routes.user.authenticate)
+app.post('/create', encrypt, routes.user.adduser)
+app.post('/login', encrypt, routes.user.authenticate)
 app.get('/create', routes.user.create)
 app.get('/home/:user', authorized, routes.user.home)
 app.get('/login', routes.user.login)
