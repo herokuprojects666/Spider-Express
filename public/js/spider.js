@@ -88,10 +88,10 @@ $(document).ready(function() {
 		gameDeferred.done(function (game) {
 			if (helper.truthy(game.game.animation)) {
 				return helper.chainer(game, null, "#deck>img[id*='deck']", 
-					function () { return game.defaulted(false, 'animation')},
 					function (a, b) { return game.cheat(350)
 				})
 			}
+			return false
 		})
 	})
 

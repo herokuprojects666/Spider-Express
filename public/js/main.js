@@ -162,36 +162,34 @@ function Spider() {
 	}
 
 	o.cheat = function(speed) {
+		console.log('blah')
+		this.defaulted(false, 'animation')
 		var list = _.reduce($('#deck>img'), function (memo, ele) {
 			return helper.containsSubString($(ele).attr('id'), 'deck') ? [].concat.call([], memo, ele) : memo
 		}, [])
-		// var a = _.map(selector, function (ele, index) {
-		// 	return $(selector).eq(index)
-		// })
-		// console.log(a)
-		// var list = _.reduce($('#deck>img'), function (memo, ele, index) {
-		// 	var id = $(ele).attr('id')
-		// 	return 
-
-		// })
-		// var selector = '#deck>img'
 		var index = helper.randomNumber(list.length, 7)
-		var offset = $("#deck>img[id*='deck']").eq(index).position()
-		console.log(index)
-		console.log(offset)
-		console.log($("#deck>img[id*='deck']").length)
-		$("#deck>img[id*='deck']").eq(index).fadeOut({duration : speed, done : function() {
+		var offset = $("#deck>img[id*='deck']").eq(index).position()	
+		var oldEle = _.reduce($('#deck>img'), function (memo, ele) {
+			return helper.containsSubString($(ele).attr('id'), ('deckCard' + (index + 1))) ? [].concat.call([], memo, ele) : memo
+		}, [])
+		var offset = $(_.first(oldEle)).position()
+		$(_.first(oldEle)).fadeOut({duration : speed, complete : function() {
 			var z = $("#deck>img[id*='deck']").eq(index).zIndex() + 1 
 			var number = index + 1
 			var src = '/img/Spider/'
 			var card = that.game.shuffledDeck[index]
-			$("#deck>img[id*='deck']").eq(index).after(html.buildHTML('img', [{'z-index' : z}, {'left' : offset['left']}, {'top' : offset['top']}, {'display' : 'none'}], 
+			$(_.first(oldEle)).after(html.buildHTML('img', [{'z-index' : z}, {'left' : offset['left']}, {'top' : offset['top']}, {'display' : 'none'}], 
 				[{'class' : card}, {'src' : src + card + '.gif'}, {'id' : 'card' + number}]))
-			$("#deck>img[id*='ard']").eq(index + 1).fadeIn({duration : speed, done : function() {
-				$(this).fadeOut({duration : speed, done : function() {
-					$(this).remove()
-					$("#deck>img[id*='deck']").eq(index).fadeIn({duration : speed + 10, done : function() {
-						return that.defaulted(true, 'animation')
+			var ele = _.reduce($('#deck>img'), function (memo, ele) {
+				return helper.containsSubString($(ele).attr('id'), ('card' + number )) ? [].concat.call([], memo, ele) : memo
+			}, [])			
+			$(_.first(ele)).fadeIn({duration : speed, complete : function() {
+				$(this).fadeOut({duration : speed, complete : function() {
+					$(_.first(oldEle)).fadeIn({duration : speed, complete : function() {
+						
+						console.log('not called')
+						that.defaulted(true, 'animation')
+						$(_.first(ele)).remove()
 					}})
 				}})
 			}})
