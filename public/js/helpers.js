@@ -1,5 +1,7 @@
 var helper = (function() {
-	var _ = require('underscore');
+	if (require) {
+		_ = require('underscore')
+	}
 	var allKeys = function(ele, index, array) {
 		return _.keys(ele)
 	};
