@@ -96,3 +96,7 @@ var curried = (function() {
 		updateData : updateData
 	}
 })();
+
+if (typeof exports !== 'undefined') {
+	exports.partial = partial
+}

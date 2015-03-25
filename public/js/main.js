@@ -162,7 +162,6 @@ function Spider() {
 	}
 
 	o.cheat = function(speed) {
-		console.log('blah')
 		this.defaulted(false, 'animation')
 		var list = _.reduce($('#deck>img'), function (memo, ele) {
 			return helper.containsSubString($(ele).attr('id'), 'deck') ? [].concat.call([], memo, ele) : memo
@@ -186,8 +185,6 @@ function Spider() {
 			$(_.first(ele)).fadeIn({duration : speed, complete : function() {
 				$(this).fadeOut({duration : speed, complete : function() {
 					$(_.first(oldEle)).fadeIn({duration : speed, complete : function() {
-						
-						console.log('not called')
 						that.defaulted(true, 'animation')
 						$(_.first(ele)).remove()
 					}})
@@ -210,16 +207,7 @@ function Spider() {
 		_.map(this.game.intervals, function(ele) {
 					window.clearInterval(ele)})	
 		_.extend(this.game, {'intervals' : []})
-		// if (arguments.length == 0) {
-		// 	return
-		// } else if (!helper.existy(failcb)) {
-		// 	deferred.resolve()
-		// 	// return deferred.resolve().done(successcb.apply(that, args))
-		// 	return deferred.promise().done(successcb.apply(that, args))
-		// } else {
-		// 	deferred.reject()
-		// 	return deferred.promise().done(failcb.apply(that, args))
-		// }
+
 
 	}
 
@@ -283,12 +271,9 @@ function Spider() {
 			left : left,
 			top : top
 		}, { complete : function() { 
-			$(this).promise().done(function() {
-				if (index == _.last(list)) {
-					return deferred.resolve().done(callback.apply(that, args))
-				}
-			})
-			// return index == _.last(list) ? deferred.resolve().done(callback.apply(that, args)) : null
+			if (index == _.last(list)) {
+				return deferred.resolve().done(callback.apply(that, args))
+			}
 		} , duration : speed})
 		
 		_.extend(this.game, {'list' : _.rest(this.game.list),'tempOffsets' : _.rest(this.game.tempOffsets)})
@@ -321,20 +306,20 @@ function Spider() {
 		var altPosition = $(card).position()
 		var length = $("#deck>img[id*='card']")
 		var alwayscb = alwayscb || function() {}  
+		var z = $(card).zIndex()
 		return helper.extractString($(card).attr('id')) != 'deckCard' ? deferred.reject().fail(alwayscb.apply(this, args)) : $(card).fadeOut({ duration : 250, complete: function() {
+
 			var deck = _.reduce(that.game.shuffledDeck, function (memo, ele, ind) {
 				return ind == position ? [].concat.call([], memo, ele) : memo
 			}, []).join('')
 			var offset = helper.existy(altOffset) ? altPosition : {'left' : +that.game.initialOffset['left'], 'top' : (+that.game.initialOffset['top'] - 20)}
 			var src = '/img/Spider/dealer.gif'
 			var id = 'deckCard' + (+position + 1 - 8)
-			_.extend(that.game, { 'oldHoverCard' : {'index' : position, 'zindex' : $(card).zIndex(), 'offset' : offset, 'deckcard' : true, 'src' : src, 'id' : id, 'data' : deck}})
-			$('#deck>img').eq(position).before(html.buildHTML('img', [{'z-index' : $(card).zIndex()}, {'left' : offset['left']}, {'top' : offset['top']}], [{'class' : deck}, {'src' : '/img/Spider/' + deck + '.gif'}, {'id' : ('card' + (length.length + 1))}]))
-			$(this).promise().done(function() {
-				$(this).remove()
-				// return deferred.resolve(position).done(alwayscb)
-				return deferred.resolve().done(alwayscb.apply(that, args))
-			})
+
+			_.extend(that.game, { 'oldHoverCard' : {'index' : position, 'zindex' : z, 'offset' : offset, 'deckcard' : true, 'src' : src, 'id' : id, 'data' : deck}})
+			$('#deck>img').eq(position).before(html.buildHTML('img', [{'z-index' : z}, {'left' : offset['left']}, {'top' : offset['top']}], [{'class' : deck}, {'src' : '/img/Spider/' + deck + '.gif'}, {'id' : ('card' + (length.length + 1))}]))
+			$(this).remove()
+			return deferred.resolve().done(alwayscb.apply(that, args))
 
 		}})
 	}
@@ -940,7 +925,6 @@ function Spider() {
 	}
 
 	o.rebuildDeckCard = function(callback, args) {
-		var promise = new $.Deferred()
 		var move = _.last(this.game.movelist)
 		var card = !_.isEmpty(this.game.oldHoverCard) ? this.game.oldHoverCard : move.completedStack && !_.isEmpty(move.completedStack.oldHoverCard) ? move.completedStack.oldHoverCard : move.oldHoverCard
 		var htmlString = html.buildHTML('img', [{'z-index' : card.zindex}, {'left' : card.offset.left}, {'top' : card.offset.top}], [{'src' : card.src}, {'id' : card.id}])
@@ -954,10 +938,8 @@ function Spider() {
 				var props = _.rest(arr)
 				var value = helper.nestedValue(move, props, undefined)
 			}
-			$(this).promise().done(function() {
-				$(this).remove()
-				return callback.apply(this, args)
-			})	
+			$(this).remove()	
+			return callback.apply(this, args)
 		}})
 
 	}
@@ -1241,4 +1223,8 @@ function Spider() {
 	}
 
 	addToProto(Spider,o)
+}
+
+if (typeof exports !== 'undefined') {
+	exports.main = new Spider
 }

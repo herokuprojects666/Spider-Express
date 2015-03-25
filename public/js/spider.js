@@ -66,7 +66,7 @@ $(document).ready(function() {
 						function (a) { return server.extractScores(a.scores)},
 						function (a) { return server.buildTable(a)})
 				});
-				return gameDeferred.resolve(game, defaulted).promise()
+				return gameDeferred.resolve(game, defaulted)
 			})
 	})
 	$('#save').on('mousedown', function() {

@@ -1,5 +1,5 @@
 var helper = (function() {
-
+	var _ = require('underscore');
 	var allKeys = function(ele, index, array) {
 		return _.keys(ele)
 	};
@@ -240,6 +240,7 @@ var helper = (function() {
 		},[]).join('')
 	}
 
+
 	return {
 		allKeys : allKeys,
 		allValues : allValues,
@@ -332,7 +333,7 @@ var html = (function() {
 
 		_.each(rows, function (ele, ind) {
 			_.each(columns, function (elem, index) {
-				deckCard += game.buildHTML('img', [{'z-index' : 3}], [{'src' : '/img/Spider/dealer.gif'}, {'id' : 'deckCard' + (ind * columns.length + index + 1)}])
+				deckCard += game.buildHTML('img', [{'z-index' : 2}], [{'src' : '/img/Spider/dealer.gif'}, {'id' : 'deckCard' + (ind * columns.length + index + 1)}])
 				ind == 0 ? hidden += buildHTML('img', [{'visibility' : 'hidden'}, {'left' : -300 + (index * 71)}, {'top' : 300}], [{'src' : '/img/Spider/hidden.gif'}, {'id' : 'any' + index}]) : false
 				ind == 0 ? beginningCards += game.buildHTML('img', [{'z-index' : 3}], [{'class' : deck[( (rows.length + 1) * columns.length) + index]}, {'src' : '/img/Spider/' + deck[( (rows.length + 1) * columns.length) + index] + '.gif'}, {'id' : 'card' + (index+1)}]) : false
 			})
@@ -354,4 +355,10 @@ var html = (function() {
 		buildHTML : buildHTML
 	}
 })()
+
+
+if (typeof exports !== 'undefined') {
+	exports.helper = helper
+	exports.html = html
+}
 
