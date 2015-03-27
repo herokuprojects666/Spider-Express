@@ -1,5 +1,4 @@
-var server = (function() {
-
+define(['underscore'], function (_) {	
 	buildTable = function(data) {
 		var data = data.length > 4 ? _.first(data, 4) : data;
 		var table = '' ;
@@ -115,6 +114,5 @@ var server = (function() {
 		loadGame : loadGame,
 		submitScore : submitScore,
 		updateGame : updateGame
-
 	}
-})()
+})

@@ -1,8 +1,62 @@
-describe("Helpers Test Suite", function() {
-	
-	describe("allKeys function", function() {
-		it("should return an array", function() {
-			expect(helper.allKeys({'deckCard5' : '5s'})).isInstanceOf(Array)
+define(function (require) {
+	beforeEach(function() {
+		jasmine.addMatchers({
+			objectsAreEqual : function(object, o, a) {
+				return {
+					compare : function (actual, expected) {
+						return {
+							pass : _.isEqual(actual, expected)
+						}
+					}
+				}
+			},
+			itContains: function() {
+				return {
+					compare : function(actual, expected) {
+						return {
+							pass : _.contains(actual, expected)
+						}
+					}
+				}
+			},
+			toBeEmpty: function() {
+				return {
+					compare : function(actual, expected) {
+						return {
+							pass : _.isEmpty(actual)
+						}
+					}
+				}
+			},
+			itContainsInstance : function() {
+				return {
+					compare : function(actual, expected) {
+						var temp = _.map(actual, function (ele) {
+							return ele instanceof expected? true : false
+						})
+						return {
+							pass: _.every(temp)
+						}
+					}
+				}
+			},
+			isInstanceOf : function() {
+				return {
+					compare : function(actual, expected) {
+						return {
+							pass : actual instanceof expected
+						}
+					}
+				}
+			}
+		})
+	})
+	var helper = require('helpers')
+	var game = require('main')
+	describe("helpers test suite", function () {
+
+		it("should return an array", function() {						
+			expect(helper.allKeys({'deckCard5' : '5s'})).isInstanceOf(Array)					
 		})
 		it("should not be empty", function() {
 			expect(helper.allKeys({'deckCard5' : '5s'})).not.toBeEmpty()
@@ -12,9 +66,8 @@ describe("Helpers Test Suite", function() {
 		})
 		it("should equal expected value when used as a predicate function", function() {
 			expect(_.map([{'deckcard5' : '5s'}, {'deckcard6' : '6s'}, {'deckcard7' : '7s'}], helper.allKeys)).toEqual([['deckcard5'], ['deckcard6'], ['deckcard7']])
-		})
+		})				
 	})	
-
 	describe('allValues function', function() {
 		it("should return an array", function() {
 			expect(helper.allValues({'deckcard5' : '5s'})).isInstanceOf(Array)
@@ -29,7 +82,6 @@ describe("Helpers Test Suite", function() {
 			expect(_.map([{'deckcard5' : '5s'}, {'deckcard6' : '6s'}, {'deckcard7' : '7s'}], helper.allValues)).toEqual([['5s'], ['6s'], ['7s']])
 		})
 	})
-
 	describe("anyKey function", function() {
 		var list = ['deckCard5', 'card2', 'card9']
 		var obj1 = {'deckCard5' : '5s'}
@@ -42,6 +94,7 @@ describe("Helpers Test Suite", function() {
 		})
 	})
 
+
 	describe("anyValue function", function() {
 		it("should contain value", function() {
 			expect(helper.anyValue([90], [90])).itContains(true)
@@ -52,8 +105,7 @@ describe("Helpers Test Suite", function() {
 		it("special case for undefined", function() {
 			expect(helper.anyValue([undefined], [1, 2, undefined])).itContains(true)
 		})
-	})	
-
+	})
 	describe("arrayCheck function", function() {
 		var successcb = function(arg) {
 			return arg
@@ -81,9 +133,10 @@ describe("Helpers Test Suite", function() {
 		})
 	})
 
+
 	describe("chainer function", function() {
 		it("should return the final argument", function() {
-			expect(helper.chainer('bleh', function(arg) { return arg + ' yeah'}, function(arg) { return arg + ' noooo'}, function(arg) { return arg + ' final'})).toEqual('bleh yeah noooo final')
+			expect(helper.chainer(game, 'bleh', null,  function(arg) { return arg + ' yeah'}, function(arg) { return arg + ' noooo'}, function(arg) { return arg + ' final'})).toEqual('bleh yeah noooo final')
 		})
 	})
 
@@ -162,7 +215,6 @@ describe("Helpers Test Suite", function() {
 			expect(helper.extractString('card6')).toEqual('card')
 		})
 	})
-
 	describe("flatten function", function() {
 		it("should reduce an array of arrays to an array of values", function() {
 			expect(helper.flatten([1,2,3,[4,5,6,[[[[[7,[[8]]]]]]]]])).toEqual([1,2,3,4,5,6,7,8])
@@ -205,28 +257,25 @@ describe("Helpers Test Suite", function() {
 		describe("should return a function of varying argument lengths", function() {
 
 			it("should return a function with one argument", function() {
-				expect(helper.partial(len, 'stuff')).toEqual(1)
+				expect(helper.partial(len, 'stuff')()).toEqual(1)
 			})
 			it("should return a function with two arguments", function() {
-				expect(helper.partial(len, 'stuff', 'morestuff')).toEqual(2)
+				expect(helper.partial(len, 'stuff', 'morestuff')()).toEqual(2)
 			})
 		})
 
 		describe("should return a function with the correct arguments", function() {
 			it("should return an array of arguments", function() {
-				expect(helper.partial(func, 'stuff', 'more stuff')).toEqual(['more stuff', 'stuff'])
+				expect(helper.partial(func, 'stuff')('more stuff')).toEqual(['more stuff', 'stuff'])
 			})
 			it("should return an instance of array", function() {
-				expect(helper.partial(func, 'stuff')).isInstanceOf(Array)
+				expect(helper.partial(func, 'stuff')()).isInstanceOf(Array)
 			})
 		})
 	})
-
-	console.log($('#deck'))
-
-	describe("qualifiers function", function() {
+describe("qualifiers function", function() {
 		it("should perform a list of actions on each value in an array", function() {
-			expect(helper.qualifiers([1, 2, 3], function(num) { return num + 2}, function(num) { return num * 5}, function(num) { return num - 6})).toEqual([9, 14, 19])
+			expect(helper.qualifiers(game, [], [1, 2, 3], function(num) { return num + 2}, function(num) { return num * 5}, function(num) { return num - 6})).toEqual([9, 14, 19])
 		})
 	})	
 
@@ -270,6 +319,3 @@ describe("Helpers Test Suite", function() {
 		})
 	})
 })
-
-//do qualifiers
-//do chainer

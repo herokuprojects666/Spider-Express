@@ -1,4 +1,4 @@
-var curried = (function() {
+define(['helpers','underscore'], function (helper, _) {
 	var build = function(memo) {
 		return _.isEmpty(this.game.pseudoHovered) ? this.game : (_.extend(this.game, {'hoveredData' : [].concat.call([], this.game.hoveredData, memo)}),
 																this.curry(this.buildValues, memo))
@@ -95,8 +95,4 @@ var curried = (function() {
 		update : update,
 		updateData : updateData
 	}
-})();
-
-if (typeof exports !== 'undefined') {
-	exports.partial = partial
-}
+})
