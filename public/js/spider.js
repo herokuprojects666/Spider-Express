@@ -1,5 +1,13 @@
 require(['./requireConfig'], function () {
 	require(['ajax', 'helpers', 'html', 'jquery', 'main', 'partial', 'underscore', 'jqueryui'], function (server, helper, html, $, Spider, curried, _) {
+		(function() {
+			return server.fetchScores( function (data) {
+				sessionStorage.setItem('scores', JSON.stringify(data.scores))
+				return helper.chainer(game, data, null, 
+					function (a) { return server.extractScores(a.scores)},
+					function (a) { return server.buildTable(a)})
+			})
+		}).call(this)
 		$(document).ready(function() {
 			var gameDeferred = new $.Deferred();
 			$('#setup button').on('mousedown', function() {
@@ -62,12 +70,6 @@ require(['./requireConfig'], function () {
 						"draggedEleOffsets", "draggedEleString", "draggedElements", "draglist", "droppables", "elementlist", "fullBaseValue", "hoverElements", 
 						"hoverMatches", "hoverString", "hovered", "hoveredData", "initialOffset", "keys", "list", "oldHoverCard", "previousRow", 
 						"ImageDimensions", "intervals", "pseudoDragged", "pseudoHovered", "tempOffsets")}
-						var scores = server.fetchScores( function (data) {						
-							sessionStorage.setItem('scores', JSON.stringify(data.scores))
-							return helper.chainer(game, data, null, 
-								function (a) { return server.extractScores(a.scores)},
-								function (a) { return server.buildTable(a)})
-						});
 						return gameDeferred.resolve(game, defaulted)
 					})
 			})
@@ -97,7 +99,7 @@ require(['./requireConfig'], function () {
 				})
 			})
 
-			$('#main_selector li').on('click', function () {
+			$('#main_selector li').on('mousedown', function () {
 				return (function () {
 					var data = $.parseJSON(sessionStorage.getItem('scores'));
 					var list = _.each($('#main_selector li'), function (ele) {
@@ -109,7 +111,7 @@ require(['./requireConfig'], function () {
 				}).call(this)
 			})
 
-			$('#sub_selector li').on('click', function () {
+			$('#sub_selector li').on('mousedown', function () {
 				return (function () {
 					var data = $.parseJSON(sessionStorage.getItem('scores'));
 					var list = _.each($('#sub_selector li'), function (ele) {
