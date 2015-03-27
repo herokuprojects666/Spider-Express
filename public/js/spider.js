@@ -1,32 +1,6 @@
-// require.config({
-// 	paths: {
-// 		ajax : './ajax',
-// 		helpers : './helpers',
-// 		html : './html',
-// 		jasmineSpec : './jasmine_spec',
-// 		main : './main',
-// 		partial : './partial',
-// 		spider : './spider',
-// 		underscore : './underscore'
-// 	}
-// })
-
-// require(['./requireConfig'], function ($) {
-
-// })
-
-// define(function (require) {
-// 	var b = require('underscore')
-// 	console.log(b)
-// })
-require(['./requireConfig'], function (b) {
+require(['./requireConfig'], function () {
 	require(['ajax', 'helpers', 'html', 'jquery', 'main', 'partial', 'underscore', 'jqueryui'], function (server, helper, html, $, Spider, curried, _) {
-
-
-// define(['ajax', 'helpers', 'main', 'partial', 'underscore', 'jquery'], function (server, helper, Spider, partial, _, $) {	
-
 		$(document).ready(function() {
-			console.log($)
 			var gameDeferred = new $.Deferred();
 			$('#setup button').on('mousedown', function() {
 				var game = new Spider;
@@ -114,7 +88,6 @@ require(['./requireConfig'], function (b) {
 			})
 			$('#cheat').on('mousedown', function () {
 				gameDeferred.done(function (game) {
-					console.log(arguments)
 					if (helper.truthy(game.game.animation)) {
 						return helper.chainer(game, null, "#deck>img[id*='deck']", 
 							function (a, b) { return game.cheat(350)

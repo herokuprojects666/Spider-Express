@@ -1,4 +1,4 @@
-define(['helpers','underscore'], function (helper, _) {
+define(['helpers','underscore', 'ajax'], function (helper, _, server) {
 	var build = function(memo) {
 		return _.isEmpty(this.game.pseudoHovered) ? this.game : (_.extend(this.game, {'hoveredData' : [].concat.call([], this.game.hoveredData, memo)}),
 																this.curry(this.buildValues, memo))

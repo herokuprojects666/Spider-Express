@@ -91,7 +91,7 @@ define(['underscore'], function (_) {
 	};
 
 	updateGame = function(callback) {
-		var that = this
+		var that = this;
 		var id = $('.gameboard').attr('id');
 		var val = _.isEmpty($('#game').val()) ? 1 : $('#game').val();
 		return $.ajax({
@@ -102,8 +102,6 @@ define(['underscore'], function (_) {
 			success : function(data) {
 				return callback(data)
 			}
-		}).then(function() {
-			console.log('done updating')
 		})
 	};
 

@@ -273,7 +273,7 @@ define(function (require) {
 			})
 		})
 	})
-describe("qualifiers function", function() {
+	describe("qualifiers function", function() {
 		it("should perform a list of actions on each value in an array", function() {
 			expect(helper.qualifiers(game, [], [1, 2, 3], function(num) { return num + 2}, function(num) { return num * 5}, function(num) { return num - 6})).toEqual([9, 14, 19])
 		})

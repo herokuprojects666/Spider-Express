@@ -40,18 +40,18 @@ define(['underscore'], function (_) {
 
 	var htmlGen = function(fun, attributes) { 
 		return fun.apply(null, attributes)
-	}
+	};
 
 	var generateBoard = function(deck, rows, columns) {
-		var board = '', 
-			beginningRow = '<div class="row">',
-			beginningCards = '',
-			deckCard = '',
-			bottomDeck = '',
-			hidden = '', 
-			game = this		
-			deck = deck.game.shuffledDeck,
-			initialDeck = deck.length
+		var board = '';
+		var beginningRow = '<div class="row">';
+		var	beginningCards = '';
+		var	deckCard = '';
+		var	bottomDeck = '';
+		var	hidden = '';
+		var	game = this;		
+		var	deck = deck.game.shuffledDeck;
+		var	initialDeck = deck.length;
 
 		_.each(rows, function (ele, ind) {
 			_.each(columns, function (elem, index) {
@@ -67,7 +67,7 @@ define(['underscore'], function (_) {
 		$('#bottomDeck').html(bottomDeck)
 		$('#hiding').html(board + beginningRow)
 		$('#deck').html(hidden + deckCard + beginningCards)	
-	}
+	};
 
 	return {
 		atts : atts,

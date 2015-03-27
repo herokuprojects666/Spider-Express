@@ -22,9 +22,9 @@ module.exports = function(config) {
 
     // list of files to exclude
     exclude: [
+      'requireConfig',
       'spider.js',
-      'require.js',
-      'require.min.js'
+      'require.min'
     ],
 
 

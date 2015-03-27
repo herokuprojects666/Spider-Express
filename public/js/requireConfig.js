@@ -1,6 +1,5 @@
 require.config({
 	baseUrl : '/js',
-	name : 'requireConfig',
 	paths: {
 		ajax : './ajax',
 		bootstrap : './bootstrap.min',
@@ -10,7 +9,7 @@ require.config({
 		jqueryui : './jquery-ui.min',
 		main : './main',
 		partial : './partial',
-		underscore : './underscore.min'
+		underscore : './underscore'
 	},
 })
 
