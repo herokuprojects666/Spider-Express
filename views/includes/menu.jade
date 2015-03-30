@@ -1,11 +1,16 @@
 ul.nav.nav-pills
   if (page == 'logged in')
-    li(class=(menu == 'home' || menu == 'spider')?'active':'')
+    li(class=(menu == 'home' || menu == 'spider' )?'active':'')
       a(href='/home/#{user.username}') Home
-    li(class='dropdown')
-      a.dropdown-toggle(href='#', data-toggle="dropdown") Games
-        ul.dropdown-menu
-          a(href='/home/#{user.username}/spider') Spider Solitaire
+    if (menu == 'spider')
+      li
+        a(href='/home/#{user.username}/spider-rules') Rules
+    else 
+      li(class='dropdown')
+        a.dropdown-toggle(href='#', data-toggle="dropdown") Games
+          ul.dropdown-menu
+            a(href='/home/#{user.username}/spider') Spider Solitaire
+
     li
       a(href='/home/logout') Logout
   else

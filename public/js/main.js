@@ -731,7 +731,7 @@ define(['helpers', 'html'], function (helper, html) {
 
 		o.initialCondition = function(element, newgame, loadgame, alwayscb) {
 			return $(element).attr('id') == 'new-game' ? ($('#initial>button').css('display', 'none'), $('#difficulty>button').css('display', 'inline'), $('#cheating>button').css('display', 'none')) : 
-			$(element).attr('id') == 'load-game' ? ($('#initial>button').css('display', 'inline'),  $('#difficulty>button').css('display', 'none'), $('#cheating>button').css('display', 'inline'), loadgame(), alwayscb()) : 
+			$(element).attr('id') == 'load-game' ? ($('#initial>button').css({display : 'inline'}) ,  $('#difficulty>button').css('display', 'none'), $('#cheating>button').css('display', 'inline'), loadgame(), alwayscb()) : 
 			($('#initial>button').css('display', 'inline'),  $('#difficulty>button').css('display', 'none'), $('#cheating>button').css('display', 'inline'), newgame($(element).attr('id')), alwayscb())
 		}
 
