@@ -34,6 +34,16 @@ exports.logout = function(req, res, next) {
 	})
 }
 
+exports.rule = function(req, res, next) {
+	req.collections.users.findOne({
+		username : req.params.user
+	}, function (err, user) {
+		console.info(user)
+		res.render('spider-rules', {user : user})
+	})
+	
+}
+
 exports.scores  = function (req, res, next) {
 	req.collections.highScores.find().toArray(function (err, scores) {
 		return res.send({scores : scores})
