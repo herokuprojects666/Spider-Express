@@ -25,12 +25,21 @@ exports.loadgame = function(req, res, next) {
 	})
 }
 
+
 exports.logout = function(req, res, next) {
 	return req.session.destroy(function (err) {
 		if (err) {
 			return next(new Error('failed to logout'))
 		}
 		return res.redirect('/index')
+	})
+}
+
+exports.rule = function(req, res, next) {
+	req.collections.users.findOne({
+		username : req.params.user
+	}, function (err, user) {
+		res.render('spider-rules', {user : user})
 	})
 }
 
