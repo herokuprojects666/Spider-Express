@@ -2,9 +2,10 @@
 	color : #FF0000;
 }
 
-#message {
+.message {
 	position : relative;
 	z-index : 5;
+	color : #FFFFFF;
 }
 
 #poker {
@@ -14,4 +15,34 @@
 	z-index : 0;
 	height : auto;
 	width : 100%;
+}
+
+ul>li {
+	margin : 5px 5px;
+}
+
+ul>li>a:hover {
+	opacity : .2;
+}
+
+button:hover {
+	opacity : .2;
+}
+
+.link {
+	color : red;
+}
+
+.dropdown-menu {
+	opacity : .5;
+}
+
+.dropdown-menu > li > a {
+	font-weight : bold;
+}
+
+#rules {
+	position : relative;
+	top : 30px;
+	left : 0px;
 }
