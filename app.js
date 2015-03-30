@@ -68,6 +68,7 @@ app.get('/home/:user/spider', authorized, routes.game.spider)
 app.post('/update/:user', authorized, routes.game.update)
 app.post('/highScore/:user', authorized, routes.game.highScore)
 app.get('/api/scores', authorized, routes.game.scores)
+app.get('/home/:user/spider-rules', authorized, routes.game.rule)
 
 app.post('/create', encrypt, routes.user.adduser)
 app.post('/login', encrypt, routes.user.authenticate)
