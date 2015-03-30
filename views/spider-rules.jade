@@ -1,0 +1,13 @@
+extend layout
+block page
+  - var menu = 'rules'
+  - var page = 'logged in'
+block gameboard
+  div#rules
+    p.message 1) Complete stacks of the same suit to clear cards from the board
+    p.message 2) Don't like the way the game is playing out? Change your fate by reverting moves with the undo move (control z)
+    p.message 3) Look into the future with the cheat move! Reveal a card that is currently hidden. 
+    p.message 4) Need a break away from the virtual felt? No problem. Just save your game and resume it later. Enter in a number (1-9) in the "New/Saved Game slot" and click save. 
+    p.message 5) Do you have that friend who always beats you at Halo? Invite him here to compete on the global score leaderboard. 
+block javascript
+  include includes/scripts
