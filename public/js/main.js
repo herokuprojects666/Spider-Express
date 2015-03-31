@@ -42,12 +42,12 @@ define(['helpers', 'html'], function (helper, html) {
 			return _.extend(_.last(this.game.movelist), {'completedStack' : finalObj})
 		};
 
-		o.bottomDeckFadeOut = function(list, args, deferred, cb) {
-			var arg = [].concat.call([], [list], deferred, 50, null, null, [args], cb);
+		o.bottomDeckFadeOut = function(list, args, cb) {
+			var arg = [].concat.call([], [list], 50, null, null, [args], cb);
 			var interval = function () {
 				return that.fadeOut.apply(that, arg)
 			};
-			var intervalArg = [].concat.call([], interval, 50, deferred, [args], cb);
+			var intervalArg = [].concat.call([], interval, 50, [args], cb);
 			return this.intervals.apply(this, intervalArg)
 		}
 
@@ -259,20 +259,20 @@ define(['helpers', 'html'], function (helper, html) {
 			return func.apply(this, finalArgs)
 		};
 
-		o.dealCard = function(speed, list, offsets, progressFunc, deferred, callback) {
+		o.dealCard = function(speed, list, offsets, progressFunc, callback) {
 			if (_.isEmpty(this.game.list)) 
 				_.extend(this.game, {'list' : list, 'tempOffsets' : offsets})
 			var left = _.first(that.game.tempOffsets)['left'];
 			var top = _.first(that.game.tempOffsets)['top'];
 			var item = _.first(that.game.list);
-			var args = _.rest(arguments, 6);
+			var args = _.rest(arguments, 5);
 			var index = _.first(this.game.list);
 			$(item).animate({
 				left : left,
 				top : top
 			}, { complete : function() { 
 				if (index == _.last(list)) {
-					return deferred.resolve().done(callback.apply(that, args))
+					return callback.apply(that, args)
 				}
 			} , duration : speed})
 			
@@ -282,51 +282,7 @@ define(['helpers', 'html'], function (helper, html) {
 			}
 		};
 
-		o.dealCards = function(determiner, list, offsets, card, speed, progressFunc, deferred, args, callback) {
-			var cards = _.map(list, function (ele) {
-				return card + ele
-			});
-
-			var list = helper.existy(determiner) ? list : this.mapSelectors(cards);
-
-			var args = [].concat.call([], speed, [list], [offsets], progressFunc, deferred, callback, args);
-
-			var interval = function() {
-				return that.dealCard.apply(that, args)
-			};
-
-			return this.intervals(interval, speed, deferred, callback)
-		};
-
-		o.deckCard = function(position, altOffset, deferred, args, alwayscb) {
-			var scrollTop = $('html body').scrollTop();
-			var passedOffset = {'left' : this.game.initialOffset['left'], 'top' : this.game.initialOffset['top'] - 20};
-			var offset = helper.existy(altOffset) ? altOffset : this.adjustedOffset('#deck', passedOffset);
-			var card = document.elementFromPoint(offset['left'], offset['top'] - scrollTop);
-			var altPosition = $(card).position();
-			var length = $("#deck>img[id*='card']");
-			var alwayscb = alwayscb || function() {};
-			var z = $(card).zIndex();
-			return helper.extractString($(card).attr('id')) != 'deckCard' ? deferred.reject().fail(alwayscb.apply(this, args)) : $(card).fadeOut({ duration : 250, complete: function() {
-				var deck = _.reduce(that.game.shuffledDeck, function (memo, ele, ind) {
-					return ind == position ? [].concat.call([], memo, ele) : memo
-				}, []).join('');
-				var offset = helper.existy(altOffset) ? altPosition : {'left' : +that.game.initialOffset['left'], 'top' : (+that.game.initialOffset['top'] - 20)};
-				var src = '/img/Spider/dealer.gif';
-				var id = 'deckCard' + (+position + 1 - 8);
-
-				_.extend(that.game, { 'oldHoverCard' : {'index' : position, 'zindex' : z, 'offset' : offset, 'deckcard' : true, 'src' : src, 'id' : id, 'data' : deck}})
-				$('#deck>img').eq(position).before(html.buildHTML('img', [{'z-index' : z}, {'left' : offset['left']}, {'top' : offset['top']}], [{'class' : deck}, {'src' : '/img/Spider/' + deck + '.gif'}, {'id' : ('card' + (length.length + 1))}]))
-				$(this).remove()
-				return deferred.resolve().done(alwayscb.apply(that, args))
-			}})
-		};
-
-		o.decreaseScore = function() {
-			return this.game.score+= -5
-		};
-
-		o.dealDeck = function(columns, card, parent, list, speed, deferred, callback) {
+		o.dealDeck = function(columns, card, parent, list, speed, callback) {
 			var dimensions = this.game.imageDimensions;
 			var position = $(parent).position();
 			var left = _.map(list, function (ele) {
@@ -346,10 +302,54 @@ define(['helpers', 'html'], function (helper, html) {
 			var mapped = this.mapSelectors(list);
 			
 			var interval = function() {
-				return that.dealCard(speed, mapped, offsets, null, deferred, callback)
+				return that.dealCard(speed, mapped, offsets, null, callback)
 			};
 
-			return this.intervals(interval, speed, deferred, callback)
+			return this.intervals(interval, speed, callback)
+		};
+
+		o.dealCards = function(determiner, list, offsets, card, speed, progressFunc, args, callback) {
+			var cards = _.map(list, function (ele) {
+				return card + ele
+			});
+
+			var list = helper.existy(determiner) ? list : this.mapSelectors(cards);
+
+			var args = [].concat.call([], speed, [list], [offsets], progressFunc, callback, args);
+
+			var interval = function() {
+				return that.dealCard.apply(that, args)
+			};
+
+			return this.intervals(interval, speed, callback)
+		};
+
+		o.deckCard = function(position, altOffset, args, alwayscb) {
+			var scrollTop = $('html body').scrollTop();
+			var passedOffset = {'left' : this.game.initialOffset['left'], 'top' : this.game.initialOffset['top'] - 20};
+			var offset = helper.existy(altOffset) ? altOffset : this.adjustedOffset('#deck', passedOffset);
+			var card = document.elementFromPoint(offset['left'], offset['top'] - scrollTop);
+			var altPosition = $(card).position();
+			var length = $("#deck>img[id*='card']");
+			var alwayscb = alwayscb || function() {};
+			var z = $(card).zIndex();
+			return helper.extractString($(card).attr('id')) != 'deckCard' ? alwayscb.apply(this, args) : $(card).fadeOut({ duration : 250, complete: function() {
+				var deck = _.reduce(that.game.shuffledDeck, function (memo, ele, ind) {
+					return ind == position ? [].concat.call([], memo, ele) : memo
+				}, []).join('');
+				var offset = helper.existy(altOffset) ? altPosition : {'left' : +that.game.initialOffset['left'], 'top' : (+that.game.initialOffset['top'] - 20)};
+				var src = '/img/Spider/dealer.gif';
+				var id = 'deckCard' + (+position + 1 - 8);
+
+				_.extend(that.game, { 'oldHoverCard' : {'index' : position, 'zindex' : z, 'offset' : offset, 'deckcard' : true, 'src' : src, 'id' : id, 'data' : deck}})
+				$('#deck>img').eq(position).before(html.buildHTML('img', [{'z-index' : z}, {'left' : offset['left']}, {'top' : offset['top']}], [{'class' : deck}, {'src' : '/img/Spider/' + deck + '.gif'}, {'id' : ('card' + (length.length + 1))}]))
+				$(this).remove()
+				return alwayscb.apply(that, args)
+			}})
+		};
+
+		o.decreaseScore = function() {
+			return this.game.score+= -5
 		};
 
 		o.defaulted = function(value) {
@@ -398,13 +398,13 @@ define(['helpers', 'html'], function (helper, html) {
 			}, []).join('')
 		};
 
-		o.determineStackMove = function(offset, deferred, args, deckcb) {
+		o.determineStackMove = function(offset, args, deckcb) {
 			var scrollTop = $('html body').scrollTop();
 			var item = document.elementFromPoint(offset['left'], offset['top'] - scrollTop)	;	
 			var position = $(item).index();
 			var id = $(item).attr('id');
 			var identity = helper.extractString(id);
-			return identity == 'deckCard' ? this.deckCard(position, offset, deferred, args, helper.partial(deckcb)) : deferred.reject().fail(deckcb.apply(this, args))
+			return identity == 'deckCard' ? this.deckCard(position, offset, args, helper.partial(deckcb)) : deckcb.apply(this, args)
 		};
 
 		o.difficulty = function(level) {
@@ -494,9 +494,8 @@ define(['helpers', 'html'], function (helper, html) {
 		}
 
 		o.endGame = function(callback) {
-			var value = 'Ks Qs Js 10s 9s 8s 7s 6s 5s 4s 3s 2s As';
 			var list = _.reduce(this.game.data, function (memo, ele) {
-				return helper.getFirstValue(ele) == value ? [].concat.call([], memo, ele) : memo
+				return helper.stringLength(_.values(ele)) == 13 ? [].concat.call([], memo, ele) : memo
 			}, []);
 			if (list.length == 104) {
 				return callback
@@ -515,7 +514,7 @@ define(['helpers', 'html'], function (helper, html) {
 			return helper.containsSubString(identity, 'any') ? 'any' : identity.length > 2 ? _.first(card, 2).join('') : _.first(card)
 		};
 
-		o.fadeOut = function(list, deferred, duration, selector, secondSelector, args, callback) {
+		o.fadeOut = function(list, duration, selector, secondSelector, args, callback) {
 			if (_.isEmpty(this.game.list))
 				_.extend(this.game, {'list' : list})
 			var selector = helper.existy(selector) ? $(selector).eq(_.first(this.game.list)) : $(_.first(this.game.list));
@@ -528,7 +527,7 @@ define(['helpers', 'html'], function (helper, html) {
 					// html.buildHTML('img', [{'z-index' : (+z+1)}, {'left' : that.game.offsets[index]['left']}, {'top' : +that.game.offsets[index]['top'] + 20}], [{'class' : that.game.shuffledDeck[length]}, {'src' : '/Img/spider/' + obj.shuffledDeck[length] + '.gif'}, {'id' : ('card' + (id + 1) )}])
 					$(secondSelector).append(html.buildHTML('img', [{'z-index' : (+z+1)}, {'left' : that.game.offsets[index]['left']}, {'top' : +that.game.offsets[index]['top'] + 20}], [{'class' : that.game.shuffledDeck[length]}, {'src' : '/img/Spider/' + that.game.shuffledDeck[length] + '.gif'}, {'id' : ('card' + (id + 1) )}]))
 				}
-				return index == _.last(list) ? deferred.resolve().done(callback.apply(that, args)) : null
+				return index == _.last(list) ? callback.apply(that, args) : null
 			}})
 			_.extend(this.game, {'list' : _.rest(this.game.list)})
 			if (_.isEmpty(this.game.list)) 
@@ -754,9 +753,9 @@ define(['helpers', 'html'], function (helper, html) {
 			} 
 		};
 
-		o.intervals = function(func, speed, deferred, args, callback) {
+		o.intervals = function(func, speed, args, callback) {
 			var intervals = this.game.intervals;
-			return _.extend(this.game, {'intervals' : intervals.concat.apply([],[intervals, window.setInterval(func, speed, deferred, callback, args)] )})
+			return _.extend(this.game, {'intervals' : intervals.concat.apply([],[intervals, window.setInterval(func, speed, callback, args)] )})
 		};
 
 		o.isResolved = function() {
@@ -982,7 +981,7 @@ define(['helpers', 'html'], function (helper, html) {
 			return _.extend(this.game, {'movelist' : moves} )
 		};
 
-		o.revertEvent = function(list, ele, deferred, cb, args) {
+		o.revertEvent = function(list, ele, cb, args) {
 			var base = $(ele).position();
 			var offset = (_.isEmpty(this.game.initialOffset) ? _.first(_.last(this.game.movelist).draggedEleOffsets) : this.game.initialOffset);
 			_.map(list, function (element, ind) {
@@ -991,7 +990,7 @@ define(['helpers', 'html'], function (helper, html) {
 					top : +base['top'] + (ind * 20)
 				})
 			})
-			return _.isEqual(base, offset) && helper.existy(deferred) ? deferred.resolve().done(cb.apply(that, args)) : this
+			return _.isEqual(base, offset) ? cb.apply(that, args) : this
 		};
 
 		o.revertZIndex = function(prop, list, altOffset) {
@@ -1111,8 +1110,8 @@ define(['helpers', 'html'], function (helper, html) {
 			return [].concat.call([], deck, hiddenDeck)
 		};
 
-		o.unacceptableDraggable = function(ele, deferred, cb, args) {
-			return this.revertEvent(this.game.draglist, ele, deferred, cb, args)
+		o.unacceptableDraggable = function(ele, cb, args) {
+			return this.revertEvent(this.game.draglist, ele, cb, args)
 		};
 
 		o.updateIdentity = function(value) { // use to update the identities in object when a deckcard is revealed
@@ -1136,9 +1135,11 @@ define(['helpers', 'html'], function (helper, html) {
 											this.updateElementData(move.hoverElements, move.hoverString, this.game))
 			}
 			else if (_.first(this.game.draggedEleString).split(' ').length > draglist.length) {
+				return (failcb.apply(this, args), successcb.apply(this,args))
 				return deferred.reject().fail(failcb.apply(this, args)).then(successcb.apply(this, args))
 			} else {
-				return (this.updateElementData(this.game.elementlist, this.game.fullBaseValue, this.game), deferred.resolve().done(successcb.apply(this, args)))
+				return (this.updateElementData(this.game.elementlist, this.game.fullBaseValue, this.game), successcb.apply(this, args))
+				return deferred.resolve().done(this.updateElementData(this.game.elementlist, this.game.fullBaseValue, this.game)).then(successcb.apply(this, args))
 			}
 		};
 

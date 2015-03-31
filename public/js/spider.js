@@ -10,12 +10,13 @@ require(['./requireConfig'], function () {
 				})
 			}).call(this)
 			$(document).ready(function() {
+				var game;
 				var gameDeferred = new $.Deferred();
 				$('#setup button').on('mousedown', function() {
-					var game = new Spider;
-					var deckDeferred = new $.Deferred();
-					var cardDeferred = new $.Deferred();
-					var bottomdeck = new $.Deferred();
+					game = new Spider;
+					// var deckDeferred = new $.Deferred();
+					// var cardDeferred = new $.Deferred();
+					// var bottomdeck = new $.Deferred();
 					var that = $(this);
 					return game.initialCondition(that, 
 						function (t) { return helper.chainer(game, t, [sessionStorage.setItem('difficulty', t), game.defaulted(t, 'difficulty')],
@@ -23,16 +24,16 @@ require(['./requireConfig'], function () {
 							function (b) { return game.createDeck(b)},
 							function (b) { return game.shuffleDeck()},
 							function (b) { return game.generateBoard(_.range(5), _.range(8))},
-							function (b) { return game.dealDeck(8, 'deckCard', '#deck', _.range(1, 49), 20, deckDeferred, 
+							function (b) { return game.dealDeck(8, 'deckCard', '#deck', _.range(1, 49), 20, 
 								function (c) { return helper.chainer(game, that, null,
 									function (d) { return game.setData('update')},
 									function (d) { return game.fullOffsetList()}, 
 									function (d) { return game.calculateOffset()},
 									function (d) { return _.map(d, function (ele) { return {'left' : ele['left'], 'top' : +ele['top'] + 20}})}, 
-									function (d) { return game.dealCards(null, _.range(1, 9), d, 'card', 20, null, cardDeferred, null, 
+									function (d) { return game.dealCards(null, _.range(1, 9), d, 'card', 20, null, null, 
 										function (e) { return helper.chainer(game, that, null,
 											function (f) { return _.map(_.range(41, 97), function (ele) { return {'left' : -140, 'top' : -100}})},
-											function (f) { return game.dealCards(null, _.range(41, 97), f, 'deckCard', 20, null, bottomdeck, null, 
+											function (f) { return game.dealCards(null, _.range(41, 97), f, 'deckCard', 20, null, null, 
 												function (g) { return helper.chainer(game, that, game,
 													function (h) { return game.saveHTML()},
 													function (h) { return game.setData(null)},
@@ -67,16 +68,11 @@ require(['./requireConfig'], function () {
 							})
 						},
 						function (t) {
-							var defaulted = function() { return game.defaulted([], "cardStackHTML", 'clicked', "clickedMatches", "currentRow", "deckHTML", "draggedData", 
-							"draggedEleOffsets", "draggedEleString", "draggedElements", "draglist", "droppables", "elementlist", "fullBaseValue", "hoverElements", 
-							"hoverMatches", "hoverString", "hovered", "hoveredData", "initialOffset", "keys", "list", "oldHoverCard", "previousRow", 
-							"ImageDimensions", "intervals", "pseudoDragged", "pseudoHovered", "tempOffsets")}
-							return gameDeferred.resolve(game, defaulted)
 						})
 				})
 				$('#save').on('mousedown', function() {
 					var that = this;
-					gameDeferred.done(function (game) {
+
 						return game.offsetCheck([game], 
 							function (a) { },
 							function (a) { return helper.chainer(game, that, null,
@@ -87,17 +83,17 @@ require(['./requireConfig'], function () {
 								)}
 							)}
 						)
-					})
+
 				})
 				$('#cheat').on('mousedown', function () {
-					gameDeferred.done(function (game) {
+
 						if (helper.truthy(game.game.animation)) {
 							return helper.chainer(game, null, "#deck>img[id*='deck']", 
 								function (a, b) { return game.cheat(350)
 							})
 						}
 						return false
-					})
+
 				})
 
 				$('#main_selector li').on('mousedown', function () {
@@ -124,9 +120,10 @@ require(['./requireConfig'], function () {
 					}).call(this)
 				})
 
-				$('#deck').on('mousedown', 'img', function(event) {		
+				$('#deck').on('mousedown', 'img', function(event) {	
+
 					var that = this;
-					gameDeferred.done(function (game) {
+
 						if (!helper.truthy(game.game.allowEvent) || !_.isEmpty(game.game.intervals) || !_.isEmpty(game.game.mousedown) || helper.truthy(game.game.endGame))
 							$(that).draggable('disable') 
 						else {
@@ -144,12 +141,12 @@ require(['./requireConfig'], function () {
 								function (a) { return game.disableDragging('#deck>img')}
 							)
 						}
-					})
+
 				})
 
 				$('#deck').on('mouseenter', 'img', function() {
 					var that = this
-					gameDeferred.done(function (game) {
+
 						$(that).draggable()
 						var obj = game.defaulted(false, 'allowEvent');
 						if (!_.isEmpty(game.game.intervals) || helper.truthy(game.game.endGame)) {
@@ -161,33 +158,37 @@ require(['./requireConfig'], function () {
 								function (a) { return a == false || $(that).attr('id') == 'any' ? $(that).draggable('disable') : $(that).draggable('enable')},
 								function (a) { return game.defaulted(true, 'allowEvent')}
 							)
-					})
+
 				})
 				$('#deck').on('mouseleave', 'img', function() {
 					var that = this;
-					gameDeferred.done(function (game) {
+
 						return $(that).hasClass('ui-draggable', 'ui-draggable-handle') ? $(that).removeClass('ui-draggable', 'ui-draggable-handle') :
 								$(that).hasClass('ui-draggable') ? $(that).removeClass('ui-draggable') :
 								$(that).hasClass('ui-draggable-handle') ? $(that).removeClass('ui-draggable-handle') : 
 								$(that).attr('id') == 'any' ? $(that).draggable('disable') : $(that)
-					})
+
 				})
 
 				$('#deck').on('drag', 'img', function(event) {
+													var defaulted = function() { return game.defaulted([], "cardStackHTML", 'clicked', "clickedMatches", "currentRow", "deckHTML", "draggedData", 
+							"draggedEleOffsets", "draggedEleString", "draggedElements", "draglist", "droppables", "elementlist", "fullBaseValue", "hoverElements", 
+							"hoverMatches", "hoverString", "hovered", "hoveredData", "initialOffset", "keys", "list", "oldHoverCard", "previousRow", 
+							"ImageDimensions", "intervals", "pseudoDragged", "pseudoHovered", "tempOffsets")}
 					var that = this;
-					gameDeferred.done(function (game, defaulted) {
-						var reverting = function(deferred, callback, args) {
-							return game.unacceptableDraggable(that, deferred, callback, args)
+
+						var reverting = function(callback, args) {
+							return game.unacceptableDraggable(that, callback, args)
 						}
 						if (!helper.truthy(game.game.allowEvent) || _.isEmpty(game.game.data) || helper.truthy(game.game.endGame)) {
 							$(that).draggable('disable')
 						} else {				
 							$(that).draggable('disable')
-							var deferred = new $.Deferred();
-							var deckCardDeferred = new $.Deferred();
-							var specialCase = new $.Deferred();
-							var completedStackDeferred = new $.Deferred();
-							var stackMoveDeferred = new $.Deferred();
+							// var deferred = new $.Deferred();
+							// var deckCardDeferred = new $.Deferred();
+							// var specialCase = new $.Deferred();
+							// var completedStackDeferred = new $.Deferred();
+							// var stackMoveDeferred = new $.Deferred();
 							if (_.isEmpty(game.game.mousedown)) {
 							return helper.chainer(game, that, defaulted,
 								function (a) { $(that).draggable('enable')},
@@ -196,7 +197,7 @@ require(['./requireConfig'], function () {
 								function (a) { return game.catchError()},
 								function (a) { if (!_.isEmpty(a)) return game.fixError(a)},  
 								function (a, b) { return game.dragging(b,
-									function (c) { return game.intervals(reverting, 1, deferred, [c],
+									function (c) { return game.intervals(reverting, 1, [c],
 										function (d) { return helper.chainer(game, that, d, 
 											function (e) { return game.clearIntervals()},
 											function (e) { return game.defaulted($(that).attr('id'), 'mousedown')},
@@ -209,7 +210,7 @@ require(['./requireConfig'], function () {
 										function (d) { return game.defaulted($(that).attr('id'), 'mousedown')},
 										function (d) { return game.fixCss()},
 										function (d) { return game.determinePosition()},
-										function (d, e) { return game.deckCard(d, null, deckCardDeferred, [e], 
+										function (d, e) { return game.deckCard(d, null, [e], 
 											function (e) { return helper.chainer(game, that, e,
 												function (f, g) { return game.setData('update', [g],
 													function (g) {return helper.chainer(game, game.updateDataKeys(), g,
@@ -218,7 +219,7 @@ require(['./requireConfig'], function () {
 														function (h, i) { return helper.chainer(game, that, [i, h],
 															
 															function (h, i, j) { return game.buildValues(j)},
-															function (h, i, j) { return game.updateData(specialCase, null, [i, j],
+															function (h, i, j) { return game.updateData('fixed', null, [i, j],
 																function (g, h) { return helper.chainer(game, game.calculateLeft(), [g, h], 
 																	function (i) { return game.objectList(i, true)},
 																	function (i) { return game.fixOldData(i)}, 
@@ -243,34 +244,34 @@ require(['./requireConfig'], function () {
 							}
 							return false
 						}
-					})
+
 				})
 
 				$('#bottomDeck').on('mousedown', 'img', function() {
 					var that = this;
-					gameDeferred.done(function (game, defaulted) {
-						var dealingRow = function(deferred, callback) {
-							return game.dealRow(_.range(8), deferred, callback)
+
+						// var dealingRow = function(deferred, callback) {
+						// 	return game.dealRow(_.range(8), deferred, callback)
+						// };
+						var fadingOut = function(callback, args) {
+							return game.fadeOut(_.range(8), 1250, '#bottomDeck>img', '#deck', args, callback)
 						};
-						var fadingOut = function(deferred, callback, args) {
-							return game.fadeOut(_.range(8), deferred, 1250, '#bottomDeck>img', '#deck', args, callback)
-						};
-						var fadeOutDeferred = new $.Deferred();
-						var dealingRowDeferred = new $.Deferred();
+						// var fadeOutDeferred = new $.Deferred();
+						// var dealingRowDeferred = new $.Deferred();
 
 						if (_.isEmpty(game.game.data) || !_.isEmpty(game.game.intervals))
 							$(that).off('mousedown', 'img')
 						else
-							return helper.chainer(game, that, defaulted,
+							return helper.chainer(game, that, null,
 								function (a, b) { return game.offsetCheck(b, 
 									function (b) { },
 									function (b) { return helper.chainer(game, that, [game.calculateOffset(), b],
 										function (c) { return game.selectElements('#bottomDeck>img', 8, 'first')},
 										function (eles, sorted, defaulted) {return helper.chainer(game, that, [eles, sorted, defaulted],
 											function (e, f, g) { return _.map(g, function (ele) { return {'left' : ele['left'], 'top' : +ele['top'] + 20}})},
-											function (e, f, g, h) { return game.dealCards(true, f, e, null, 75, null, dealingRowDeferred, [e, g, h], 
+											function (e, f, g, h) { return game.dealCards(true, f, e, null, 75, null, [e, g, h], 
 												function (h, i, j) { return helper.chainer(game, that, [h, i, j], 
-													function (g, h, i, j) { return game.intervals(fadingOut, 75, fadeOutDeferred, [i, j], 
+													function (g, h, i, j) { return game.intervals(fadingOut, 75, [i, j], 
 														function (i, j) { return helper.chainer(game, that, [game.removeElements(_.range(8), '#bottomDeck>img'), i, j],
 															function (j) { return game.setData('update')},
 															function (j) { return game.updateDataKeys()},
@@ -298,24 +299,25 @@ require(['./requireConfig'], function () {
 									)}
 								)}
 							)
-					})
+
 
 				})
 				$(this).on('keydown', window, function (event) {
 					var that = this;
-					gameDeferred.done(function (game) {
+
 						var bottomDeck = function(deferred, callback, args) {
 							return game.insertDeckCard(null, $('#bottomDeck>img'), _.range(8), {'left' : -140, 'top' : -100}, $('#bottomDeck'), args, callback)
 						};
-						if (helper.truthy(game.game.endGame))
-							return false
+						if (typeof game == 'undefined' || helper.truthy(game.game.endGame))
+							return
 						else
 							var keydownDeferred = new $.Deferred();
-							var revertRowDeferred = new $.Deferred();
-							var undoMoveFadeOut = new $.Deferred();
-							var bottomdeckDeferred = new $.Deferred();
-							var completedStack = new $.Deferred();
-							var revertedCardsDeferred = new $.Deferred();
+
+							// var revertRowDeferred = new $.Deferred();
+							// var undoMoveFadeOut = new $.Deferred();
+							// var bottomdeckDeferred = new $.Deferred();
+							// var completedStack = new $.Deferred();
+							// var revertedCardsDeferred = new $.Deferred();
 							return helper.chainer(game, event.which, null,
 								function (a) { return game.keyDownAdd(a)},
 								function (a) { return game.checkForKeys([90, 17])},
@@ -356,7 +358,7 @@ require(['./requireConfig'], function () {
 										)}
 									)},
 									
-									function (c, d, e, f) { return game.dealCards(true, game.mapSelectors(c.elements), c.offsets, null, 50, null, completedStack, [d, c, e], f)},
+									function (c, d, e, f) { return game.dealCards(true, game.mapSelectors(c.elements), c.offsets, null, 50, null, [d, c, e], f)},
 									
 									function (c) { 
 										var args = _.rest(arguments);
@@ -379,13 +381,13 @@ require(['./requireConfig'], function () {
 										)}
 									)},
 									
-									function (c, d, e) { return game.dealCards(true, game.mapSelectors(c.draggedElements), c.draggedEleOffsets, null, 50, null, revertedCardsDeferred, [c, d], e)},
+									function (c, d, e) { return game.dealCards(true, game.mapSelectors(c.draggedElements), c.draggedEleOffsets, null, 50, null, [c, d], e)},
 
 									function (b) { return helper.chainer(game, that, [game.mapSelectors(b.rowCards), b],
 										function (c) { return _.map(_.range(8), function (ele) { return $('#bottomDeck>img').length == 0 ? {'left' : -140, 'top' : -100} :  $('#bottomDeck>img').position()})},
-										function (c, d, e) { return game.dealCards(true, d, c, null, 100, null, revertRowDeferred, [d, e], 
-											function (e, f) { return game.bottomDeckFadeOut(e, [f], undoMoveFadeOut, 
-												function (f) { return game.intervals(bottomDeck, 50, bottomdeckDeferred, [f],
+										function (c, d, e) { return game.dealCards(true, d, c, null, 100, null, [d, e], 
+											function (e, f) { return game.bottomDeckFadeOut(e, [f], 
+												function (f) { return game.intervals(bottomDeck, 50, [f],
 													function (g) { return helper.chainer(game, that, [g],
 														function (h) { return game.updateData(null, 'update game data')},
 														function (h) { return game.removeElements(game.ranger('#deck>img', 'last', 8), '#deck>img')},
@@ -406,7 +408,7 @@ require(['./requireConfig'], function () {
 									)}
 								): game }
 						)
-					})
+
 				})
 				$(this).on('keyup', window, function(event) {
 					gameDeferred.done(function (game) {

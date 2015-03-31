@@ -9,15 +9,14 @@ define(['helpers','underscore', 'ajax'], function (helper, _, server) {
 	};
 
 	var completedSuit = function(card) {
-		var completedStackDeferred = new $.Deferred()
-		var stackMoveDeferred = new $.Deferred()
+		// var completedStackDeferred = new $.Deferred()
+		// var stackMoveDeferred = new $.Deferred()
 		var that = this
 		var completeSuit = this.completedSuit()
 		var defaulted = function() { return that.defaulted([], "cardStackHTML", 'clicked', "clickedMatches", "currentRow", "deckHTML", "draggedData", 
 		"draggedEleOffsets", "draggedEleString", "draggedElements", "draglist", "droppables", "elementlist", "fullBaseValue", "hoverElements", 
 		"hoverMatches", "hoverString", "hovered", "hoveredData", "initialOffset", "keys", "list", "oldHoverCard", "previousRow", 
 		"ImageDimensions", "intervals", "pseudoDragged", "pseudoHovered", "tempOffsets")}
-
 		return !_.isEmpty(completeSuit) ? helper.chainer(this, card, [completeSuit],
 				function (a) { return defaulted()}, 
 				function (a, b) { return _.map(b, that.switchARoo)},
@@ -25,11 +24,11 @@ define(['helpers','underscore', 'ajax'], function (helper, _, server) {
 				function (a, b) { return helper.chainer(that, card, [b, a, _.map(b, that.switchARoo)], 
 					function (b) { return that.stackLocation()},
 					function (b) { return that.parentOffsets(helper.returnSubString(b, '<', true), '#deck', 13)},
-					function (b, c, d, e) { return that.dealCards(true, c, b, null, 100, null, completedStackDeferred, [c, e, d], 
+					function (b, c, d, e) { return that.dealCards(true, c, b, null, 100, null, [c, e, d], 
 						function (c, d, e) { return helper.chainer(that, card, [that.stackLocation(), c, d, e],
 							function (d, e, f, g, h) { return that.insertDeckCard(true, e, _.range(1), null, null, [f, g, h], 
 								function (e, f, g) { return helper.chainer(that, card, [e, f, g],
-									function (f, g, h, i) { return that.determineStackMove(_.first(i), stackMoveDeferred, [g, h],
+									function (f, g, h, i) { return that.determineStackMove(_.first(i), [g, h],
 										function (g, h) { return helper.chainer(that, card, [g, h], 
 											function (h, i, j) { return that.addCompletedStack(i, j)},
 											function () { return that.setData('update', null, 
