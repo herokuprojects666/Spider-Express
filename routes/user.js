@@ -10,6 +10,7 @@ exports.adduser = function(req, res, next) {
 			password : req.body.password,
 			username : req.body.username
 		}, function (err, user) {
+			console.info(user)
 			res.render('accountcreate')
 		})
 	})
@@ -56,7 +57,5 @@ exports.home = function(req, res, next) {
 }
 
 exports.login = function(req, res, next) {
-	
-
 	res.render('login')
 }
