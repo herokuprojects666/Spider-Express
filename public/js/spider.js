@@ -100,7 +100,8 @@ require(['./requireConfig'], function () {
 					})
 				})
 
-				$('#main_selector li').on('mousedown', function () {
+				$('#main_selector li').on('mousedown', function (e) {
+
 					return (function () {
 						var data = $.parseJSON(sessionStorage.getItem('scores'));
 						var list = _.each($('#main_selector li'), function (ele) {

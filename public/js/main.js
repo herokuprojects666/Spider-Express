@@ -951,8 +951,6 @@ define(['helpers', 'html'], function (helper, html) {
 				var modified = {'left' : last['left'], 'top' : +last['top'] + 96};
 				var modded = this.adjustedOffset('#deck', modified);
 				var scroll = navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ? $('html').scrollTop() : $('html body').scrollTop()
-				console.log(+modded['top'] - scroll)
-				console.log($(window).height())
 				if (+modded['top'] - scroll > $(window).height()) {
 					var adjusted = +modded['top'] - scroll - $(window).height();
 					navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ? $('html').scrollTop(scroll + adjusted) : $('html body').scrollTop(scroll + adjusted)
@@ -1044,9 +1042,12 @@ define(['helpers', 'html'], function (helper, html) {
 				hoveredOffset = this.adjustedOffset('#deck', hovered),
 				clicked = document.elementFromPoint(clickedOffset['left'], clickedOffset['top'] - scrollTop),
 				dealer = $('#deck').offset()
-			_.isEmpty(hovered) ? element = document.elementFromPoint(dealer['left'], dealer['top'] - scrollTop) : 
+			_.isEmpty(hovered) ? element = document.elementFromPoint(0, dealer['top'] - scrollTop) : 
 								 element = document.elementFromPoint(hoveredOffset['left'], hoveredOffset['top'] - scrollTop)
-			if (element.nodeName == 'DIV') {
+				// console.log(scrollTop)
+				// // console.log($(window).height())
+				// console.log(hoveredOffset['top'] - scrollTop)
+			if (element && element.nodeName == 'DIV') {
 				element = this.switchARoo(hovered)
 			}
 			return _.extend(this.game, {'clicked' : clicked, 'hovered' : element})
