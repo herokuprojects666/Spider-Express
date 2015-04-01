@@ -37,10 +37,10 @@ exports.logout = function(req, res, next) {
 			return req.collections.users.remove({
 				username : req.params.user
 			}, function (err, user) {
-				return res.redirect('/index')
+				return res.redirect('/')
 			})
 		}
-		return res.redirect('/index')
+		return res.redirect('/')
 	})
 }
 
