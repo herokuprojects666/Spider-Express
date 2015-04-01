@@ -233,7 +233,7 @@ define(['helpers', 'html'], function (helper, html) {
 			var height = $(window).height();
 			var itemHeight = this.adjustedOffset('#deck', _.last(sorted))
 			if (itemHeight['top'] > height) {
-				$('html body').scrollTop(itemHeight['top'] - height + 20)
+				navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ? $('html').scrollTop(itemHeight['top'] - height + 20) : $('html body').scrollTop(itemHeight['top'] - height + 20)
 			}
 			var elements = _.map(sorted, this.switchARoo);
 			return elements
@@ -299,7 +299,7 @@ define(['helpers', 'html'], function (helper, html) {
 		};
 
 		o.deckCard = function(position, altOffset, deferred, args, alwayscb) {
-			var scrollTop = $('html body').scrollTop();
+			var scrollTop = navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ? $('html').scrollTop() : $('html body').scrollTop();
 			var passedOffset = {'left' : this.game.initialOffset['left'], 'top' : this.game.initialOffset['top'] - 20};
 			var offset = helper.existy(altOffset) ? altOffset : this.adjustedOffset('#deck', passedOffset);
 			var card = document.elementFromPoint(offset['left'], offset['top'] - scrollTop);
@@ -399,7 +399,7 @@ define(['helpers', 'html'], function (helper, html) {
 		};
 
 		o.determineStackMove = function(offset, deferred, args, deckcb) {
-			var scrollTop = $('html body').scrollTop();
+			var scrollTop = navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ? $('html').scrollTop() : $('html body').scrollTop();
 			var item = document.elementFromPoint(offset['left'], offset['top'] - scrollTop)	;	
 			var position = $(item).index();
 			var id = $(item).attr('id');
@@ -927,7 +927,7 @@ define(['helpers', 'html'], function (helper, html) {
 			var card = !_.isEmpty(this.game.oldHoverCard) ? this.game.oldHoverCard : move.completedStack && !_.isEmpty(move.completedStack.oldHoverCard) ? move.completedStack.oldHoverCard : move.oldHoverCard;
 			var htmlString = html.buildHTML('img', [{'z-index' : card.zindex}, {'left' : card.offset.left}, {'top' : card.offset.top}], [{'src' : card.src}, {'id' : card.id}]);
 			var adjustedCard = this.adjustedOffset('#deck', card.offset);
-			var scrollTop = $('html body').scrollTop();
+			var scrollTop = navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ? $('html').scrollTop() : $('html body').scrollTop();
 			var removedCard = document.elementFromPoint(adjustedCard['left'], adjustedCard['top'] - scrollTop);
 			return $(removedCard).fadeOut({ duration: 250, complete: function() {
 				$('#deck>img').eq(card.index).before(htmlString)
@@ -950,11 +950,12 @@ define(['helpers', 'html'], function (helper, html) {
 				var last = _.last(offsets);
 				var modified = {'left' : last['left'], 'top' : +last['top'] + 96};
 				var modded = this.adjustedOffset('#deck', modified);
-				if (+modded['top'] - $('html body').scrollTop() > $(window).height()) {
-					var scrolled = $('html body').scrollTop();
-					var adjusted = +modded['top'] - $('html body').scrollTop() - $(window).height();
-					$('html body').scrollTop(scrolled + adjusted)
-
+				var scroll = navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ? $('html').scrollTop() : $('html body').scrollTop()
+				console.log(+modded['top'] - scroll)
+				console.log($(window).height())
+				if (+modded['top'] - scroll > $(window).height()) {
+					var adjusted = +modded['top'] - scroll - $(window).height();
+					navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ? $('html').scrollTop(scroll + adjusted) : $('html body').scrollTop(scroll + adjusted)
 				}
 				var item = $(this.switchARoo(off)).attr('id');
 				var data = _.reduce(this.game.data, function (memo, ele) {
@@ -997,7 +998,7 @@ define(['helpers', 'html'], function (helper, html) {
 		o.revertZIndex = function(prop, list, altOffset) {
 			var list = list || this.game[prop];
 			var offset = altOffset ? this.adjustedOffset('#deck', altOffset) : this.adjustedOffset('#deck', this.game.initialOffset);
-			var scrollTop = $('html body').scrollTop();
+			var scrollTop = navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ? $('html').scrollTop() : $('html body').scrollTop();
 			var base = $(document.elementFromPoint(offset['left'], offset['top'] - scrollTop - 20)).zIndex();
 			return _.map(list, function (ele, ind){
 				return $(ele).zIndex(base + ind + 1)
@@ -1038,7 +1039,7 @@ define(['helpers', 'html'], function (helper, html) {
 
 		o.setElements = function(hovered, clicked) {
 			var element,
-				scrollTop = $('html body').scrollTop(),
+				scrollTop = navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ? $('html').scrollTop() : $('html body').scrollTop(),
 				clickedOffset = this.adjustedOffset('#deck', clicked),
 				hoveredOffset = this.adjustedOffset('#deck', hovered),
 				clicked = document.elementFromPoint(clickedOffset['left'], clickedOffset['top'] - scrollTop),
@@ -1085,7 +1086,7 @@ define(['helpers', 'html'], function (helper, html) {
 			var offset;
 			var element;
 			var ele;
-			var scrollTop = $('html body').scrollTop();
+			var scrollTop = navigator.userAgent.toLowerCase().indexOf('firefox') > -1 ? $('html').scrollTop() : $('html body').scrollTop();
 			if (_.has(item, 'left')) {
 				offset = that.adjustedOffset('#deck', item)
 				ele = document.elementFromPoint(offset['left'], offset['top'] - scrollTop)
