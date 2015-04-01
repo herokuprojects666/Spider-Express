@@ -31,6 +31,15 @@ exports.logout = function(req, res, next) {
 		if (err) {
 			return next(new Error('failed to logout'))
 		}
+		if (/(guest)/.test(req.params.user)) {
+			console.info('here')
+			console.info(req.params.user)
+			return req.collections.users.remove({
+				username : req.params.user
+			}, function (err, user) {
+				return res.redirect('/index')
+			})
+		}
 		return res.redirect('/index')
 	})
 }

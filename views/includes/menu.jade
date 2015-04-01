@@ -12,7 +12,7 @@ ul.nav.nav-pills
             a(href='/home/#{user.username}/spider') Spider Solitaire
 
     li
-      a(href='/home/logout') Logout
+      a(href='/home/#{user.username}/logout') Logout
   else
     li(class=(menu == 'index' || menu == 'create')?'active':'')
       a(href='/index') Home

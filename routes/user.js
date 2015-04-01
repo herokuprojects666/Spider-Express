@@ -20,15 +20,31 @@ exports.authenticate = function(req, res, next) {
 		email : req.body.email,
 		password : req.body.password
 	}, function (err, user) {
+
 		if(err) return next(err)
 		if (!user) return res.render('login', {error: 'Incorrect email/password combo'})
+	
 		req.session.user = user
+		console.info(req.session.user)
 		res.redirect('/home/' + user.username)
 	})
 }
 
 exports.create = function(req, res, next) {
 	res.render('create')
+}
+
+exports.guest = function(req, res, next) {
+	var number = Math.floor(100 * Math.random())
+	req.collections.users.insert({
+		email : 'guest' + number + '@gmail.com',
+		password : 'temp',
+		username : 'guest' + number
+	}, function (err, user) {
+		req.session.user = user
+		req.number = number
+		return res.redirect('/home/guest' + req.number)
+	})
 }
 
 exports.home = function(req, res, next) {
@@ -40,5 +56,7 @@ exports.home = function(req, res, next) {
 }
 
 exports.login = function(req, res, next) {
+	
+
 	res.render('login')
 }

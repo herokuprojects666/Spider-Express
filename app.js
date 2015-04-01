@@ -2,6 +2,7 @@ var express = require('express')
 	routes = require('./routes')
 	path = require('path')
 	mongoclient = require('mongodb').MongoClient
+	_ = require('underscore')
 	url = 'mongodb://localhost:27017/spider'
 	uri = 'mongodb://craggoo:starcraft@ds039411.mongolab.com:39411/spider-express'
 	mongoclient.connect(uri, function (err, db) {
@@ -27,8 +28,6 @@ app.locals.appTitle = "Craggoo's app";
 
 var authorized = function(req, res, next) {
 	if (!req.session || !req.session.user) {
-		// console.log(req.session)
-		// console.log(req.session.user)
 		return res.send(401);
 	} else {
 		return next();
@@ -63,15 +62,16 @@ app.use(express.static(__dirname + '/public'));
 app.get('/index', routes.index)
 
 app.post('/loadgame/:user', authorized, routes.game.loadgame)
-app.get('/home/logout', routes.game.logout)
+app.get('/home/:user/logout', routes.game.logout)
 app.get('/home/:user/spider', authorized, routes.game.spider)
 app.post('/update/:user', authorized, routes.game.update)
 app.post('/highScore/:user', authorized, routes.game.highScore)
 app.get('/api/scores', authorized, routes.game.scores)
 app.get('/home/:user/spider-rules', authorized, routes.game.rule)
-
 app.post('/create', encrypt, routes.user.adduser)
 app.post('/login', encrypt, routes.user.authenticate)
+app.get('/guest', routes.user.guest)
+
 app.get('/create', routes.user.create)
 app.get('/home/:user', authorized, routes.user.home)
 app.get('/login', routes.user.login)
