@@ -59,7 +59,7 @@ app.use(cookies('whatever'))
 app.use(session({secret : 'abcdefghijk'}));
 app.use(express.static(__dirname + '/public'));
 
-app.get('/index', routes.index)
+app.get('/', routes.index)
 
 app.post('/loadgame/:user', authorized, routes.game.loadgame)
 app.get('/home/:user/logout', routes.game.logout)
