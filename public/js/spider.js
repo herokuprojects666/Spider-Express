@@ -128,8 +128,10 @@ require(['./requireConfig'], function () {
 				$('#deck').on('mousedown', 'img', function(event) {		
 					var that = this;
 					gameDeferred.done(function (game) {
-						if (!helper.truthy(game.game.allowEvent) || !_.isEmpty(game.game.intervals) || !_.isEmpty(game.game.mousedown) || helper.truthy(game.game.endGame))
+						if (!helper.truthy(game.game.allowEvent) || !_.isEmpty(game.game.intervals) || !_.isEmpty(game.game.mousedown) || helper.truthy(game.game.endGame)) {
+							console.log('disabled')
 							$(that).draggable('disable') 
+						}
 						else {
 							$(that).draggable('enable')
 							return helper.chainer(game, game.calculateOffset(), that,
@@ -308,9 +310,9 @@ require(['./requireConfig'], function () {
 						var bottomDeck = function(deferred, callback, args) {
 							return game.insertDeckCard(null, $('#bottomDeck>img'), _.range(8), {'left' : -140, 'top' : -100}, $('#bottomDeck'), args, callback)
 						};
-						if (helper.truthy(game.game.endGame))
+						if (helper.truthy(game.game.endGame)) {
 							return false
-						else
+						} else
 							var keydownDeferred = new $.Deferred();
 							var revertRowDeferred = new $.Deferred();
 							var undoMoveFadeOut = new $.Deferred();
