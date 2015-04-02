@@ -15,6 +15,6 @@ ul.nav.nav-pills
       a(href='/home/#{user.username}/logout') Logout
   else
     li(class=(menu == 'index' || menu == 'create')?'active':'')
-      a(href='/index') Home
+      a(href='/') Home
     li(class=(menu == 'login')?'active':'')
       a(href='/login') Log In
