@@ -2,10 +2,9 @@ require(['requireConfig'], function() {
 	require(['jquery'], function ($) {
 		require(['snakeMain', 'helpers', 'bootstrap', 'jqueryui'], function (snake, helper) {
 			$(document).ready(function () {
-				var construct, game;						
+				var construct, game, width, height;
 				
 				$('#Create').on('mousedown', function () {
-
 					$('#tiles').css('display', 'unset')
 					$('.indent').css('display', 'block')
 					construct = function() {
@@ -20,16 +19,13 @@ require(['requireConfig'], function() {
 					};
 					game = helper.addToProto(snake, construct)
 
-
-					
-					
 					$('#container').width($(window).width())
 					$('#container').height($(window).height() - 50)				
 					return helper.chainer(game, game.createGrid(), null, 
 						function (a) { return game.initial.call(this)},
-						function (a) { var width = $('#board').children().last().offset()
+						function (a) { width = $('#board').children().last().offset()
 										return $('#container').width(width['left'] + 10)},
-						function (a) { var height = $('#game').children().eq(-1).position()
+						function (a) { height = $('#game').children().eq(-1).position()
 										return $('#container').height(height['top'] + 60)},
 						function (a) { return game.numberOfItems()},
 						function (a) { return game.placeItems.call(this, a, 4)})					

@@ -59,3 +59,11 @@ exports.home = function(req, res, next) {
 exports.login = function(req, res, next) {
 	res.render('login')
 }
+
+exports.profile = function(req, res, next) {
+	req.collections.users.findOne({
+		username : req.params.user
+	}, function (err, user) {
+		res.render('profile', {user : user})
+	})
+}

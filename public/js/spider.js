@@ -11,10 +11,6 @@ require(['./requireConfig'], function () {
 			}).call(this)
 			$(document).ready(function() {
 				var gameDeferred = new $.Deferred();
-				$(this).on('mousedown', window, function(e) {
-					console.log(document.elementFromPoint(497, 1016))
-					console.log(document.elementFromPoint(497, 1013))
-				})
 				$('#setup button').on('mousedown', function() {
 					var game = new Spider;
 					var deckDeferred = new $.Deferred();
@@ -87,25 +83,6 @@ require(['./requireConfig'], function () {
 						})
 				})
 
-				// $('ul>li>ul>li').on('mouseenter', function () {
-				// 	// var selector = this
-				// 	// if ($(this>a).hasClass('dropdown-toggle')) {
-				// 	// 	$(this).css('background-color', 'blue')
-				// 	// }
-				// 	// console.log($(this).children.length)
-				// 	// if ($(this).hasClass('dropdown-toggle')) {
-				// 	// 	$(this).css('background-color', 'blue')
-				// 	// }
-				// 	_.each($(this).children('a'), function (ele) {
-				// 		if (!$(ele).hasClass('dropdown-toggle')) {
-				// 			$(ele).css('background-color', 'blue')
-				// 		}
-				// 	})
-					
-				// })
-				// $('ul>li>ul>li').on('mouseleave', function () {
-				// 	$(this).css('background-color', 'transparent')
-				// })
 				$('#save').on('mousedown', function() {
 					var that = this;
 					gameDeferred.done(function (game) {
@@ -122,9 +99,7 @@ require(['./requireConfig'], function () {
 					})
 				})
 				$('#cheat').on('mousedown', function () {
-
 					gameDeferred.done(function (game) {
-						console.log(game.game.hiddenElements)
 						if (helper.truthy(game.game.animation)) {
 							return helper.chainer(game, null, "#deck>img[id*='deck']", 
 								function (a, b) { return game.cheat(350)
@@ -163,7 +138,6 @@ require(['./requireConfig'], function () {
 					var that = this;
 					gameDeferred.done(function (game) {
 						if (!helper.truthy(game.game.allowEvent) || !_.isEmpty(game.game.intervals) || !_.isEmpty(game.game.mousedown) || helper.truthy(game.game.endGame)) {
-							console.log('disabled')
 							$(that).draggable('disable') 
 						}
 						else {

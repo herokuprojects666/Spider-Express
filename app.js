@@ -73,6 +73,7 @@ app.post('/login', encrypt, routes.user.authenticate)
 app.get('/guest', routes.user.guest)
 app.get('/home/:user/snake', routes.game.snake)
 app.get('/home/:user/snake-rules', routes.game.snakeRules)
+app.get('/home/:user/profile', routes.user.profile)
 
 app.get('/create', routes.user.create)
 app.get('/home/:user', authorized, routes.user.home)

@@ -1096,7 +1096,7 @@ define(['helpers', 'html'], function (helper, html) {
 				ele = document.elementFromPoint(offset['left'], offset['top'] - scrollTop)
 					if (ele && ele.nodeName == 'DIV') {
 						var element = _.reduce(that.game.hiddenElements, function (memo, ele) {
-							console.log(_.isEqual(that.adjustedOffset('#deck', ele), offset))
+							// console.log(_.isEqual(that.adjustedOffset('#deck', ele), offset))
 							return _.isEqual(that.adjustedOffset('#deck', ele), offset) ? [].concat.call([], memo, ele) : memo
 						}, []);
 						ele = _.first(element)

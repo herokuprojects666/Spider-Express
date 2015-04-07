@@ -2,6 +2,8 @@ ul.nav.nav-pills
   if (page == 'logged in')
     li(class=(menu == 'home' || menu == 'spider' )?'active':'')
       a(href='/home/#{user.username}') Home
+    li
+      a(href='/home/#{user.username}/profile') Profile        
     if (menu == 'spider' || menu == 'snake')
       if (menu =='spider')
         li
@@ -9,6 +11,7 @@ ul.nav.nav-pills
       else 
         li
           a(href='/home/#{user.username}/snake-rules') Rules
+  
     li(class='dropdown')
       a.dropdown-toggle(href='#', data-toggle="dropdown") Games
         ul.dropdown-menu
