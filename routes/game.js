@@ -58,6 +58,22 @@ exports.scores  = function (req, res, next) {
 	})
 }
 
+exports.snake = function(req, res, next) {
+	req.collections.users.findOne({
+		username : req.params.user
+	}, function (err, user) {
+		res.render('snake', {user : user})
+	})
+}
+
+exports.snakeRules = function(req, res, next) {
+	req.collections.users.findOne({
+		username : req.params.user
+	}, function (err, user) {
+		res.render('snake-rules', {user : user})
+	})
+}
+
 exports.spider = function(req, res, next) {
 	req.collections.users.findOne({
 		username : req.params.user

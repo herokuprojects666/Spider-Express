@@ -10,8 +10,8 @@ var express = require('express')
 		collections = {
 			users : db.collection('users'),
 			spider : db.collection('spider'),
-			highScores : db.collection('high_scores')
-
+			highScores : db.collection('high_scores'),
+			snake : db.collection('snake')
 		}
 	})
 	cookies = require('cookie-parser')
@@ -71,6 +71,8 @@ app.get('/home/:user/spider-rules', authorized, routes.game.rule)
 app.post('/create', encrypt, routes.user.adduser)
 app.post('/login', encrypt, routes.user.authenticate)
 app.get('/guest', routes.user.guest)
+app.get('/home/:user/snake', routes.game.snake)
+app.get('/home/:user/snake-rules', routes.game.snakeRules)
 
 app.get('/create', routes.user.create)
 app.get('/home/:user', authorized, routes.user.home)

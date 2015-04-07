@@ -21,8 +21,28 @@ ul>li {
 	margin : 5px 5px;
 }
 
+/*ul>li>a:hover {
+	opacity : .2;
+}*/
+
 ul>li>a:hover {
 	opacity : .2;
+}
+
+
+
+#Spider:hover {
+	background : black;
+	font-weight : bold;
+	color : white;
+	opacity : 1;
+}
+
+#Snake:hover {
+	background : black;
+	font-weight : bold;
+	color : white;
+	opacity : 1;
 }
 
 button:hover {
@@ -34,15 +54,36 @@ button:hover {
 }
 
 .dropdown-menu {
-	opacity : .5;
-}
-
-.dropdown-menu > li > a {
-	font-weight : bold;
+	opacity : .8;
 }
 
 #rules {
 	position : relative;
+	margin-left : 30px;
+	top : 40px;
+}
+
+#rule-heading {
+	position : relative;
+	margin-left : 10px;
 	top : 30px;
-	left : 0px;
+	font-style : italic;
+	font-size : 30px;
+	font-weight : bold;
+}
+
+#stats {
+	display : none;
+}
+
+#high_scores {
+	margin-left : 20px;
+}
+
+#Stats {
+	display : none;
+}
+
+#tiles{
+	display : none;
 }

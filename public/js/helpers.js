@@ -1,4 +1,10 @@
 define(['underscore'], function (_) {
+	var addToProto = function(baseObj, obj) {
+		_.each(baseObj, function (value, key) {
+			return _.has(baseObj, key) ? obj.prototype[key] = baseObj[key] : null
+		})
+		return new obj
+	}
 	var allKeys = function(ele, index, array) {
 		return _.keys(ele)
 	};
@@ -49,6 +55,15 @@ define(['underscore'], function (_) {
 		var array = anyValue(requiredKeys, keyList);
 		return _.every(array) 
 	};
+
+	var clearIntervals = function(object, key) {
+		var list = _.each(object, function (ele, keyz) {
+			return keyz == key ? _.each(keyz, function (elem) {
+				return clearInterval(elem)
+			}) : null
+		});
+		return _.extend(object, {key : []})
+	}
 
 	var compareOffsets = function(input, compareAgainst, determiner, callback) {
 		var truthy = _.reduce(compareAgainst, function (memo, ele, index, arr) {
@@ -121,6 +136,10 @@ define(['underscore'], function (_) {
 		return _.first(_.values(ele))
 	};
 
+	var intervals = function(object, key, func, speed, cb) {
+		return _.extend(object, {key : setInterval(func, speed, object, cb)})
+	};
+
 	var lastIndex = function(array, index) {
 		var length = array.length;
 		return index == (array.length - 1) ? true : false
@@ -183,11 +202,16 @@ define(['underscore'], function (_) {
 		return arr
 	};
 
-	var randomNumber = function(length, min) {
+	var randomNumber = function(length, min, max) {
 		var value = Math.floor(Math.random() * length);
-		if (min && value <= min) 
+		if (min && max && (value > max || value < min)) 
+			return randomNumber(length, min, max)
+		else if (min && value < min) 
 			return randomNumber(length, min)
-		return value
+		else if (max && value > max) 
+			return randomNumber(length, null, max)
+		else 
+			return value
 	};
 
 	var returnSubString = function(string, splitter, determiner) {
@@ -201,6 +225,12 @@ define(['underscore'], function (_) {
 		return _.reduce(string.split(''), function (memo, ele, index) {
 			return existy(determiner) && (index < +position) ? memo += ele : !existy(determiner) && (index > +position) ? memo += ele : memo
 		},'')
+	}
+
+	var second = function(array) {
+		return _.reduce(array, function (memo, ele, index) {
+			return index == 1 ? [].concat.call([], memo, ele) : memo
+		},[]).join('')
 	}
 
 	var stringLength = function(string) {
@@ -240,6 +270,7 @@ define(['underscore'], function (_) {
 	}
 
 	return {
+		addToProto : addToProto,
 		allKeys : allKeys,
 		allValues : allValues,
 		anyKey : anyKey,
@@ -248,6 +279,7 @@ define(['underscore'], function (_) {
 		booleanArray : booleanArray,
 		chainer : chainer,
 		checkForKeys : checkForKeys,
+		clearIntervals : clearIntervals,
 		compareOffsets : compareOffsets,
 		containsSubString : containsSubString,
 		createObject : createObject,
@@ -258,6 +290,7 @@ define(['underscore'], function (_) {
 		flatten : flatten,
 		getFirstKey : getFirstKey,		
 		getFirstValue : getFirstValue,
+		intervals : intervals,
 		lastIndex : lastIndex,	
 		nestedProperties: nestedProperties,
 		nestedValue : nestedValue,
@@ -266,6 +299,7 @@ define(['underscore'], function (_) {
 		randomizer : randomizer,
 		randomNumber : randomNumber,
 		returnSubString : returnSubString,
+		second : second,
 		stringLength : stringLength,
 		truthy : truthy,
 		updateDataSet : updateDataSet,

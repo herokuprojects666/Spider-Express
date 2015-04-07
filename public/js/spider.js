@@ -11,6 +11,10 @@ require(['./requireConfig'], function () {
 			}).call(this)
 			$(document).ready(function() {
 				var gameDeferred = new $.Deferred();
+				$(this).on('mousedown', window, function(e) {
+					console.log(document.elementFromPoint(497, 1016))
+					console.log(document.elementFromPoint(497, 1013))
+				})
 				$('#setup button').on('mousedown', function() {
 					var game = new Spider;
 					var deckDeferred = new $.Deferred();
@@ -41,10 +45,11 @@ require(['./requireConfig'], function () {
 													function (h) { return game.fullOffsetList()},
 													function (h, i) { return server.updateGame.call(this,
 														function (data) { return helper.chainer(game, that, data, 
-															function (i) { return $('.count').empty()},
+															function (i) { return $('.count').html(0)},
 															function (i) { return $('.score').html(2000)},
 															function (i) { return game.clearStacks()},
-															function (i) { return game.hiddenElements()}
+															function (i) { return game.hiddenElements()},
+															function (i) { return $('#game').val('')}
 														)}
 													)}
 												)}
@@ -58,7 +63,6 @@ require(['./requireConfig'], function () {
 							function (data) { return helper.chainer(game, that, [$('div>.error').html('')], 
 								function (a) { return game.populateBoard(data)},
 								function (a) { return game.fullOffsetList()},
-								function (a) { $('#game').val('')},
 								function (a) { return game.hiddenElements()}
 							)}, 
 							function (data) {
@@ -67,13 +71,41 @@ require(['./requireConfig'], function () {
 							})
 						},
 						function (t) {
+							$('.moves').css('display', 'unset')
+							$('.current_score').css('display', 'unset')
+							$('#stats').css('display', 'unset')
 							var defaulted = function() { return game.defaulted([], "cardStackHTML", 'clicked', "clickedMatches", "currentRow", "deckHTML", "draggedData", 
 							"draggedEleOffsets", "draggedEleString", "draggedElements", "draglist", "droppables", "elementlist", "fullBaseValue", "hoverElements", 
 							"hoverMatches", "hoverString", "hovered", "hoveredData", "initialOffset", "keys", "list", "oldHoverCard", "previousRow", 
 							"ImageDimensions", "intervals", "pseudoDragged", "pseudoHovered", "tempOffsets")}
+							var arr = game.totalDeck()
+							_.each(arr, function (ele) {
+								$(ele).draggable()
+								$(ele).draggable('enable')
+							})
 							return gameDeferred.resolve(game, defaulted)
 						})
 				})
+
+				// $('ul>li>ul>li').on('mouseenter', function () {
+				// 	// var selector = this
+				// 	// if ($(this>a).hasClass('dropdown-toggle')) {
+				// 	// 	$(this).css('background-color', 'blue')
+				// 	// }
+				// 	// console.log($(this).children.length)
+				// 	// if ($(this).hasClass('dropdown-toggle')) {
+				// 	// 	$(this).css('background-color', 'blue')
+				// 	// }
+				// 	_.each($(this).children('a'), function (ele) {
+				// 		if (!$(ele).hasClass('dropdown-toggle')) {
+				// 			$(ele).css('background-color', 'blue')
+				// 		}
+				// 	})
+					
+				// })
+				// $('ul>li>ul>li').on('mouseleave', function () {
+				// 	$(this).css('background-color', 'transparent')
+				// })
 				$('#save').on('mousedown', function() {
 					var that = this;
 					gameDeferred.done(function (game) {
@@ -90,7 +122,9 @@ require(['./requireConfig'], function () {
 					})
 				})
 				$('#cheat').on('mousedown', function () {
+
 					gameDeferred.done(function (game) {
+						console.log(game.game.hiddenElements)
 						if (helper.truthy(game.game.animation)) {
 							return helper.chainer(game, null, "#deck>img[id*='deck']", 
 								function (a, b) { return game.cheat(350)
@@ -135,6 +169,7 @@ require(['./requireConfig'], function () {
 						else {
 							$(that).draggable('enable')
 							return helper.chainer(game, game.calculateOffset(), that,
+								function (a) { return game.fullOffsetList()},
 								function (a) { return game.hiddenElements()},
 								function (a) { return game.extractIdentity(that)}, 
 								function (a) { return game.extractCard(a)}, 
@@ -157,13 +192,14 @@ require(['./requireConfig'], function () {
 						var obj = game.defaulted(false, 'allowEvent');
 						if (!_.isEmpty(game.game.intervals) || helper.truthy(game.game.endGame)) {
 							$(that).draggable('disable')
-						} else 
+						} else {
 							return helper.chainer(game, that, [game.calculateLeft(game.switchARoo(that))], 
 								function (a, b) { return helper.compareOffsets(game.switchARoo(that), b, helper.lastIndex, game.separatedList)},
 								function (a) { return _.isBoolean(a) ? a : helper.booleanArray(_.last(a), game.switchARoo(that))},
 								function (a) { return a == false || $(that).attr('id') == 'any' ? $(that).draggable('disable') : $(that).draggable('enable')},
 								function (a) { return game.defaulted(true, 'allowEvent')}
 							)
+						}
 					})
 				})
 				$('#deck').on('mouseleave', 'img', function() {
@@ -184,7 +220,7 @@ require(['./requireConfig'], function () {
 						}
 						if (!helper.truthy(game.game.allowEvent) || _.isEmpty(game.game.data) || helper.truthy(game.game.endGame)) {
 							$(that).draggable('disable')
-						} else {				
+						} else {			
 							$(that).draggable('disable')
 							var deferred = new $.Deferred();
 							var deckCardDeferred = new $.Deferred();

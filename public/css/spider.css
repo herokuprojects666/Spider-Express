@@ -126,6 +126,7 @@
 .moves {
 	color : #0101DF;
 	font-size : 13pt;
+	display : none;
 }
 
 .count {
@@ -136,6 +137,7 @@
 .current_score {
 	color : #0101DF;
 	font-size : 13pt;
+	display : none;
 }
 
 .score {
@@ -211,10 +213,6 @@ form {
 
 ul>li {
 	margin : 5px 5px;
-}
-
-ul>li>a:hover {
-	opacity : .2;
 }
 
 button:hover {
