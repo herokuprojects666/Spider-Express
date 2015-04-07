@@ -1,0 +1,125 @@
+.gameboard {
+	position : relative;
+	z-index : 5;
+	width : 90%;
+}
+
+div > input {
+	text-align : center;
+	-webkit-box-shadow : 3px 3px 20px red;
+	margin : 5px 10px;
+}
+
+#game {
+	position : relative;
+	z-index : 5;
+	width : 100%;
+	top : 20px;
+	left : 20px;
+}
+
+div#board { 
+	display: block;
+	margin : -7px 0;
+}
+
+.cell {
+	display: inline-block;
+	width: 33px;
+	height: 33px;
+	border: 1px solid green;
+}
+
+.snake { background: #0000FF; }
+
+.easy { background: #F3FF00; }
+
+.medium { background: #18AF2E; }
+
+.hard { background: #FF2600; }
+
+#Create {
+	margin : 10px 10px;
+	outline : none;
+	box-shadow : 3px 3px 30px green;
+}
+
+#Create:hover{
+	box-shadow : 3px 3px 10px green;
+}
+
+#Play {
+	outline : none;
+	box-shadow : 3px 3px 30px green;
+}
+
+#Play:hover{
+	box-shadow : 3px 3px 10px green;
+}
+
+#Score {
+	color : #0101DF;
+	font-size : 13pt;
+	display : none;
+	position : relative;
+	left : 50px;
+}
+
+#score{
+	color : #01DF01;
+	font-size : 20pt;
+	position : relative;
+	left : 50px;
+	font-weight : bold;
+}
+
+#level{ 
+	color : #01DF01;
+	font-size : 20pt;
+	position : relative;
+	left : 50px;
+}
+
+#Level {
+	color : #0101DF;
+	font-size : 13pt;
+	display : none;
+	position : relative;
+	left : 50px;
+	font-weight : bold;
+}
+
+#container {
+	border-radius : 2em 2em 2em 2em/ 2em 2em 2em 2em;
+	background : white;
+	position : relative;
+	z-index : 10;
+	left : 40px;
+	width : 100%;
+	height : auto;
+}
+
+.identifier {
+	position : relative;
+	left : 40px;
+	font-weight : bold;
+	font-size : 20px;
+	color : #FFFFFF;
+	width : 100px;
+}
+
+.indent {
+	position : relative;
+	left : 10px;
+	display : none;
+	margin-bottom : 10px;
+}
+
+#Stats {
+	display : none;
+}
+
+#tiles{
+	margin-top : 30px;
+	display : none;
+}
