@@ -89,3 +89,24 @@ button:hover {
 #tiles{
 	display : none;
 }
+
+#home {
+	position : relative;
+	z-index : 5;
+}
+
+.indent {
+	position : relative;
+	left : 20px;
+	margin-bottom : 10px;
+}
+
+#Top{
+	font-family: "Arial Black", Gadget;
+	font-size : 20px;
+	text-align : left;	
+}
+
+#spacer {
+	margin-top : 20px;
+}

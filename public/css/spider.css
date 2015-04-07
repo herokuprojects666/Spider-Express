@@ -151,12 +151,6 @@
 	width : 800px;
 }
 
-#Top{
-	font-family: "Arial Black", Gadget;
-	font-size : 20px;
-	text-align : left;	
-}
-
 td, th {
 	border : 3px solid green;
 	padding : 5px 10px;
