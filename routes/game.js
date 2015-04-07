@@ -13,14 +13,14 @@ exports.highScore = function(req, res, next) {
 }
 
 exports.loadgame = function(req, res, next) {
-	if (req.body.slot > 10) {
-		return res.send({error : 'Maximum game slots reached.'})
+	if (req.body.slot >= 10) {
+		return res.send({error : 'Invalid Value'})
 	}
 	req.collections.spider.findOne({
 		username : req.params.user,
 		slot : req.body.slot
 	}, function (err, user) {
-		if(_.isEmpty(user)) return res.send({error : 'no game found'})
+		if(_.isEmpty(user)) return res.send({error : 'No Game Found'})
 		return res.send({game : user.game})
 	})
 }

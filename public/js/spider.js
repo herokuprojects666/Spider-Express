@@ -59,7 +59,8 @@ require(['./requireConfig'], function () {
 							function (data) { return helper.chainer(game, that, [$('div>.error').html('')], 
 								function (a) { return game.populateBoard(data)},
 								function (a) { return game.fullOffsetList()},
-								function (a) { return game.hiddenElements()}
+								function (a) { return game.hiddenElements()},
+								function (a) { $('div>.error').html('')}
 							)}, 
 							function (data) {
 								$('div>.error').html(data.error) 
@@ -70,6 +71,7 @@ require(['./requireConfig'], function () {
 							$('.moves').css('display', 'unset')
 							$('.current_score').css('display', 'unset')
 							$('#stats').css('display', 'unset')
+							$('div>.error').html('')
 							var defaulted = function() { return game.defaulted([], "cardStackHTML", 'clicked', "clickedMatches", "currentRow", "deckHTML", "draggedData", 
 							"draggedEleOffsets", "draggedEleString", "draggedElements", "draglist", "droppables", "elementlist", "fullBaseValue", "hoverElements", 
 							"hoverMatches", "hoverString", "hovered", "hoveredData", "initialOffset", "keys", "list", "oldHoverCard", "previousRow", 

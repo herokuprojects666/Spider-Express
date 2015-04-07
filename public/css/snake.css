@@ -63,6 +63,7 @@ div#board {
 	display : none;
 	position : relative;
 	left : 50px;
+	font-weight : bold;
 }
 
 #score{
@@ -78,6 +79,7 @@ div#board {
 	font-size : 20pt;
 	position : relative;
 	left : 50px;
+	font-weight : bold;
 }
 
 #Level {

@@ -127,6 +127,7 @@
 	color : #0101DF;
 	font-size : 13pt;
 	display : none;
+	font-weight : bold;
 }
 
 .count {
@@ -138,6 +139,7 @@
 	color : #0101DF;
 	font-size : 13pt;
 	display : none;
+	font-weight : bold;
 }
 
 .score {

@@ -1,5 +1,7 @@
 .error {
 	color : #FF0000;
+	position : relative;
+	z-index : 5;
 }
 
 .message {
