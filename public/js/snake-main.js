@@ -1,5 +1,6 @@
 define(['underscore', 'jquery', 'helpers'], function (_, $, helper) {
 	var addFood = function(length, firstClass, secondClass, border) {
+		console.log('here')
 		return _.each(length, function (ele) {
 			var coords = determineCoords(border)
 			var element = document.getElementById(_.first(coords) + '-' + helper.second(coords))
@@ -7,6 +8,7 @@ define(['underscore', 'jquery', 'helpers'], function (_, $, helper) {
 				coords = determineCoords(border)
 				element = document.getElementById(_.first(coords) + '-' + helper.second(coords))
 			}
+			console.log(coords)
 			$(element).addClass(firstClass)
 		})
 	}
@@ -24,6 +26,10 @@ define(['underscore', 'jquery', 'helpers'], function (_, $, helper) {
 	var createGrid = function() { 
 		var width = $('#x').val()
 		var height = $('#y').val()
+		if (height == '' || width == '') {
+			$('.error').html("Error. Didn't fill in both fields")
+			return
+		}
 		var board = ''
 		_.each(_.range(height), function (ele, index) {
 			board += '<div id="board">'
@@ -132,11 +138,15 @@ define(['underscore', 'jquery', 'helpers'], function (_, $, helper) {
 				})
 			})
 		})
+		console.log(array)
+		console.log(number)
 		return array[Math.ceil(Math.random() * array.length)]
 	}
 
 	var placeItems = function (array, border) {
 		var that = this
+		console.log(this)
+		console.log(array)
 		return _.each(array, function (ele, index) {
 			return addFood(_.range(ele), that.foods[index], 'snake', 4)
 		})

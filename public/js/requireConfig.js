@@ -12,6 +12,7 @@ require.config({
 		partial : './partial',
 		snake : './snake',
 		snakeMain : './snake-main',
+		layout : './svgElement',
 		underscore : './underscore'
 	},
 })

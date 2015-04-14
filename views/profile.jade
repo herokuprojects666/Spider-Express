@@ -1,7 +1,10 @@
 extend layout
 block page
   - var page = 'logged in'
+  - var menu = 'profile'
 block gameboard
-  p.message Page update in progress. Check back soon!
+  div.row
+    div.col-4
+      p.message Page update in progress. Check back soon!
 block javascript
   include includes/scripts

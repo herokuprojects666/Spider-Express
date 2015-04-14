@@ -4,6 +4,8 @@ block page
   - var page = 'logged in'
 block gameboard
   div.gameboard(id="#{user.username}")
-  p.message Page update in progress. While you're waiting, you can enjoy a friendly game of Snake or Solitaire. 
+  div.row
+    div.col-8
+      p.message Page update in progress. While you're waiting, you can enjoy a friendly game of Snake or Solitaire. 
 block javascript
   include includes/scripts

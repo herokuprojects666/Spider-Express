@@ -4,47 +4,44 @@ block page
   - var menu = 'spider'
 block gameboard
   div.gameboard(id='#{user.username}')
-    div.container-fluid#setup
+    div#setup
       div.row#initial
-        button.btn.btn-lg.btn-info#new-game New Game
-        button.btn.btn-lg.btn-info#load-game Load Game
+        button.btn#new-game New Game
+        button.btn#load-game Load Game
       div.row#difficulty
-        button.btn.btn-lg.btn-info#easy Easy
-        button.btn.btn-lg.btn-info#medium Medium
-        button.btn.btn-lg.btn-info#hard Hard
-    div.container-fluid#other
+        button.btn#easy Easy
+        button.btn#medium Medium
+        button.btn#hard Hard
+    div#other
       div.row#cheating
         button.btn.btn-lg.btn-danger#cheat Cheat
         button.btn.btn-lg.btn-primary#save Save
-    div.container-fluid#loading-area
+    div#loading-area
       p
         form
-          input.form-control#game(type='text', placeholder='New/Saved Game Slot')
+          input#game(type='text', placeholder='New/Saved Game Slot')
     div.error= error
     div#move-count
       div.row
-        div#stats.col-lg-3
-          p.moves Move Count : 
+        div#stats.col-3
+          p#moves Move Count : 
           p.count
-          p.current_score Score :
+          p#current_score Score :
           p.score
-        div#high_scores.col-lg-4
-          div.row
-            p#Top.message Top Scores
+        div#high_scores.col-5
+          p#Top.message Top Scores
           div.row#main_selector
-            ul.nav.nav-pills
-              li.active#Personal 
-                a(href='#') Personal
-              li#Global 
-                a(href='#') Global
+            button.btn.active#Personal 
+              a(href='#') Personal
+            button.btn.default#Global 
+              a(href='#') Global
           div.row#sub_selector
-            ul.nav.nav-pills
-              li.active#Easy
-                a(href='#') Easy
-              li#Medium
-                a(href='#') Medium
-              li#Hard
-                a(href='#') Hard
+            button.btn.active#Easy
+              a(href='#') Easy
+            button.btn.default#Medium
+              a(href='#') Medium
+            button.btn.default#Hard
+              a(href='#') Hard
         div#data
     br
     div#game-container

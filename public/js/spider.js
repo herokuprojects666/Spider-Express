@@ -1,6 +1,6 @@
 require(['./requireConfig'], function () {
 	require(['jquery'], function ($) {
-		require(['ajax', 'helpers', 'html','main', 'partial', 'underscore', 'jqueryui', 'bootstrap'], function (server, helper, html, Spider, curried, _) {
+		require(['ajax', 'helpers', 'html','main', 'partial', 'underscore', 'layout', 'jqueryui', 'bootstrap'], function (server, helper, html, Spider, curried, _) {
 			(function() {
 				return server.fetchScores( function (data) {
 					sessionStorage.setItem('scores', JSON.stringify(data.scores))
@@ -68,9 +68,9 @@ require(['./requireConfig'], function () {
 							})
 						},
 						function (t) {
-							$('.moves').css('display', 'unset')
-							$('.current_score').css('display', 'unset')
-							$('#stats').css('display', 'unset')
+							$('#moves').css('display', 'unset')
+							$('#current_score').css('display', 'unset')
+							$('#stats').css({'display' : 'unset', 'text-align' : 'left'})
 							$('div>.error').html('')
 							var defaulted = function() { return game.defaulted([], "cardStackHTML", 'clicked', "clickedMatches", "currentRow", "deckHTML", "draggedData", 
 							"draggedEleOffsets", "draggedEleString", "draggedElements", "draglist", "droppables", "elementlist", "fullBaseValue", "hoverElements", 
@@ -83,6 +83,10 @@ require(['./requireConfig'], function () {
 							})
 							return gameDeferred.resolve(game, defaulted)
 						})
+				})
+				
+				$('li').on('mousedown', function () {
+					$(this).addClass('active')
 				})
 
 				$('#save').on('mousedown', function() {
@@ -111,12 +115,12 @@ require(['./requireConfig'], function () {
 					})
 				})
 
-				$('#main_selector li').on('mousedown', function (e) {
+				$('#main_selector button').on('mousedown', function (e) {
 
 					return (function () {
 						var data = $.parseJSON(sessionStorage.getItem('scores'));
-						var list = _.each($('#main_selector li'), function (ele) {
-							return $(ele).hasClass('active') ? $(ele).removeClass('active') : null
+						var list = _.each($('#main_selector button'), function (ele) {
+							return $(ele).hasClass('active') ? ($(ele).removeClass('active'), $(ele).addClass('default')) : null
 						});
 						$(this).addClass('active')
 						var scores = server.extractScores(data);
@@ -124,11 +128,11 @@ require(['./requireConfig'], function () {
 					}).call(this)
 				})
 
-				$('#sub_selector li').on('mousedown', function () {
+				$('#sub_selector button').on('mousedown', function () {
 					return (function () {
 						var data = $.parseJSON(sessionStorage.getItem('scores'));
-						var list = _.each($('#sub_selector li'), function (ele) {
-							return $(ele).hasClass('active') ? $(ele).removeClass('active') : null
+						var list = _.each($('#sub_selector button'), function (ele) {
+							return $(ele).hasClass('active') ? ($(ele).removeClass('active'), $(ele).addClass('default')) : null
 						});
 						$(this).addClass('active')
 						var scores = server.extractScores(data);

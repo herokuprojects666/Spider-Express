@@ -5,29 +5,34 @@ block page
 block gameboard
   div.gameboard(id='#{user.username}')
     div.row
-      input#x(placeholder='Board Width')
-      input#y(placeholder='Board Height')
-      button.btn.btn-sm.btn-danger#Create Create Grid
-      button.btn.btn-sm.btn-primary#Play Start Game
+      div.col-8
+        input#x(placeholder='Board Width')
+        input#y(placeholder='Board Height')
+        button.btn.default.message#Create Create Grid
+        button.btn.default.message#Play Start Game
+    div.row
+      div.col-5
+        div.error
     div.values
       div.row
-        div.col-md-4#Stats
+        div.col-6#Stats
           div.row
-            div.col-lg-2
-              p#Score Current Score :
-              p.message#score
-          div.row
-            div.col-lg-2
-              p#Level Current Level :
-              p.message#level      
-        div.col-md-1#tiles
-          div(class="cell easy indent")
-            p(class='identifier') = Easy
-          div(class="cell medium indent")
-            p(class='identifier') = Medium 
-          div(class="cell hard indent")
-            p(class='identifier') = Hard
-        div.col-lg-4               
-
+            div.col-7#tiles
+              div.row
+                div#spacer(class="cell easy")
+                  p(class='identifier') = Easy
+              div.row
+                div#spacer(class="cell medium")
+                  p(class='identifier') = Medium
+              div.row 
+                div#spacer(class="cell hard")
+                  p(class='identifier') = Hard   
+            div.col-4
+              div.row
+                p#Score Current Score :
+                p.message#score
+              div.row
+                p#Level Current Level :
+                p.message#level      
   div#container
     div#game

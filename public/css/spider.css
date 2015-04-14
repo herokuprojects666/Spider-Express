@@ -9,6 +9,12 @@
 	height : 1000px;
 }
 
+.gameboard {
+	position : relative;
+	top : 20px;
+	left : 60px;
+}
+
 #deck {
 	position : relative;
 	left : 300px;
@@ -123,11 +129,12 @@
 	overflow : hidden;
 }
 
-.moves {
+#moves {
 	color : #0101DF;
 	font-size : 13pt;
 	display : none;
 	font-weight : bold;
+	text-align : left;
 }
 
 .count {
@@ -135,11 +142,12 @@
 	font-size : 20pt;
 }
 
-.current_score {
+#current_score {
 	color : #0101DF;
 	font-size : 13pt;
 	display : none;
 	font-weight : bold;
+	text-align : left;
 }
 
 .score {
@@ -165,10 +173,9 @@ td {
 #setup button {
 	position : relative;
 	z-index : 5;
-	color : #FFFFFF;
 	margin : 5px 5px;
-	-webkit-box-shadow : 2px 3px 3px #2E9AFE;
-	box-shadow : 2px 3px 3px #2E9AFE;
+	color : #FFFFFF;
+	background-image : linear-gradient(to right, #3ADF00, #B40404);
 }
 
 #other button {
@@ -176,9 +183,8 @@ td {
 	z-index : 5;
 	color : #FFFFFF;
 	margin : 5px 5px;
-	-webkit-box-shadow : 2px 3px 3px #00FF00;
-	box-shadow : 2px 3px 3px #00FF00;
 	outline : none;
+	background-image : linear-gradient(to right, #B40404,#3ADF00);
 }
 
  #difficulty>button {
@@ -188,14 +194,14 @@ td {
 
  button#cheat {
   display : none;
-  -webkit-box-shadow : 2px 3px 3px #FE2E2E;
-  box-shadow : 2px 3px 3px #FE2E2E;
+/*  -webkit-box-shadow : 2px 3px 3px #FE2E2E;
+  box-shadow : 2px 3px 3px #FE2E2E;*/
  }
 
  button#save{
  	display : none;
- 	-webkit-box-shadow : 2px 3px 3px #084B8A;
- 	box-shadow : 2px 3px 3px #084B8A;
+/* 	-webkit-box-shadow : 2px 3px 3px #084B8A;
+ 	box-shadow : 2px 3px 3px #084B8A;*/
  }
 
 table {
@@ -212,6 +218,12 @@ ul>li {
 	margin : 5px 5px;
 }
 
-button:hover {
-	opacity : .2;
+#main_selector button {
+	margin-right : 6px;
+	margin-bottom : 6px;
+}
+
+#sub_selector button {
+	margin-right : 6px;
+	margin-bottom : 6px;
 }

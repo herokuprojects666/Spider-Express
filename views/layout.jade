@@ -2,17 +2,27 @@ doctype html
 html
   head
     title= appTitle
-    link(rel="stylesheet", href="/css/bootstrap.css")
-    link(rel="stylesheet", href="/css/bootstrap-theme.css")
+    link(rel="stylesheet", href="/css/grid.css")
     link(rel="stylesheet", href="/css/style.css")
     link(rel="stylesheet" href="/css/jquery-ui.css")
     link(rel="stylesheet", href="/css/jquery-ui.theme.min.css")    
   body
-    img(src="/img/black.jpg", id="poker")
     block page
-  h2= appTitle
-  div
-    include includes/menu
-  block gameboard
+    div.menu
+      include includes/menu
+    img(src="/img/black.jpg", id="poker")
+    svg#SVG
+      defs
+        linearGradient#grad1
+          stop(offset=0 stop-color='#411')
+          stop(offset=.05 stop-color='#411') 
+          stop(offset=.5)
+        clipPath#clipping
+          path#clipped
+      rect#svgMenu(width="100%", height="100%", style="clip-path:url(#clipping); fill:url(#grad1);")
+    
+    h2= appTitle
+    block gameboard
   block javascript
     include includes/scripts
+

@@ -32,10 +32,10 @@ define(['underscore'], function (_) {
 
 	extractScores = function(data) {
 		var user = $('.gameboard').attr('id').toLowerCase();
-		var difficulty = _.reduce($('#sub_selector li'), function (memo, elem) {
+		var difficulty = _.reduce($('#sub_selector button'), function (memo, elem) {
 			return $(elem).hasClass('active') ? [].concat.call([], memo, $(elem).attr('id') ) : memo
 		}, []).join('').toLowerCase();
-		var main = _.reduce($('#main_selector li'), function (memo, elem) {
+		var main = _.reduce($('#main_selector button'), function (memo, elem) {
 			return $(elem).hasClass('active') ? [].concat.call([], memo, $(elem).attr('id')) : memo
 		}, []).join('');
 		var Personal = _.reduce(data, function (mem, elem) {

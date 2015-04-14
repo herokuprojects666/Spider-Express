@@ -3,13 +3,15 @@ block page
   - var menu = 'rules'
   - var page = 'logged in'
 block gameboard
-  p.message#rule-heading Rules
-  div#rules
-    p.message 1) Complete stacks of the same suit to clear cards from the board
-    p.message 2) Don't like the way the game is playing out? Change your fate by reverting moves with the undo move (control z)
-    p.message 3) Look into the future with the cheat move! Reveal a card that is currently hidden. 
-    p.message 4) Need a break away from the virtual felt? No problem. Just save your game and resume it later. 
-    p.message 5) You have a maximum of 9 saved game slots. 
-    p.message 6) Do you have that friend who always beats you at Halo? Invite him here to compete on the global score leaderboard. 
+  div.row
+    div.col-6
+      p.message#rule-heading Rules
+      div#rules
+        p.message Complete stacks of the same suit to clear cards from the board
+        p.message Don't like the way the game is playing out? Change your fate by reverting moves with the undo move (control z)
+        p.message Look into the future with the cheat move! Reveal a card that is currently hidden. 
+        p.message Need a break away from the virtual felt? No problem. Just save your game and resume it later. 
+        p.message You have a maximum of 9 saved game slots. 
+        p.message Do you have that friend who always beats you at Halo? Invite him here to compete on the global score leaderboard. 
 block javascript
   include includes/scripts

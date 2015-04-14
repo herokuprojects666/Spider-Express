@@ -1,6 +1,5 @@
 .error {
 	color : #FF0000;
-	position : relative;
 	z-index : 5;
 }
 
@@ -20,38 +19,25 @@
 }
 
 ul>li {
-	margin : 5px 5px;
+
+	fill : url(#grad1);
 }
 
 /*ul>li>a:hover {
 	opacity : .2;
 }*/
 
-ul>li>a:hover {
+/*ul>li>a:hover {
 	opacity : .2;
 }
+*/
 
-
-
-#Spider:hover {
-	background : black;
-	font-weight : bold;
-	color : white;
-	opacity : 1;
-}
-
-#Snake:hover {
-	background : black;
-	font-weight : bold;
-	color : white;
-	opacity : 1;
-}
 
 button:hover {
 	opacity : .2;
 }
 
-.link {
+#link {
 	color : red;
 }
 
@@ -82,10 +68,6 @@ button:hover {
 	margin-left : 20px;
 }
 
-#Stats {
-	display : none;
-}
-
 #tiles{
 	display : none;
 }
@@ -103,10 +85,123 @@ button:hover {
 
 #Top{
 	font-family: "Arial Black", Gadget;
-	font-size : 20px;
-	text-align : left;	
+	font-size : 18px;
+	text-align : center;
+	margin-top : -5px;	
 }
 
 #spacer {
 	margin-top : 20px;
+}
+
+#SVG {
+	position : absolute;
+	width : 100%;
+	height : 100%;
+	margin-top:-20px;
+}
+
+#b {
+	background-color: linear-gradient(right, #088A08, #3ADF00);
+}
+
+.menu {
+	position : absolute;
+	left : 175px;
+	z-index : 10;
+}
+
+ul {
+  text-align: left;
+  display: inline;
+  margin: 0;
+  padding: 15px 4px 17px 0;
+  position : relative;
+  top : -10px;
+
+}
+ul li {
+  font: bold 12px/18px sans-serif;
+  display: inline-block;
+  margin : 5px 5px;
+  margin-right: 4px;
+  position: relative;
+  padding: 15px 20px;
+  cursor: pointer;
+  transition: all 1s;
+}
+
+ul li ul {
+  padding: 0;
+  position: absolute;
+  top: 55px;
+  left: 0;
+  width: 150px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 1s;
+}
+ul li ul li { 
+  background: #555; 
+  display: block; 
+  color: #fff;
+  text-shadow: 0 -1px 0 #000;
+}
+
+ul li ul li:hover { background: #666; }
+ul li:hover ul {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+}
+
+#signIn, #create {
+	position : relative;
+	left : 35px;
+	display : inline-block;
+	width : 400px;
+	height : 340px;
+	background-color : #151515;
+	opacity : .5;
+	margin-top: 8px;
+}
+
+#create { 
+	height : 300px;
+	width : 340px;
+}
+
+#signInForm, #createForm{
+	display : block;
+	width : 200px;
+	height : 220px;
+	border-radius : 2px;
+	background-color : black;
+	margin-top : 10px;
+	margin-left : 20px;
+	border-style : solid;
+	border-color : #848484;
+}
+
+#createForm {
+	height : 240px;
+}
+#login {
+	text-align : left;
+	margin-left : 15px;
+}
+
+#Spider:hover {
+	background : black;
+	font-weight : bold;
+}
+
+#hovered:hover {
+	background-color : black;
+	font-weight : bold;
+}
+
+#links:hover {
+	color : green;
+	font-weight: bold;
 }
