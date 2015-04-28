@@ -3,13 +3,14 @@ define(['underscore'], function (_) {
 		_.each(baseObj, function (value, key) {
 			return _.has(baseObj, key) ? obj.prototype[key] = baseObj[key] : null
 		})
-		return new obj
+		return obj
 	}
+
 	var allKeys = function(ele, index, array) {
 		return _.keys(ele)
 	};
 
-	var allValues = function(ele, index, array) { 
+	var allValues = function(ele, index, array) {
 		return _.values(ele)
 	};
 
@@ -21,7 +22,7 @@ define(['underscore'], function (_) {
 			return ele == true
 		})
 	};
-	
+
 	var anyValue = function(values, list) {
 		return _.map(values, function (ele) {
 			return _.contains(list, ele)
@@ -34,7 +35,7 @@ define(['underscore'], function (_) {
 	};
 
 	var booleanArray = function(array, value) {
-		if (!_.isArray(array)) 
+		if (!_.isArray(array))
 			return array
 		var booleans = _.map(array, function (ele) {
 			return _.isEqual(ele, value) ? true : false
@@ -51,9 +52,9 @@ define(['underscore'], function (_) {
 		}, obj)
 	}
 
-	var checkForKeys = function(keyList, requiredKeys) { 
+	var checkForKeys = function(keyList, requiredKeys) {
 		var array = anyValue(requiredKeys, keyList);
-		return _.every(array) 
+		return _.every(array)
 	};
 
 	var clearIntervals = function(object, key) {
@@ -69,7 +70,7 @@ define(['underscore'], function (_) {
 		var truthy = _.reduce(compareAgainst, function (memo, ele, index, arr) {
 			if (existy(determiner))
 				return _.isEqual(ele, input) && determiner(arr, index) ? memo.concat.call(memo, true) : memo
-			else 
+			else
 				return _.isEqual(ele, input) ? memo.concat.call(memo, true) : memo
 		}, []);
 		return _.contains(truthy, true) ? callback(true) : callback(compareAgainst, input)
@@ -94,7 +95,7 @@ define(['underscore'], function (_) {
 		return object
 	};
 
-	var defaultValues = function(obj, value) { 
+	var defaultValues = function(obj, value) {
 		var args = flatten(_.rest(arguments, 2));
 		_.each(args, function (ele) {
 			return obj.hasOwnProperty(ele) ? obj[ele] = value : obj
@@ -124,15 +125,15 @@ define(['underscore'], function (_) {
 				return [].concat.call([], memo, ele)
 			}, []);
 			return flatten(reducing)
-		} else 
+		} else
 			return array
 	}
 
-	var getFirstKey = function(ele, index, array) { 
+	var getFirstKey = function(ele, index, array) {
 		return _.first(_.keys(ele))
 	};
 
-	var getFirstValue = function(ele, index, array) { 
+	var getFirstValue = function(ele, index, array) {
 		return _.first(_.values(ele))
 	};
 
@@ -143,6 +144,18 @@ define(['underscore'], function (_) {
 	var lastIndex = function(array, index) {
 		var length = array.length;
 		return index == (array.length - 1) ? true : false
+	};
+
+	var mergeObjects = function(objects, obj) {
+		var obj = obj || {};
+		_.each(objects, function (ele, index) {
+			var value = getFirstValue(ele)
+			for (prop in ele) {
+				if (ele.hasOwnProperty(prop))
+					obj[prop] = value
+			}
+		})
+		return obj
 	};
 
 	var nestedProperties = function (initial, properties) {
@@ -173,17 +186,18 @@ define(['underscore'], function (_) {
 
 	var partial = function(func) {
 		var args = _.rest(arguments);
+		var that = this
 		return function() {
 			var arg = _.toArray(arguments);
-			return func.apply(null, [].concat.call([], arg, args))
-		}		
+			return func.apply(that, [].concat.call([], arg, args))
+		}
 	}
 
 	var qualifiers = function(context, args, list) {
 		var funcs = _.rest(arguments, 3);
 		return _.map(list, function (ele, index, array) {
 			return _.reduce(funcs, function (memo, elem, ind, arr) {
-				if (_.isArray(memo)) 
+				if (_.isArray(memo))
 					memo = [memo]
 				var params = [].concat.call([], ele, args, index)
 				var arg = [].concat.call([], context, memo, [params], elem)
@@ -204,13 +218,13 @@ define(['underscore'], function (_) {
 
 	var randomNumber = function(length, min, max) {
 		var value = Math.floor(Math.random() * length);
-		if (min && max && (value > max || value < min)) 
+		if (min && max && (value > max || value < min))
 			return randomNumber(length, min, max)
-		else if (min && value < min) 
+		else if (min && value < min)
 			return randomNumber(length, min)
-		else if (max && value > max) 
+		else if (max && value > max)
 			return randomNumber(length, null, max)
-		else 
+		else
 			return value
 	};
 
@@ -286,12 +300,13 @@ define(['underscore'], function (_) {
 		defaultValues : defaultValues,
 		existy : existy,
 		extractNumber : extractNumber,
-		extractString : extractString,		
+		extractString : extractString,
 		flatten : flatten,
-		getFirstKey : getFirstKey,		
+		getFirstKey : getFirstKey,
 		getFirstValue : getFirstValue,
 		intervals : intervals,
-		lastIndex : lastIndex,	
+		lastIndex : lastIndex,
+		mergeObjects : mergeObjects,
 		nestedProperties: nestedProperties,
 		nestedValue : nestedValue,
 		partial : partial,

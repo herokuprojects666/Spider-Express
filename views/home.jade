@@ -5,7 +5,35 @@ block page
 block gameboard
   div.gameboard(id="#{user.username}")
   div.row
-    div.col-8
-      p.message Page update in progress. While you're waiting, you can enjoy a friendly game of Snake or Solitaire. 
-block javascript
-  include includes/scripts
+    div.col-19
+      div.searchArea
+        div.col-10
+        div.col-2
+          input.search.searchBtn(placeholder='Search')
+          form(class='submitting', action='/home/search/', method='get', style='display:none;')
+            input.hashtags(name='hashtags')
+            input.user(name='user')
+  div.row
+    div.col-4
+      div.row.twitter
+        div.row
+          div.col-10
+          div.col-10
+            div.col-10.offset-4
+              p#details.tweets #{user.name}
+              a.tweets(href='/#{user.username}/tweets') @#{user.username}
+        div.row
+          div.col-7
+            p.tweets Tweets
+          div.col-7
+            p.following Following
+          div.col-6
+            p.followers Followers
+        div.row
+          div.col-7
+            p.tweets #{user.tweets.length}
+          div.col-7
+            p.tweets 0
+          div.col-6
+            p.tweets 0
+  div.row.container

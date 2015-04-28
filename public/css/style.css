@@ -14,14 +14,14 @@
 	left : 0px;
 	top : 0px;
 	z-index : 0;
-	height : 100%;
 	width : 100%;
+	height : 100%;
 }
 
-ul>li {
+/*ul>li {
 
 	fill : url(#grad1);
-}
+}*/
 
 /*ul>li>a:hover {
 	opacity : .2;
@@ -87,7 +87,7 @@ button:hover {
 	font-family: "Arial Black", Gadget;
 	font-size : 18px;
 	text-align : center;
-	margin-top : -5px;	
+	margin-top : -5px;
 }
 
 #spacer {
@@ -141,9 +141,9 @@ ul li ul {
   visibility: hidden;
   transition: opacity 1s;
 }
-ul li ul li { 
-  background: #555; 
-  display: block; 
+ul li ul li {
+  background: #555;
+  display: block;
   color: #fff;
   text-shadow: 0 -1px 0 #000;
 }
@@ -157,7 +157,7 @@ ul li:hover ul {
 
 #signIn, #create {
 	position : relative;
-	left : 35px;
+	left : 50px;
 	display : inline-block;
 	width : 400px;
 	height : 340px;
@@ -166,12 +166,15 @@ ul li:hover ul {
 	margin-top: 8px;
 }
 
-#create { 
+#create {
 	height : 300px;
 	width : 340px;
 }
 
 #signInForm, #createForm{
+	position : relative;
+	left : -20px;
+	top : -10px;
 	display : block;
 	width : 200px;
 	height : 220px;
@@ -205,3 +208,98 @@ ul li:hover ul {
 	color : green;
 	font-weight: bold;
 }
+
+.twitter {
+	border-radius : 2em;
+	background-image : linear-gradient(to right, #A9D0F5 35%, #0040FF );
+	height : 180px;
+	position : relative;
+	left : 50px;
+	margin-top : 10px;
+}
+
+#details {
+	font-weight : bold;
+	font-size : 15px;
+	color : black;
+}
+
+.user {
+	position : relative;
+	display : block;
+}
+
+.tweets, .following, .followers {
+	position : relative;
+	font-size : 15px;
+}
+
+.tweets {
+	margin-left : 10px;
+}
+
+/*.tweets {
+	position : relative;
+	font-size : 15px;
+	margin-left: 10px;
+}*/
+
+.searchArea {
+	border-radius : 0 2em 2em 0 ;
+	height : 50px;
+	background-image : linear-gradient(to right, #A9D0F5 35%, #0040FF );
+	margin-top : 5px;
+	position : relative;
+	left : 50px;
+}
+
+.search {
+	position : absolute;
+	margin-top : 10px;
+	border-radius: 2em;
+	height : 25px;
+	background-color : white;
+	outline : none;
+	text-align : center;
+}
+
+#indexAnimation {
+	position : absolute;
+	width : 100%;
+	height : 100%;
+}
+
+#tester {
+	display : block;
+}
+
+.tweet {
+	position : relative;
+	top : 0px;
+	margin-top : 5px;
+	margin-left : 5px;
+	margin-right : 5px;
+	max-width : 200px;
+	background-color : #000000;
+	border-radius : 2em;
+}
+
+#border {
+	text-align : center;
+	min-height : 36px;
+	margin-bottom : 5px;
+	margin-top : 10px;
+	margin-left : 5px;
+	margin-right : 5px;
+}
+
+.container {
+	position : relative;
+	left : 50px;
+}
+
+/*.searchBtn {
+	position : absolute;
+	top : 5px;
+	left : 185px;
+}*/

@@ -4,14 +4,12 @@ block page
   - var menu = 'rules'
 block gameboard
   div.row
-    div.col-6
+    div.col-6.offset-1
       p.message#rule-heading Rules
       div#rules
-        p.message Fill in the two fields to determine the size of the board. 
-        p.message There is no maximum board size. It is entirely dependent on your maximum resolution. 
-        p.message Game speed will increase as your snake grows longer. 
+        p.message Fill in the two fields to determine the size of the board.
+        p.message There is no maximum board size. It is entirely dependent on your maximum resolution.
+        p.message Game speed will increase as your snake grows longer.
         p.message Easy/medium/hard tiles increase the snake length by 1/2/3 respectively
         p.message Change direction with the up/down/left/right arrows
         p.message Have fun and good luck!
-block javascript
-  include includes/scripts

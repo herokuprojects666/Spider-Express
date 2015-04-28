@@ -8,22 +8,21 @@ define(['underscore', 'jquery', 'helpers'], function (_, $, helper) {
 				coords = determineCoords(border)
 				element = document.getElementById(_.first(coords) + '-' + helper.second(coords))
 			}
-			console.log(coords)
 			$(element).addClass(firstClass)
 		})
 	}
 
 	var changeDirection = function(oppositeDir, newDir) {
-		this.direction = this.direction != oppositeDir ? newDir : this.direction  
+		this.direction = this.direction != oppositeDir ? newDir : this.direction
 	};
 
-	var determineCoords = function(border) {	
+	var determineCoords = function(border) {
 		var xCoord = helper.randomNumber($('#x').val(), border, ($('#x').val() - border) )
 		var yCoord = helper.randomNumber($('#y').val(), border, ($('#y').val() - border) )
 		return [xCoord, yCoord]
 	}
 
-	var createGrid = function() { 
+	var createGrid = function() {
 		var width = $('#x').val()
 		var height = $('#y').val()
 		if (height == '' || width == '') {
@@ -37,7 +36,7 @@ define(['underscore', 'jquery', 'helpers'], function (_, $, helper) {
 				board += '<div class="cell"' + 'id="' + ind + '-' + index + '">' + '</div>'
 			})
 			board += '</div>'
-		})	
+		})
 		$('#game').html(board)
 	}
 
@@ -79,14 +78,14 @@ define(['underscore', 'jquery', 'helpers'], function (_, $, helper) {
 	}
 
 	var increaseLevel = function() {
-		return this.score >= 150 && this.score < 300 ? this.level = 1 : 
+		return this.score >= 150 && this.score < 300 ? this.level = 1 :
 			   this.score >= 300 && this.score < 450 ? this.level = 2 :
 			   this.score >= 450 ? this.level = 3 : this.level = 0
 	}
 
 	var increaseSpeed = function() {
-		return this.score >= 150 && this.score < 300 ? this.speed = 300 : 
-			   this.score >= 300 && this.score < 450 ? this.speed = 75 : 
+		return this.score >= 150 && this.score < 300 ? this.speed = 300 :
+			   this.score >= 300 && this.score < 450 ? this.speed = 75 :
 			   this.score >= 450 ? this.speed = 50 : this.speed = this.speed
 	}
 
@@ -116,13 +115,13 @@ define(['underscore', 'jquery', 'helpers'], function (_, $, helper) {
 					$(headEle).removeClass('snake')
 				}
 			})
-			
-			var snake = _.isEmpty(that.foodToEat) ? _.rest(that.snake) : that.snake			
+
+			var snake = _.isEmpty(that.foodToEat) ? _.rest(that.snake) : that.snake
 			direction == 'up' ? (that.snake = [].concat.call([], snake, [[xCons, yDec]]), $('#' + xCons + '-' + yDec).addClass('snake'), that.foodToEat = _.rest(that.foodToEat)) :
-			direction == 'down' ? (that.snake = [].concat.call([], snake, [[xCons, yInc]]), $('#' + xCons + '-' + yInc).addClass('snake'), that.foodToEat = _.rest(that.foodToEat)) : 
+			direction == 'down' ? (that.snake = [].concat.call([], snake, [[xCons, yInc]]), $('#' + xCons + '-' + yInc).addClass('snake'), that.foodToEat = _.rest(that.foodToEat)) :
 			direction == 'left' ? (that.snake = [].concat.call([], snake, [[xDec, yCons]]), $('#' + xDec + '-' + yCons).addClass('snake'), that.foodToEat = _.rest(that.foodToEat)) :
 			(that.snake = [].concat.call([], snake, [[xInc, yCons]]), $('#' + xInc + '-' + yCons).addClass('snake'), that.foodToEat = _.rest(that.foodToEat))
-			
+
 			callback.call(that)
 			return moveSnake.call(that, callback)
 		}, speed, cb, this)
@@ -154,10 +153,10 @@ define(['underscore', 'jquery', 'helpers'], function (_, $, helper) {
 
 	var switchDirections = function(direction) {
 		switch(direction) {
-			case 37 : 
+			case 37 :
 			return changeDirection.call(this, 'right', 'left')
 			break
-			case 39 : 
+			case 39 :
 			return changeDirection.call(this, 'left', 'right')
 			break
 			case 38 :

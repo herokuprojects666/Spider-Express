@@ -3,7 +3,7 @@ block page
   - var menu = 'snake'
   - var page = 'logged in'
 block gameboard
-  div.gameboard(id='#{user.username}')
+  div.gameboard.offset-1(id='#{user.username}')
     div.row
       div.col-8
         input#x(placeholder='Board Width')
@@ -24,15 +24,15 @@ block gameboard
               div.row
                 div#spacer(class="cell medium")
                   p(class='identifier') = Medium
-              div.row 
+              div.row
                 div#spacer(class="cell hard")
-                  p(class='identifier') = Hard   
+                  p(class='identifier') = Hard
             div.col-4
               div.row
                 p#Score Current Score :
                 p.message#score
               div.row
                 p#Level Current Level :
-                p.message#level      
+                p.message#level
   div#container
     div#game

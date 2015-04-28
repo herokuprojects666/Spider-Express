@@ -2,6 +2,7 @@ require.config({
 	baseUrl : '/js',
 	paths: {
 		ajax : './ajax',
+		animation : './svgAnimation',
 		bootstrap : './bootstrap.min',
 		helpers : './helpers',
 		interval : './interval',
@@ -12,7 +13,7 @@ require.config({
 		partial : './partial',
 		snake : './snake',
 		snakeMain : './snake-main',
-		layout : './svgElement',
+		tweets : './tweets',
 		underscore : './underscore'
 	},
 })

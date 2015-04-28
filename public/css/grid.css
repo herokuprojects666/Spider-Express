@@ -1,17 +1,58 @@
-.col-1, .col-2, .col-3, .col-4, .col-5, 
+@media(min-width:1000px) {
+.col-1, .col-2, .col-3, .col-4, .col-5,
 .col-6, .col-7, .col-8, .col-9, .col-10,
-.col-11, .col-12, .col-13, .col-14, .col-15, 
+.col-11, .col-12, .col-13, .col-14, .col-15,
 .col-16, .col-17, .col-18, .col-19, .col-20 {
-	padding-right : 15px;
-	padding-left : 15px;
+	min-height : 1px;
 	position : relative;
 	float : left;
-	text-align : center;
+}
+
+.offset-1 {
+	left : 5%;
+}
+
+.offset-2 {
+	left : 10%;
+}
+
+.offset-3 {
+	left : 15%;
+}
+
+.offset-4 {
+	left : 20%;
+}
+
+.offset-5 {
+	left : 25%;
+}
+
+.offset-6 {
+	left : 30%;
+}
+
+.offset-7 {
+	left : 35%;
+}
+
+.offset-8 {
+	left : 40%;
+}
+
+.offset-9 {
+	left : 45%;
+}
+
+.offset-10 {
+	left : 50%;
 }
 
 .row {
 	width : 100%;
+	position : relative;
 	display : inline-block;
+
 }
 .col-1 {
 	width : 5%;
@@ -105,4 +146,8 @@
 a:visited, a:hover, a:link, a:active {
 	text-decoration : none;
 	color : white;
+}
+
+.hide {
+	display : none;
 }

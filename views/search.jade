@@ -1,0 +1,6 @@
+extend layout
+block page
+  - var page = 'logged in'
+  - var menu = 'search'
+block gameboard
+  div.searchTerm(id="#{user.hashtag}")

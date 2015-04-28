@@ -1,17 +1,17 @@
 ul
   if (page == 'logged in')
-    li(class=(menu == 'home')?'active':'')
+    li(class=(menu == 'home' || menu == 'search')?'active':'')
       a.message(href='/home/#{user.username}') Home
     li(class=(menu == 'profile')?'active':'')
-      a.message(href='/home/#{user.username}/profile') Profile        
+      a.message(href='/home/#{user.username}/profile') Profile
     if (menu == 'spider' || menu == 'snake' || menu == 'rules')
       if (menu =='spider')
         li(class=(menu == 'rules')?'active':'')
           a.message(href='/home/#{user.username}/spider-rules') Rules
-      else 
+      else
         li(class=(menu == 'rules')?'active':'')
           a.message(href='/home/#{user.username}/snake-rules') Rules
-  
+
     li.message(class=(menu =='spider' || menu == 'snake')?'active':'') Games
         ul
           li#hovered
