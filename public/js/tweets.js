@@ -90,7 +90,7 @@ define(['jquery', 'helpers'], function($, helper) {
 
 	var construct = function(object) {
 		this.intervals = ''
-		this.widthIdentifier = [{'width' : 859, 'elements' : 4}, {'width' : 1066, 'elements' : 5}, {'width' : 1273, 'elements' : 6}]
+		this.widthIdentifier = [{'width' : 866, 'elements' : 4}, {'width' : 1086, 'elements' : 5}, {'width' : 1306, 'elements' : 6}]
 		this.currentElements = []
 		object.call(this)
 	};

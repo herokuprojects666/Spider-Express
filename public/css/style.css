@@ -18,21 +18,6 @@
 	height : 100%;
 }
 
-/*ul>li {
-
-	fill : url(#grad1);
-}*/
-
-/*ul>li>a:hover {
-	opacity : .2;
-}*/
-
-/*ul>li>a:hover {
-	opacity : .2;
-}
-*/
-
-
 button:hover {
 	opacity : .2;
 }
@@ -99,10 +84,6 @@ button:hover {
 	width : 100%;
 	height : 100%;
 	margin-top:-20px;
-}
-
-#b {
-	background-color: linear-gradient(right, #088A08, #3ADF00);
 }
 
 .menu {
@@ -238,12 +219,6 @@ ul li:hover ul {
 	margin-left : 10px;
 }
 
-/*.tweets {
-	position : relative;
-	font-size : 15px;
-	margin-left: 10px;
-}*/
-
 .searchArea {
 	border-radius : 0 2em 2em 0 ;
 	height : 50px;
@@ -298,8 +273,6 @@ ul li:hover ul {
 	left : 50px;
 }
 
-/*.searchBtn {
-	position : absolute;
-	top : 5px;
-	left : 185px;
-}*/
+#canvasImage{
+	display : none;
+}

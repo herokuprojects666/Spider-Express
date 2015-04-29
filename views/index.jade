@@ -2,8 +2,5 @@ extend layout
 block page
   - var menu = 'index'
 block gameboard
-  svg#indexAnimation
-    defs
-      pattern#flowers(patternUnits="userSpaceOnUse" width=276 height=183)
-        image(xlink:href='/img/flowers.jpg', height=183 width=276)
-    g#animation
+  img#canvasImage(src='/img/flowers.jpg')
+  canvas#indexAnimation

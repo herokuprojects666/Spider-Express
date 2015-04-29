@@ -19,15 +19,20 @@ require(['./requireConfig'], function () {
 					function () { return menu.fetchData.call(this, menu.buildTable, menu.partial(menu.recursiveSwitch, null, menu.adjustOffset))})
 
 				$(window).on('resize', function (e) {
-					animation.initiate.call(this)
-					var newWidth = $(window).width()
+					var newWidth = +$(window).width()
 					if (newWidth > width) {
+						console.log('here')
 						return menu.recursiveSwitch.call(menu, true, menu.adjustOffset)
 					} else if (newWidth < width) {
+						console.log('or here')
 						return menu.recursiveSwitch.call(menu, null, menu.adjustOffset)
 					} else {
 						null
 					}
+				})
+
+				$(window).on('mouseup', function () {
+					return animation.initiate.call(this)
 				})
 
 				$('.searchBtn').on('keydown', function(e) {

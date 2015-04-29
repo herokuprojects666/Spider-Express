@@ -15,14 +15,15 @@ require(['./requireConfig'], function () {
 			var menu = new svgHelper(constructor)
 			var elements = (function() {
 				var that = this
-				var list = _.map(_.range(15), function (ele, index) {
+				var list = _.map(_.range(30), function (ele, index) {
 					var minWidth = 105
 					var maxWidth = parseFloat($('#indexAnimation').css('width')) - 30
 					var minHeight = 40
 					var maxHeight = parseFloat($('#indexAnimation').css('height')) - 120
 					var x = that.randomNumber(+$(window).width(), minWidth, maxWidth)
 					var y = that.randomNumber(+$(window).height(), minHeight, maxHeight)
-					return that.createObject('circle' + index, {'currentX' : x, 'currentY' : y})
+					var radius = that.randomNumber(100, 5, 40)
+					return that.createObject('circle' + index, {'currentX' : x, 'currentY' : y, 'radius' : radius})
 				})
 				var object = this.mergeObjects(list)
 				this.svgElements = object
@@ -34,9 +35,8 @@ require(['./requireConfig'], function () {
 				$(window).on('resize', function () {
 					animation.initiate.call(this)
 				})
-
+				console.log(menu)
 				return (function() {
-					menu.createCircles.call(menu)
 					menu.initialDirections.call(menu)
 					menu.startAnimation.call(menu)
 				}.call(menu))

@@ -82,13 +82,18 @@ require(['./requireConfig'], function () {
 								$(ele).draggable()
 								$(ele).draggable('enable')
 							})
-							console.log(game.constructor)
 							return gameDeferred.resolve(game, defaulted)
 						})
 				})
 
 				$(window).on('resize', function() {
 					return animation.initiate.call(this)
+				})
+
+				$(window).on('mousedown', function () {
+					gameDeferred.done(function (game) {
+						console.log(JSON.stringify(game.game.data))
+					})
 				})
 
 				$('li').on('mousedown', function () {
