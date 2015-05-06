@@ -129,10 +129,16 @@ define(['jquery', 'helpers'], function($, helper) {
 
 	var createSearchIcon = function(element) {
 		var that = this
-		var svg = helper.createNSElement('svg', {'position' : 'absolute', 'zIndex' : 20, 'top' : '15px', 'left' : '10px'})
+		// var svg = helper.createNSElement('svg', {'position' : 'absolute', 'zIndex' : 20, 'top' : '15px', 'left' : '10px', 'id' : 'temporary'})
+		// var lineOne = helper.createNSElement('line', {'x1' : 0, 'x2' : 10, 'y1' : 0, 'y2' : 10, 'stroke' : '#000', 'strokeWidth' : '3px'})
+		// var circle = helper.createNSElement('circle', {'r' : 8, 'cx' : 14, 'cy' : 14, 'fill' : '#000'})
+		// var lineTwo = helper.createNSElement('line', {'x1' : 18, 'x2' : 28, 'y1' : 10, 'y2' : 0, 'stroke' : '#000', 'strokeWidth' : '3px'})
+		var svg = helper.createNSElement('svg', {'position' : 'absolute', 'zIndex' : 20, 'top' : '15px', 'left' : '10px', 'id' : 'temporary'})
 		var lineOne = helper.createNSElement('line', {'x1' : 0, 'x2' : 10, 'y1' : 0, 'y2' : 10, 'stroke' : '#000', 'strokeWidth' : '3px'})
 		var circle = helper.createNSElement('circle', {'r' : 8, 'cx' : 14, 'cy' : 14, 'fill' : '#000'})
 		var lineTwo = helper.createNSElement('line', {'x1' : 18, 'x2' : 28, 'y1' : 10, 'y2' : 0, 'stroke' : '#000', 'strokeWidth' : '3px'})
+		svg.setAttribute('height', '50px')
+		svg.setAttribute('width', '50px')
 		svg.appendChild(lineOne)
 		svg.appendChild(circle)
 		svg.appendChild(lineTwo)
@@ -146,30 +152,27 @@ define(['jquery', 'helpers'], function($, helper) {
 	}
 
 	var createSearchDivider = function(element) {
-		var height = $(window).height()
+		var height = $(window).height() - 75
 		var width = $(window).width()
-		var path = helper.createNSElement('path', {'d' : 'M0,' + height + ' L10,' + height + ' L10,0, L0,0, L0,' + height})
+		var path = helper.createNSElement('path', {'d' : 'M0,' + height + ' L0,25 L140,25 L140,0 L' + width + ',0 L' + width + ',35 L140,35 L10,35 L10,' + height })
 		var clipPath = helper.createNSElement('clipPath', {'id' : 'searchDivider'})
-		var svg = helper.createNSElement('svg', {'position' : 'absolute', 'zIndex' : 20, 'height' : height, 'width' : width})
+		var svg = helper.createNSElement('svg', {'position' : 'absolute', 'zIndex' : 20, 'height' : height, 'width' : width, 'left' : '7px'})
 		var defs = helper.createNSElement('defs', {})
 		var gradient = helper.createNSElement('linearGradient', {'id' : 'blueGradient'})
-		var stopOne = helper.createNSElement('stop', {'offset' : .35, 'stop-color' : '#A16'})
-		var stopTwo = helper.createNSElement('stop', {'offset' : 1, 'stop-color' : '#00F'})
-
-
+		var stopOne = helper.createNSElement('stop', {'offset' : .35, 'stop-color' : '#15F'})
+		var stopTwo = helper.createNSElement('stop', {'offset' : 1, 'stop-color' : '#AEF'})
 		var rect = helper.createNSElement('rect', {'fill' : 'url(#blueGradient)', 'clip-path' : 'url(#searchDivider)', 'position' : 'absolute', 'zIndex' : 25})
 		rect.setAttribute('height', height)
 		rect.setAttribute('width', width)
 		clipPath.appendChild(path)
 		gradient.appendChild(stopOne)
 		gradient.appendChild(stopTwo)
-
 		defs.appendChild(clipPath)
 		defs.appendChild(gradient)
 		svg.appendChild(defs)
 		svg.appendChild(rect)
-
 		$(element).append(svg)
+
 	}
 
 	var createSearchTerm = function (callback) {
@@ -304,8 +307,6 @@ define(['jquery', 'helpers'], function($, helper) {
 
 	var resubmitForm = function(partial) {
 		var id = this.uniqueIDField
-		console.log(id)
-		console.log(this)
 		var that = this
 		var hashtags = $('.hashtags').attr('id') == void 0 ? '' : $('.hashtags').attr('id')
 		var user = $('.user').attr('id')  == void 0 ? '' : $('.user').attr('id')

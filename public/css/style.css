@@ -357,3 +357,15 @@ ul li:hover ul {
 	left : 50px;
 	position : absolute;
 }
+
+.temp {
+	width : 50px!important;
+	height: 50px!important;
+	position : relative;
+	z-index : 25;
+}
+
+#temporary {
+	width : 50px!important;
+	height : 50px!important;
+}

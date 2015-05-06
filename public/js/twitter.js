@@ -15,10 +15,12 @@ require(['./requireConfig'], function () {
 			var importHelper = helper.addToProto(helper, tweet.construct)
 			var importTweet = helper.addToProto(tweet, tweet.construct)
 			var menu = new importTweet(constructor, $('.uniqueID').attr('id'))
-			console.log(menu)
-			// menu.uniqueIDField
+			// console.log(menu)
+			// // menu.uniqueIDField
+			// new XMLSerializer().serializeToString()
 
 			$(document).ready(function () {
+
 				var width;
 				var searchPhrase;
 				$(this).on('mousemove', function (e){
