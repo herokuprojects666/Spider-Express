@@ -1,6 +1,7 @@
 .error {
 	color : #FF0000;
 	z-index : 5;
+	font-weight : bold;
 }
 
 .message {
@@ -89,7 +90,7 @@ button:hover {
 .menu {
 	position : absolute;
 	left : 175px;
-	z-index : 10;
+	z-index : 40;
 }
 
 ul {
@@ -229,6 +230,7 @@ ul li:hover ul {
 }
 
 .search {
+	width : 100%;
 	position : absolute;
 	margin-top : 10px;
 	border-radius: 2em;
@@ -275,4 +277,83 @@ ul li:hover ul {
 
 #canvasImage{
 	display : none;
+}
+
+.searchUser, .searchHashtag {
+	position : relative;
+	border-radius : 2em;
+	background-color : red;
+	height : 35px;
+	float : right;
+	top : 10px;
+	text-align : center;
+	margin-left : 2px;
+	margin-right : 2px;
+	display : block;
+}
+
+.searchHashtag {
+	background-color : blue;
+}
+
+.searchUser {
+	background-color : red;
+}
+
+.errorArea {
+	position : relative;
+	float : left;
+	bottom : 10px;
+	font-size : 14px;
+}
+
+.textArea {
+	position : relative;
+	bottom : 5px;
+}
+
+.searchResults {
+	position : relative;
+	left : 55px;
+	top : 10px;
+	font-weight : bold;
+	font-size : 20px;
+}
+
+.linebreak {
+	width : 100%;
+	height : 10px;
+	border-radius : 2em;
+	background-image : linear-gradient(to right, #A9D0F5 35%, #0040FF );
+	z-index : 5;
+	position : relative;
+	left : 50px;
+}
+
+.verticalline {
+	width : 10px;
+	border-radius : 2em;
+	background-image : linear-gradient(to right, #A9D0F5 35%, #0040FF );
+	z-index : 5;
+	position : absolute;
+	top : 75px;
+	left : 50px;
+}
+
+.tweetBtn {
+	position : relative;
+	text-align : center;
+	top : 10px;
+	width : 100px!important;
+}
+
+.tweetLink {
+	position : relative;
+	top : 10px;
+}
+
+.searchResultsSVG {
+	top : 75px;
+	left : 50px;
+	position : absolute;
 }

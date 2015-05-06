@@ -95,6 +95,29 @@ define(['underscore'], function (_) {
 		return object
 	};
 
+	var createNSElement = function (type, object) {
+		var element = document.createElementNS('http://www.w3.org/2000/svg', type);
+		var setProperties = _.each(object, function (value, key) {
+			console.log(key)
+			console.log(element.hasAttribute(key))
+			console.log(element.style.hasOwnProperty(key))
+			// return element.hasAttribute(key) ? element.setAttribute(key, value) : element.style[key] = value
+			return element.style.hasOwnProperty(key) ? element.style[key] = value : element.setAttribute(key, value)
+
+		});
+		return element
+	};
+
+	var createElement = function(type, object) {
+		var element = document.createElement(type);
+		var setProperties = _.each(object, function (value, key) {
+			return element.style.hasOwnProperty(key) ? element.style[key] = value : element.setAttribute(key, value)
+
+		});
+		return element
+	}
+
+
 	var defaultValues = function(obj, value) {
 		var args = flatten(_.rest(arguments, 2));
 		_.each(args, function (ele) {
@@ -151,8 +174,13 @@ define(['underscore'], function (_) {
 		_.each(objects, function (ele, index) {
 			var value = getFirstValue(ele)
 			for (prop in ele) {
-				if (ele.hasOwnProperty(prop))
+				var temp = obj[prop]
+				if (obj[prop] != void 0) {
+					obj[prop] = temp + ',' + value
+				} else {
 					obj[prop] = value
+				}
+
 			}
 		})
 		return obj
@@ -297,6 +325,8 @@ define(['underscore'], function (_) {
 		compareOffsets : compareOffsets,
 		containsSubString : containsSubString,
 		createObject : createObject,
+		createNSElement : createNSElement,
+		createElement : createElement,
 		defaultValues : defaultValues,
 		existy : existy,
 		extractNumber : extractNumber,

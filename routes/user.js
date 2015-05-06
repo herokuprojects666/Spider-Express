@@ -21,7 +21,6 @@ exports.authenticate = function(req, res, next) {
 		email : req.body.email,
 		password : req.body.password
 	}, function (err, user) {
-
 		if(err) return next(err)
 		if (!user) return res.render('login', {error: 'Incorrect email/password combo'})
 
@@ -41,7 +40,7 @@ exports.guest = function(req, res, next) {
 		password : 'temp',
 		username : 'guest' + number
 	}, function (err, user) {
-		req.session.user = user
+		req.session.user = _.first(user)
 		req.number = number
 		return res.redirect('/home/guest' + req.number)
 	})
@@ -60,6 +59,11 @@ exports.login = function(req, res, next) {
 	res.render('login')
 }
 
+exports.newTweet = function (req, res, next) {
+	var user = {username : req.params.user}
+	res.render('tweet', {user : user})
+}
+
 exports.profile = function(req, res, next) {
 	req.collections.users.findOne({
 		username : req.params.user
@@ -69,34 +73,30 @@ exports.profile = function(req, res, next) {
 }
 
 exports.search = function(req, res, next) {
-	req.collections.tweets.find({ $or : [{hashtags : req.query.hashtags}, {created_by : req.query.user}]}).toArray(function (err, user) {
-		req.session.tweet = {}
-		req.session.tweet.tweets = user
-		res.send({user : req.session.tweet})
+	if (_.isEmpty(req.query.user) && _.isEmpty(req.query.hashtags))
+		return req.collections.tweets.find({}).toArray(function(err, user) {
+			req.tweets = user
+			return next()
+		})
+	var user = req.query.user.split(',')
+	var hashtags = req.query.hashtags.split(',')
+	req.collections.tweets.find({ $or : [ {created_by : {$in : user} }, {hashtags : {$in : hashtags} }]}).toArray(function (err, user) {
+		req.tweets = user
+		return next()
 	})
 }
 
 exports.searchPage = function(req, res, next) {
-	var user = {'username' : req.session.user.username, 'hashtag' : req.query.hashtags}
+	var hashtags = _.isArray(req.query.hashtags) ? req.query.hashtags.join(' ') : req.query.hashtags
+	var user = _.isArray(req.query.user) ? req.query.user.join(' ') : req.query.user
+	var user = {'username' : req.session.user.username, 'id' : req.query.id, 'user' : user, 'hashtags' : hashtags}
 	res.render('search', {user : user})
 }
 
 exports.tweetData = function(req, res, next) {
-	req.collections.users.findOne({
-		username : req.params.user
-	}, function (err, user) {
-		var list = _.each(req.tweets, function (ele, index) {
-			var images = _.map(ele.images, function (elem) {
-				return _.reduce(req.images, function (memo, e) {
-					return e.public_id == elem ? memo += e.url : memo
-				}, '')
-			})
-			req.tweets[index].image_urls = images
-			user.tweets = req.tweets
-			user.tweets[index].image_urls = images
-		})
-		res.send({user : user})
-	})
+	var user = {}
+	user.tweets = req.tweets
+	res.send({user : user})
 }
 
 exports.tweets = function(req, res, next) {

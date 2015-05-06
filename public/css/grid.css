@@ -8,6 +8,52 @@
 	float : left;
 }
 
+.opp-1, .opp-2, .opp-3, .opp-4, .opp-5, .opp-6, .opp-7, .opp-8, .opp-9, .opp-10 {
+	float : right;
+	margin-left : 2px;
+	margin-right : 2px;
+}
+
+.opp-1 {
+	width : 5%;
+}
+
+.opp-2 {
+	width : 10%;
+}
+
+.opp-3 {
+	width : 15%;
+}
+
+.opp-4 {
+	width : 20%;
+}
+
+.opp-5 {
+	width : 25%;
+}
+
+.opp-6 {
+	width : 30%;
+}
+
+.opp-7 {
+	width : 35%;
+}
+
+.opp-8 {
+	width : 40%;
+}
+
+.opp-9 {
+	width : 45%;
+}
+
+.opp-10 {
+	width : 50%;
+}
+
 .offset-1 {
 	left : 5%;
 }

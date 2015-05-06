@@ -3,4 +3,12 @@ block page
   - var page = 'logged in'
   - var menu = 'search'
 block gameboard
-  div.searchTerm(id="#{user.hashtag}")
+  div.gameboard(id="#{user.username}")
+  div.uniqueID(id="#{user.id}")
+  div.hashtags(id="#{user.hashtags}")
+  div.user(id="#{user.user}")
+
+  p.message.searchResults Search Results
+
+  div.searchResultsSVG
+  div.container

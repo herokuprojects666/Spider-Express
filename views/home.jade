@@ -7,21 +7,25 @@ block gameboard
   div.row
     div.col-19
       div.searchArea
-        div.col-10
-        div.col-2
+        div.col-10.searchTerms
+        div.col-6
           input.search.searchBtn(placeholder='Search')
           form(class='submitting', action='/home/search/', method='get', style='display:none;')
-            input.hashtags(name='hashtags')
-            input.user(name='user')
+        div.col-2.searchSVG
+        div#border.errorArea
+          p.error
   div.row
     div.col-4
       div.row.twitter
         div.row
           div.col-10
+            div.col-10.offset-5
+              div.tweetBtn.btn.active
+                a.tweetLink(href='/home/#{user.username}/newTweet') New Tweet
           div.col-10
             div.col-10.offset-4
               p#details.tweets #{user.name}
-              a.tweets(href='/#{user.username}/tweets') @#{user.username}
+              a.tweets(href='#') @#{user.username}
         div.row
           div.col-7
             p.tweets Tweets

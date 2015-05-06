@@ -64,6 +64,18 @@ var images = function(req, res, next) {
 	})
 }
 
+var addImageURL = function(req, res, next) {
+	var list = _.each(req.tweets, function (ele, index) {
+		var images = _.map(ele.images, function (elem) {
+			return _.reduce(req.images, function (memo, e) {
+				return e.public_id == elem ? memo += e.url : memo
+			}, '')
+		})
+		req.tweets[index].image_urls = images
+	})
+	return next()
+}
+
 app.use( function (req, res, next) {
 	if (!collections.users) return next(new error('no users found'))
 	req.collections = collections
@@ -82,8 +94,10 @@ app.use(session({secret : 'abcdefghijk'}));
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', routes.index)
+app.get('/:user/tweets', images, routes.user.tweets, routes.user.searchPage)
 app.get('/home/search', routes.user.searchPage)
-app.get('/home/:user/search', routes.user.search)
+app.get('/home/:user/search', images, routes.user.search, addImageURL, routes.user.tweetData)
+app.get('/home/:user/newTweet', routes.user.newTweet)
 app.post('/loadgame/:user', authorized, routes.game.loadgame)
 app.get('/home/:user/logout', routes.game.logout)
 app.get('/home/:user/spider', authorized, routes.game.spider)
@@ -97,7 +111,7 @@ app.get('/guest', routes.user.guest)
 app.get('/home/:user/snake', routes.game.snake)
 app.get('/home/:user/snake-rules', routes.game.snakeRules)
 app.get('/home/:user/profile', routes.user.profile)
-app.get('/home/:user/tweetData', images, routes.user.tweets, routes.user.tweetData)
+app.get('/home/:user/tweetData', images, routes.user.tweets, addImageURL, routes.user.tweetData)
 
 app.get('/create', routes.user.create)
 app.get('/home/:user', authorized, images, routes.user.tweets, routes.user.home)

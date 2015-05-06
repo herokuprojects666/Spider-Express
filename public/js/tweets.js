@@ -2,8 +2,20 @@ define(['jquery', 'helpers'], function($, helper) {
 
 	//private functions
 
-	var adjustRows = function(determiner, data) {
-		var data = data || JSON.parse(sessionStorage.getItem('user'))
+	var determineDivWidth = function (text, font) {
+		var ele = $('<p></p>').append(text)
+		var font = font || '16px'
+		var div = $('<div></div>').css({'position' : 'absolute', 'top' : '-1000px', 'left' : '-1000px', 'font-size' : '16px'}).append(ele).appendTo($('body'))
+		var width = div.width()
+		div.remove()
+		return width
+	}
+
+	var adjustRows = function(determiner, key, data) {
+		var user = key || $('.gameboard').attr('id').toLowerCase();
+		console.log(user)
+		var data = data || JSON.parse(sessionStorage.getItem(user))
+		console.log(data)
 		var rows = $('.detect').length
 		var width = this.currentElements
 		if(determiner) {
@@ -17,7 +29,6 @@ define(['jquery', 'helpers'], function($, helper) {
 	var determineWidth = function () {
 		var width = $(window).width()
 		return _.reduce(this.widthIdentifier, function (memo, ele, index, array) {
-			// console.log(width < array[index+1]['width'])
 			return index == array.length -1 && _.isEmpty(memo) ? [].concat.call([], memo, ele['elements']) :
 				   index == array.length -1 && !_.isEmpty(memo) ? memo :
 				   (ele['width'] <= width) && (width <= array[index+1]['width']) ? [].concat.call([], memo, ele['elements']) :
@@ -37,16 +48,20 @@ define(['jquery', 'helpers'], function($, helper) {
 
 	// public functions
 
+	var addKeys = function(value) {
+		return _.extend(this, {'keystrokes' : value})
+	}
+
 	var adjustOffset = function () {
 		var fakeHeight = _.map($('.detect'), function (ele) {
 			return _.map(_.range($(ele).children().length), function (elem) {
+				console.log($(ele).children().eq(elem).children().eq(1).height())
 				return $(ele).children().eq(elem).children().eq(1).height()
 			})
 		})
 		var flattendHeights = helper.flatten(fakeHeight)
-		var uniqueHeights = _.uniq(flattendHeights)
-		if (uniqueHeights.length == 1) {
-			return setTimeout(adjustOffset, 100)
+		if (_.contains(flattendHeights, 18)) {
+			return setTimeout(adjustOffset, 200)
 		}
 		var maxHeight = _.map($('.detect'), function (ele, index, array) {
 			var heights = _.map( _.range($(ele).children().length), function (elem){
@@ -61,8 +76,10 @@ define(['jquery', 'helpers'], function($, helper) {
 		})
 	}
 
-	var buildTable = function(data, cb) {
-		var data = data || JSON.parse(sessionStorage.getItem('user'))
+	var buildTable = function(data, key, cb) {
+		var data = data || JSON.parse(sessionStorage.getItem(key))
+		if (!data.user.tweets)
+			return
 		var HTML = '';
 		var that = this;
 		var width = +$(window).width();
@@ -70,7 +87,7 @@ define(['jquery', 'helpers'], function($, helper) {
 		this.currentElements = length
 		var string = _.each(_.range(Math.ceil(data.user.tweets.length / length)), function (ele, index, array){
 			HTML += '<div class="row detect">'
-			var newLength = (1 + index) * length > length ? data.user.tweets.length : ((1 + index) * length);
+			var newLength = data.user.tweets.length < length || (1 + index) * length > length ? data.user.tweets.length : ((1 + index) * length);
 			_.each(_.range( (index * length), newLength ), function (elem) {
 				HTML += '<div class="row tweet">'
 				HTML += '<div class="row"><p class="message" id="border">' + data.user.tweets[elem].message_title + '</p></div>'
@@ -88,31 +105,142 @@ define(['jquery', 'helpers'], function($, helper) {
 		return cb.call(this)
 	}
 
-	var construct = function(object) {
+	var construct = function(object, idField) {
 		this.intervals = ''
 		this.widthIdentifier = [{'width' : 866, 'elements' : 4}, {'width' : 1086, 'elements' : 5}, {'width' : 1306, 'elements' : 6}]
 		this.currentElements = []
-		object.call(this)
+		object.call(this, idField)
 	};
 
-	var fetchData = function(callback, partial) {
+	var createIcon = function(element) {
+		var svg = helper.createNSElement('svg',{'position' : 'absolute', 'top' : '13px', 'right' : '3px', 'zIndex' : 20, 'height' : '13px', 'width' : '13px'})
+		var lineOne = helper.createNSElement('line', {'x1' : 0, 'x2' : 10, 'y1' : 3, 'y2' : 13, 'stroke' : '#fff', 'strokeWidth' : '3px'})
+		var lineTwo = helper.createNSElement('line', {'x1' : 10, 'x2' : 0, 'y1' : 3, 'y2' : 13, 'stroke' : '#fff', 'strokeWidth' : '3px'})
+		svg.appendChild(lineOne)
+		svg.appendChild(lineTwo)
+		$(element).append(svg)
+		svg.addEventListener('click', function () {
+			$(this).parent().remove()
+		})
+		svg.addEventListener('mouseenter', function () {
+			this.style.cursor = 'pointer'
+		})
+	}
+
+	var createSearchIcon = function(element) {
+		var that = this
+		var svg = helper.createNSElement('svg', {'position' : 'absolute', 'zIndex' : 20, 'top' : '15px', 'left' : '10px'})
+		var lineOne = helper.createNSElement('line', {'x1' : 0, 'x2' : 10, 'y1' : 0, 'y2' : 10, 'stroke' : '#000', 'strokeWidth' : '3px'})
+		var circle = helper.createNSElement('circle', {'r' : 8, 'cx' : 14, 'cy' : 14, 'fill' : '#000'})
+		var lineTwo = helper.createNSElement('line', {'x1' : 18, 'x2' : 28, 'y1' : 10, 'y2' : 0, 'stroke' : '#000', 'strokeWidth' : '3px'})
+		svg.appendChild(lineOne)
+		svg.appendChild(circle)
+		svg.appendChild(lineTwo)
+		$(element).append(svg)
+		svg.addEventListener('click', function () {
+			return search.call(that)
+		})
+		svg.addEventListener('mouseenter', function () {
+			this.style.cursor = 'pointer'
+		})
+	}
+
+	var createSearchDivider = function(element) {
+		var height = $(window).height()
+		var width = $(window).width()
+		var path = helper.createNSElement('path', {'d' : 'M0,' + height + ' L10,' + height + ' L10,0, L0,0, L0,' + height})
+		var clipPath = helper.createNSElement('clipPath', {'id' : 'searchDivider'})
+		var svg = helper.createNSElement('svg', {'position' : 'absolute', 'zIndex' : 20, 'height' : height, 'width' : width})
+		var defs = helper.createNSElement('defs', {})
+		var gradient = helper.createNSElement('linearGradient', {'id' : 'blueGradient'})
+		var stopOne = helper.createNSElement('stop', {'offset' : .35, 'stop-color' : '#A16'})
+		var stopTwo = helper.createNSElement('stop', {'offset' : 1, 'stop-color' : '#00F'})
+
+
+		var rect = helper.createNSElement('rect', {'fill' : 'url(#blueGradient)', 'clip-path' : 'url(#searchDivider)', 'position' : 'absolute', 'zIndex' : 25})
+		rect.setAttribute('height', height)
+		rect.setAttribute('width', width)
+		clipPath.appendChild(path)
+		gradient.appendChild(stopOne)
+		gradient.appendChild(stopTwo)
+
+		defs.appendChild(clipPath)
+		defs.appendChild(gradient)
+		svg.appendChild(defs)
+		svg.appendChild(rect)
+
+		$(element).append(svg)
+	}
+
+	var createSearchTerm = function (callback) {
+		var determiner = _.reduce(this.keystrokes.split(''), function (memo, ele, index) {
+			return index <= 1 ? memo += ele : memo
+		}, '')
+		var searchPrefix = _.reduce(this.searchPrefixes, function (memo, ele) {
+			return ele == determiner ? [].concat.call([], memo, ele) : memo
+		}, [])
+		if (_.isEmpty(searchPrefix)) {
+			$('.errorArea').css('width', determineDivWidth(this.searchError))
+			$('.error').html(this.searchError)
+			return
+		}
+		var width = determineDivWidth(this.keystrokes)
+		var newString = this.keystrokes.split('')[2] == ' ' ? this.keystrokes.slice(3, this.keystrokes.length) : this.keystrokes.slice(2, this.keystrokes.length)
+		var ele = $('<p></p>').append(newString).addClass('message textArea')
+		var div = $('<div></div>').append(ele).css('width', width + 20 + 'px').addClass('default')
+		_.each(this.prefixClasses, function (ele, index) {
+			return index == determiner ? $(div).addClass(ele) : null
+		})
+		$('.searchTerms').prepend(div)
+		$('.searchBtn').val('')
+		return callback(div)
+	}
+
+	var fetchData = function(key, callback, altCb, partial) {
+		console.log(arguments)
 		var that = this;
-		var item = sessionStorage.getItem('user')
-		if (item)
-			return callback.call(this, JSON.parse(item), partial)
-		var user = $('.gameboard').attr('id').toLowerCase()
+		var user = key || $('.gameboard').attr('id').toLowerCase();
+		console.log('user is ' + user)
+		var item = sessionStorage.getItem(user)
+		if (item) {
+			console.log('item found')
+			return callback.call(this, JSON.parse(item), key, partial)
+		}
+		if (key && !item) {
+			return altCb.call(this, partial)
+		}
 		$.ajax({
 			url : '/home/' + user + '/tweetData',
 			dataType : 'json',
 			success : function(data) {
-				sessionStorage.setItem('user', JSON.stringify(data))
-				return callback.call(that, data, partial)
+				console.log(JSON.stringify(data))
+				sessionStorage.setItem(user, JSON.stringify(data))
+				return callback.call(that, data, key, partial)
 			}
 		})
 	}
 
-	var recursiveSwitch = function (determiner, callback) {
-		adjustRows.call(this, determiner)
+	var getSearchTerms = function() {
+		var that = this;
+		var objects = _.map($('.searchTerms').children(), function (ele) {
+			var lastClass = $(ele).attr('class').split(' ').slice(-1)[0]
+			return _.reduce(that.searchClasses, function (memo, value, key) {
+				var searchValue = $(ele).children().eq(0).html()
+				return key == lastClass ? helper.createObject(value, searchValue) : memo
+			}, {})
+		})
+		return helper.mergeObjects(objects)
+	}
+
+	var keydownEvent = function (keystroke, submit, addSearchTerm) {
+		if (keystroke == 13) {
+			return _.isEmpty(this.keystrokes) ? submit.call(this) : addSearchTerm.call(this)
+		}
+		return
+	}
+
+	var recursiveSwitch = function (determiner, key, callback) {
+		adjustRows.call(this, determiner, key)
 		var newWidth = determineWidth.call(this)
 		var list = _.map($('.detect'), function (ele, index, array) {
 			var lastChild = $(ele).children().last()
@@ -138,17 +266,75 @@ define(['jquery', 'helpers'], function($, helper) {
 		})
 
 		if (!_.every(list)) {
-			return recursiveSwitch.call(this, determiner, callback)
+			return recursiveSwitch.call(this, determiner, key, callback)
 		}
 		this.currentElements = newWidth
 		return callback.call(this)
 	}
 
+	var search = function () {
+		var that = this;
+		var searchData = getSearchTerms.call(this)
+		var hashtags = _.reduce(searchData, function (memo, value, key) {
+			return key == 'hashtags' ? [].concat.call([], memo, value.toLowerCase()) : memo
+		}, []).join('')
+		var users = _.reduce(searchData, function (memo, value, key) {
+			return key == 'user' ? [].concat.call([], memo, value.toLowerCase()) : memo
+		}, []).join('')
+		var number = _.reduce(JSON.stringify(searchData).toLowerCase().split(''), function (memo, ele, index) {
+			return +memo + JSON.stringify(searchData).toLowerCase().charCodeAt(index)
+		}, '')
+		return $.ajax({
+			url : '/home/' + $('.gameboard').attr('id').toLowerCase() + '/search/',
+			data : 'hashtags=' + hashtags + '&user=' + users + '&id=' + number,
+			type : 'get',
+			success : function(data) {
+				sessionStorage.setItem(number, JSON.stringify(data))
+				var populateFields = _.each(searchData, function (value, key) {
+					var newKey = value.split(',')
+					return newKey.length > 1 ? _.each(newKey, function (ele) {
+						$('.submitting').append(helper.createElement('input', {'name' : key, 'value' : ele}))
+					}) :
+					$('.submitting').append(helper.createElement('input', {'name' : key, 'value' : value}))
+				})
+				$('.submitting').append(helper.createElement('input', {'name' : 'id', 'value' : number})).submit()
+			}
+		})
+	}
+
+	var resubmitForm = function(partial) {
+		var id = this.uniqueIDField
+		console.log(id)
+		console.log(this)
+		var that = this
+		var hashtags = $('.hashtags').attr('id') == void 0 ? '' : $('.hashtags').attr('id')
+		var user = $('.user').attr('id')  == void 0 ? '' : $('.user').attr('id')
+		var username = $('.gameboard').attr('id')
+		return $.ajax({
+			type : 'get',
+			url : '/home/' + username + '/search/',
+			data : 'hashtags=' + hashtags + '&user=' + user + '&id=' + id,
+			success : function(data) {
+				sessionStorage.setItem(id, JSON.stringify(data))
+				return buildTable.call(that, data, null, partial)
+			}
+
+		})
+	}
+
 	return {
+		addKeys : addKeys,
 		adjustOffset : adjustOffset,
 		buildTable : buildTable,
+		createSearchTerm : createSearchTerm,
+		createSearchIcon : createSearchIcon,
+		createSearchDivider : createSearchDivider,
+		createIcon : createIcon,
 		construct : construct,
 		fetchData : fetchData,
-		recursiveSwitch : recursiveSwitch
+		keydownEvent, keydownEvent,
+		recursiveSwitch : recursiveSwitch,
+		resubmitForm : resubmitForm,
+		search : search
 	}
 })
