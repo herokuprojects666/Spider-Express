@@ -15,8 +15,7 @@ require(['./requireConfig'], function () {
 			var importHelper = helper.addToProto(helper, tweet.construct)
 			var importTweet = helper.addToProto(tweet, tweet.construct)
 			var menu = new importTweet(constructor, $('.uniqueID').attr('id'))
-			// console.log(menu)
-			// // menu.uniqueIDField
+
 			// new XMLSerializer().serializeToString()
 
 			$(document).ready(function () {
@@ -36,51 +35,21 @@ require(['./requireConfig'], function () {
 
 				$(window).on('resize', function (e) {
 					var newWidth = +$(window).width()
-					if ($('.linebreak').length > 0)
-						$('.linebreak').css('width', $(window).width() - 50)
-					if ($('.verticalline').length > 0)
-						$('.verticalline').css('height', $(window).height() - 75)
-					if (newWidth > width) {
-						console.log('here')
-						return menu.recursiveSwitch.call(menu, true, menu.uniqueIDField, menu.adjustOffset)
-					} else if (newWidth < width) {
-						console.log('or here')
-						return menu.recursiveSwitch.call(menu, null, menu.uniqueIDField, menu.adjustOffset)
-					} else {
-						null
-					}
-				})
 
-				$(window).on('mouseup', function () {
 					return helper.chainer(menu, null, null,
 						function () { return animation.initiate.call(this)},
-						function () { return menu.createSearchDivider($('.searchResultsSVG'))})
-					// return animation.initiate.call(this)
+						function () { return menu.createSearchDivider($('.searchResultsSVG'))},
+						function () { return newWidth > width ? menu.recursiveSwitch.call(this, true, menu.uniqueIDField, menu.adjustOffset) :
+									  newWidth < width ? menu.recursiveSwitch.call(this, null, menu.uniqueIDField, menu.adjustOffset) : null})
 				})
 
 				$('.searchBtn').on('keypress', function(e) {
 					return menu.addKeys.call(menu, $('.searchBtn').val())
 				})
 
-				// $('#testSVG').on('click', function () {
-				// 	alert('mousedown')
-				// })
-
 				$('.searchBtn').on('keyup', function(e) {
 					$('.error').empty()
-					// menu.createSearchTerm()
 					return menu.keydownEvent.call(menu, e.which, menu.search, helper.partial.call(menu, menu.createSearchTerm, menu.createIcon))
-					// return e.which == 13 ? $.ajax({
-					// 	url : '/home/' + $('.gameboard').attr('id').toLowerCase() + '/search/',
-					// 	data : 'hashtags=' + item + '&user=' + item,
-					// 	type : 'get',
-					// 	success : function(data) {
-					// 		sessionStorage.setItem(item, JSON.stringify(data))
-					// 		$('.hashtags').val($('.searchBtn').val())
-					// 		$('.user').val($('.searchBtn').val())
-					// 		$('.submitting').submit()
-					// 	}
-					// }) : null
 				})
 			})
 		})
