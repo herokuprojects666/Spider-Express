@@ -171,7 +171,7 @@ define(['jquery', 'helpers'], function($, helper) {
 		defs.appendChild(gradient)
 		svg.appendChild(defs)
 		svg.appendChild(rect)
-		$(element).append(svg)
+		$(element).html(svg)
 
 	}
 

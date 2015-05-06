@@ -52,7 +52,10 @@ require(['./requireConfig'], function () {
 				})
 
 				$(window).on('mouseup', function () {
-					return animation.initiate.call(this)
+					return helper.chainer(menu, null, null,
+						function () { return animation.initiate.call(this)},
+						function () { return menu.createSearchDivider($('.searchResultsSVG'))})
+					// return animation.initiate.call(this)
 				})
 
 				$('.searchBtn').on('keypress', function(e) {
