@@ -23,7 +23,7 @@ var express = require('express')
 	errorHandler = require('errorhandler')
 	bodyParser = require('body-parser')
 	crypto = require('crypto')
-	// process.env.PWD = process.cwd()
+	process.env.PWD = process.cwd()
 
 
 var app = express()
