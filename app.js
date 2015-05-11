@@ -38,7 +38,7 @@ cloudinary.config({
 app.use(function (req, res, next) {
 	if (process.env.node_env == 'development') {
 		app.use(errorHandler())
-		return next();
+		return next()
 	}
 })
 
@@ -90,7 +90,7 @@ app.use( function (req, res, next) {
 
 app.use(multer({ dest : './temp'}))
 app.set('port', process.env.PORT || 4000);
-app.set('views', __dirname + '/views');
+app.set('views', process.env.PWD + '/views');
 app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -98,7 +98,6 @@ app.use(bodyParser.urlencoded());
 app.use(cookies('whatever'))
 app.use(session({secret : 'abcdefghijk'}));
 app.use(express.static(__dirname + '/public'));
-
 
 app.get('/', routes.index)
 app.get('/:user/tweets', images, routes.user.tweets, routes.user.searchPage)
