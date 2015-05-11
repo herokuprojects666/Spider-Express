@@ -23,7 +23,7 @@ var express = require('express')
 	errorHandler = require('errorhandler')
 	bodyParser = require('body-parser')
 	crypto = require('crypto')
-	process.env.PWD = process.cwd()
+	// process.env.PWD = process.cwd()
 
 
 var app = express()
@@ -33,6 +33,13 @@ cloudinary.config({
 	cloud_name : 'craggoo',
 	api_key: '139664333263128',
 	api_secret : 'ccicwuz-b_rQkM_T78hriNCZZQo'
+})
+
+app.use(function (req, res, next) {
+	if (process.env.node_env == 'development') {
+		app.use(errorHandler())
+		return next();
+	}
 })
 
 var authorized = function(req, res, next) {
@@ -77,14 +84,13 @@ var addImageURL = function(req, res, next) {
 }
 
 app.use( function (req, res, next) {
-	if (!collections.users) return next(new error('no users found'))
 	req.collections = collections
 	return next()
 })
 
 app.use(multer({ dest : './temp'}))
 app.set('port', process.env.PORT || 4000);
-app.set('views', process.env.PWD + '/views');
+app.set('views', __dirname + '/views');
 app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -92,6 +98,7 @@ app.use(bodyParser.urlencoded());
 app.use(cookies('whatever'))
 app.use(session({secret : 'abcdefghijk'}));
 app.use(express.static(__dirname + '/public'));
+
 
 app.get('/', routes.index)
 app.get('/:user/tweets', images, routes.user.tweets, routes.user.searchPage)
