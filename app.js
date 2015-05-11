@@ -35,13 +35,6 @@ cloudinary.config({
 	api_secret : 'ccicwuz-b_rQkM_T78hriNCZZQo'
 })
 
-app.use(function (req, res, next) {
-	if (process.env.node_env == 'development') {
-		app.use(errorHandler())
-		return next()
-	}
-})
-
 var authorized = function(req, res, next) {
 	if (!req.session || !req.session.user) {
 		return res.send(401);
@@ -84,6 +77,7 @@ var addImageURL = function(req, res, next) {
 }
 
 app.use( function (req, res, next) {
+	if (!collections.users) return next(new error('no users found'))
 	req.collections = collections
 	return next()
 })
