@@ -93,6 +93,9 @@ define(['jquery', 'helpers'], function($, helper) {
 	}
 
 	var applyEffect = function(list, determiner, duration, context, callback) {
+		console.log(arguments)
+		if (_.isEmpty(list))
+			return callback.call(this)
 		return setTimeout(function (list, determiner, duration, context, callback) {
 			if (_.isEmpty(context.list))
 				_.extend(context, {'list' : list})
@@ -254,12 +257,12 @@ define(['jquery', 'helpers'], function($, helper) {
 		var width = $(window).width()
 		var path = helper.createNSElement('path', {'d' : 'M0,' + height + ' L0,25 L140,25 L140,0 L' + width + ',0 L' + width + ',35 L140,35 L10,35 L10,' + height })
 		var clipPath = helper.createNSElement('clipPath', {'id' : 'searchDivider'})
-		var svg = helper.createNSElement('svg', {'position' : 'absolute', 'zIndex' : 20, 'height' : height, 'width' : width, 'left' : '7px'})
+		var svg = helper.createNSElement('svg', {'position' : 'absolute', 'height' : height, 'width' : width, 'left' : '7px'})
 		var defs = helper.createNSElement('defs', {})
 		var gradient = helper.createNSElement('linearGradient', {'id' : 'blueGradient'})
 		var stopOne = helper.createNSElement('stop', {'offset' : .35, 'stop-color' : '#15F'})
 		var stopTwo = helper.createNSElement('stop', {'offset' : 1, 'stop-color' : '#AEF'})
-		var rect = helper.createNSElement('rect', {'fill' : 'url(#blueGradient)', 'clip-path' : 'url(#searchDivider)', 'position' : 'absolute', 'zIndex' : 25})
+		var rect = helper.createNSElement('rect', {'fill' : 'url(#blueGradient)', 'clip-path' : 'url(#searchDivider)', 'position' : 'absolute'})
 		rect.setAttribute('height', height)
 		rect.setAttribute('width', width)
 		clipPath.appendChild(path)
