@@ -583,6 +583,7 @@ define(['jquery', 'helpers'], function($, helper) {
 			return
 		}
 
+		$(this.twitterForm).submit()
 		return animateTweet.call(this, this.tweetAnimationDuration)
 		// return $(this.twitterForm).submit()
 	}
