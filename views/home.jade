@@ -12,7 +12,8 @@ block gameboard
           input.search.searchBtn(placeholder='Search')
           form(class='submitting', action='/home/search/', method='get', style='display:none;')
         div.col-2.searchSVG
-        div#border.errorArea
+          svg#searchSVG
+        div#border.errorArea.offset-17
           p.error
   div.row
     div.col-4
@@ -21,7 +22,7 @@ block gameboard
           div.col-10
             div.col-10.offset-5
               div.tweetBtn.btn.active
-                a.tweetLink(href='/home/#{user.username}/newTweet') New Tweet
+                p.tweetLink New Tweet
           div.col-10
             div.col-10.offset-4
               p#details.tweets #{user.name}
@@ -40,4 +41,38 @@ block gameboard
             p.tweets 0
           div.col-6
             p.tweets 0
+  div.row
+    div.newTweetForm
+    div.row
+      div.col-4
+        form.tweetForm.offset-3#twitterForm(method='post' action='/home/#{user.username}/createTweet')
+          div.row
+            input.tweetInput.message_title(name='messageTitle' placeholder='Message Title')
+          div.row.body
+            textarea.bodyInput(name='messageBody' placeholder='Message Body' form='twitterForm')
+          div.row
+            input.tweetInput.hashtags(name='hashtags' placeholder='Hashtags')
+          div.row
+            div.col-12
+              div.btn.active#chooseFile
+                p.tweetLink Choose Image File
+              input.imageFile(type='file')
+              input.imageString(name='image' type='hidden')
+              input.imageFileName(name='fileName' type='hidden')
+            div.col-8.imageError
+              p.invalidWidth.error
+          div.row
+            p.message.reminder Use a comma separated list of hashtags if you decide to include any. Please note that any matching text in the tweet will be replaced with a hashtag link.
+        div.col-20.imageDisplay
+          p.message.offset-3 Current Image View
+          img.tempImage
+        div.col-20.tweetPreview
+          div.row
+            p.message.offset-3 Final Tweet Preview
+          div.row#tweetDiv
+          div.row
+            div.btn.active#submitTweet
+              p.tweetLink Create Tweet
+          div.row#border.offset-3
+            p.tweetError.error
   div.row.container

@@ -8,14 +8,6 @@ define(['underscore', 'helpers'], function(_, helper) {
 		var object = helper.createObject(ele, {'currentX' : x, 'currentY' : y, 'direction' : direction, 'radius' : radius})
 		return _.extend(this.svgElements, object)
 	}
-	// var createCircles = function() {
-	// 	var HTML = ''
-	// 	var list = _.each(this.svgElements, function (ele, index) {
-	// 		var radius = helper.randomNumber(100, 10, 30)
-	// 		HTML += '<circle id="' + index + '" cx="' + ele.currentX + '" cy="' + ele.currentY + '" r="' + radius + '" fill="url(#flowers)"></circle>'
-	// 	})
-	// 	$('#animation').html(HTML)
-	// }
 
 	var determineDirection = function (value, elem, context, pattern) {
 		var direction = _.reduce(this.directions, function (memo, ele, index) {

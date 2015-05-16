@@ -4,6 +4,7 @@ require.config({
 		ajax : './ajax',
 		animation : './svgAnimation',
 		bootstrap : './bootstrap.min',
+		dynamicElements : './dynamicElements',
 		helpers : './helpers',
 		interval : './interval',
 		html : './html',

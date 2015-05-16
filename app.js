@@ -52,16 +52,11 @@ var encrypt = function (req, res, next) {
 	}
 }
 
-var upload = function(req, res, next) {
-	cloudinary.uploader.upload(req.files.path, function(result) {
-	})
-}
-
 var images = function(req, res, next) {
 	cloudinary.api.resources(function(result) {
 		req.images = result.resources
 		return next()
-	})
+	}, {max_results : 500})
 }
 
 var addImageURL = function(req, res, next) {
@@ -71,7 +66,8 @@ var addImageURL = function(req, res, next) {
 				return e.public_id == elem ? memo += e.url : memo
 			}, '')
 		})
-		req.tweets[index].image_urls = images
+		if (req.tweets[index].image_urls == void 0)
+			req.tweets[index].image_urls = images
 	})
 	return next()
 }
@@ -87,8 +83,8 @@ app.set('port', process.env.PORT || 4000);
 app.set('views', process.env.PWD + '/views');
 app.set('view engine', 'jade');
 app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
+app.use(bodyParser.json({limit : '10000kb'}));
+app.use(bodyParser.urlencoded({extended : true, limit : '10mb'}));
 app.use(cookies('whatever'))
 app.use(session({secret : 'abcdefghijk'}));
 app.use(express.static(__dirname + '/public'));
@@ -98,6 +94,7 @@ app.get('/:user/tweets', images, routes.user.tweets, routes.user.searchPage)
 app.get('/home/search', routes.user.searchPage)
 app.get('/home/:user/search', images, routes.user.search, addImageURL, routes.user.tweetData)
 app.get('/home/:user/newTweet', routes.user.newTweet)
+app.post('/home/:user/createTweet', routes.user.receiveTweet, routes.user.upload, routes.user.scaleImage, routes.user.insertTweet, routes.user.removeFile)
 app.post('/loadgame/:user', authorized, routes.game.loadgame)
 app.get('/home/:user/logout', routes.game.logout)
 app.get('/home/:user/spider', authorized, routes.game.spider)
@@ -116,7 +113,6 @@ app.get('/home/:user/tweetData', images, routes.user.tweets, addImageURL, routes
 app.get('/create', routes.user.create)
 app.get('/home/:user', authorized, images, routes.user.tweets, routes.user.home)
 app.get('/login', routes.user.login)
-
 
 
 app.listen(app.get('port'), function() {

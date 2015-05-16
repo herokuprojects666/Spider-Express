@@ -29,6 +29,13 @@ define(['underscore'], function (_) {
 		})
 	};
 
+	var appendElements = function(element, list) {
+		_.each(list, function (ele) {
+			return element instanceof jQuery ? $(element).append(ele) : element.appendChild(ele)
+		})
+		return element
+	}
+
 	var arrayCheck = function(array, successcb, failcb) {
 		var args = _.rest(arguments, 3);
 		return _.isEmpty(array) ? successcb.apply(null, args) : failcb.apply(null, args)
@@ -88,6 +95,14 @@ define(['underscore'], function (_) {
 		return _.isEmpty(findings) ? false : true
 	}
 
+	var createMultiPropObject = function(props, values) {
+		var object = new Object
+		_.each(props, function (ele, index) {
+			object[ele] = values[index]
+		})
+		return object
+	}
+
 	var createObject = function(property, value) {
 		var object = new Object;
 		var prop = property;
@@ -97,24 +112,17 @@ define(['underscore'], function (_) {
 
 	var createNSElement = function (type, object) {
 		var element = document.createElementNS('http://www.w3.org/2000/svg', type);
-		var setProperties = _.each(object, function (value, key) {
-			console.log(key)
-			console.log(element.hasAttribute(key))
-			console.log(element.style.hasOwnProperty(key))
-			// return element.hasAttribute(key) ? element.setAttribute(key, value) : element.style[key] = value
-			return element.style.hasOwnProperty(key) ? element.style[key] = value : element.setAttribute(key, value)
-
-		});
-		return element
+		return setProperties.call(element, object)
 	};
 
 	var createElement = function(type, object) {
 		var element = document.createElement(type);
-		var setProperties = _.each(object, function (value, key) {
-			return element.style.hasOwnProperty(key) ? element.style[key] = value : element.setAttribute(key, value)
+		// var setProperties = _.each(object, function (value, key) {
+		// 	return element.style.hasOwnProperty(key) ? element.style[key] = value : element.setAttribute(key, value)
 
-		});
-		return element
+		// });
+		// return element
+		return setProperties.call(element, object)
 	}
 
 
@@ -160,6 +168,12 @@ define(['underscore'], function (_) {
 		return _.first(_.values(ele))
 	};
 
+	var hideElements = function(selectors) {
+		return _.each(selectors, function (ele) {
+			$(ele).css('display', 'none')
+		})
+	}
+
 	var intervals = function(object, key, func, speed, cb) {
 		return _.extend(object, {key : setInterval(func, speed, object, cb)})
 	};
@@ -167,6 +181,12 @@ define(['underscore'], function (_) {
 	var lastIndex = function(array, index) {
 		var length = array.length;
 		return index == (array.length - 1) ? true : false
+	};
+
+	var mapSelectors = function(array, determiner) {
+		return _.map(array, function (ele) {
+			return determiner ? $('.' + ele) : $('#' + ele)
+		})
 	};
 
 	var mergeObjects = function(objects, obj) {
@@ -256,6 +276,20 @@ define(['underscore'], function (_) {
 			return value
 	};
 
+	var removeElements = function(selector) {
+		return _.each(selector, function (ele) {
+			$(ele).remove()
+		})
+	}
+
+	var resetFields = function(selectors) {
+		return _.each(selectors, function (ele) {
+			var node = $(ele)[0].nodeName
+			return node == 'INPUT' || node == 'TEXTAREA' ? $(ele).val('') : $(ele).html('')
+
+		})
+	}
+
 	var returnSubString = function(string, splitter, determiner) {
 		var position = _.reduce(string.split(''), function (memo, ele, index) {
 			return ele == splitter && _.isEmpty(memo) ? [].concat.call([], memo, index) : memo
@@ -273,6 +307,20 @@ define(['underscore'], function (_) {
 		return _.reduce(array, function (memo, ele, index) {
 			return index == 1 ? [].concat.call([], memo, ele) : memo
 		},[]).join('')
+	}
+
+	var setIdenticalProperties = function(selectors, value) {
+		return _.each(selectors, function (ele) {
+			return setProperties.call(ele, value)
+		})
+	}
+
+	var setProperties = function(list) {
+		var that = this
+		_.each(list, function (value, key) {
+			return key == 'height' || key == 'width' || key == 'x' || key == 'y' ? that.setAttribute(key, value) : that.style.hasOwnProperty(key) ? that.style[key] = value : that.setAttribute(key, value)
+		})
+		return this
 	}
 
 	var stringLength = function(string) {
@@ -317,6 +365,7 @@ define(['underscore'], function (_) {
 		allValues : allValues,
 		anyKey : anyKey,
 		anyValue : anyValue,
+		appendElements : appendElements,
 		arrayCheck : arrayCheck,
 		booleanArray : booleanArray,
 		chainer : chainer,
@@ -324,6 +373,7 @@ define(['underscore'], function (_) {
 		clearIntervals : clearIntervals,
 		compareOffsets : compareOffsets,
 		containsSubString : containsSubString,
+		createMultiPropObject : createMultiPropObject,
 		createObject : createObject,
 		createNSElement : createNSElement,
 		createElement : createElement,
@@ -334,8 +384,10 @@ define(['underscore'], function (_) {
 		flatten : flatten,
 		getFirstKey : getFirstKey,
 		getFirstValue : getFirstValue,
+		hideElements : hideElements,
 		intervals : intervals,
 		lastIndex : lastIndex,
+		mapSelectors : mapSelectors,
 		mergeObjects : mergeObjects,
 		nestedProperties: nestedProperties,
 		nestedValue : nestedValue,
@@ -343,7 +395,11 @@ define(['underscore'], function (_) {
 		qualifiers : qualifiers,
 		randomizer : randomizer,
 		randomNumber : randomNumber,
+		removeElements : removeElements,
+		resetFields : resetFields,
 		returnSubString : returnSubString,
+		setProperties : setProperties,
+		setIdenticalProperties : setIdenticalProperties,
 		second : second,
 		stringLength : stringLength,
 		truthy : truthy,
